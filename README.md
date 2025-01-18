@@ -16,4 +16,8 @@ Você também pode usar overleaf ou outras soluções para compilar o projeto.
 
 O projeto está configurado de forma que a cada vez que você suba um update aqui no github, o PDF será gerado e salvo na branch `pdf`, ficando fácil de compartilhar com outras pessoas.
 
+## FAQ
+
+* Existe algum TCC real escrito com esse template?
+    * Sim: https://github.com/alyssoncs/Monografia
 
