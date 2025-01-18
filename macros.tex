@@ -1,0 +1,57 @@
+% Aplica formatação a palavras estrangeiras com o comando \foreign
+% \foreign{<palavra>}
+% Este comando aplica formatação em itálico à palavra fornecida, que é ideal para termos ou expressões estrangeiras.
+% 
+% Exemplo de uso:
+% \foreign{dataset}
+% Dentro do documento, "dataset" será exibido em itálico.
+\newcommand*{\foreign}[1]{\textit{#1}}
+
+% Define um novo termo com o comando \newterm
+% \newterm{<nome do comando>}{<termo>}
+% Este comando cria um novo comando de nome <nome do comando>, que representa o termo <termo>.
+% O comando pode ser usado dentro do corpo do documento e será substituído pelo termo definido.
+%
+% Exemplo de uso:
+% \newterm{\iot}{IoT}
+% Agora, dentro do documento, ao usar \iot, ele será substituído por IoT.
+% Você também pode definir um termo que inclua formatações extra. Exemplo:
+% \newterm{\importantnote}{\textbf{Nota importante}} % negrito
+% \newterm{\println}{\texttt{printf}} % monoespaçado
+\newcommand*{\newterm}[2]{\newcommand*{#1}{#2\xspace}}
+
+% Defina aqui os termos comumente usados no seu documento onde você quer garantir uma escrita e/ou formatação consistente; Sinta-se livre para organizar como bem entender.
+% Algumas palavras estrangeiras são consideradas comuns o suficiente de forma que é aceito e aconselhável que não sejam grafadas com itálico, não existe uma regra, use o bom senso. Você também pode seguir o manual de comunicação da SECOM como referência: https://www12.senado.leg.br/manualdecomunicacao/estilos/estrangeirismos-grafados-sem-italico-ou-aspas
+
+% Meta
+\newterm{\mainfile}{\texttt{monografia.tex}}
+\newterm{\metadatafile}{\texttt{metadata.tex}}
+\newterm{\macrofile}{\texttt{macro.tex}}
+\newterm{\pkgfile}{\texttt{tccconfig.sty}}
+\newterm{\contentdir}{\texttt{content/}}
+\newterm{\bibfile}{\texttt{bib/biblio.bib}}
+\newterm{\codedir}{\texttt{res/code}}
+
+% Conceitos
+\newterm{\abntex}{abntex2}
+\newterm{\template}{\foreign{template}}
+\newterm{\labelterm}{\foreign{label}}
+\newterm{\labels}{\foreign{labels}}
+\newterm{\Label}{\foreign{Label}}
+\newterm{\Labels}{\foreign{Labels}}
+\newterm{\api}{API}
+\newterm{\broadcast}{\foreign{broadcast}}
+\newterm{\dataset}{\foreign{dataset}}
+
+% Substantivos próprios
+\newterm{\abnt}{ABNT}
+\newterm{\abntfull}{Associação Brasileira de Normas Técnicas}
+\newterm{\ufma}{UFMA}
+
+% Tecnologias
+\newterm{\mqtt}{MQTT}
+\newterm{\printf}{\texttt{printf}}
+
+% Utils
+\newterm{\autoriapropria}{Produzido pelo autor}
+

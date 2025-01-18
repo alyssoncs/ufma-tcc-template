@@ -1,0 +1,70 @@
+\chapter{Introdução}
+
+\section{Sobre esse \template}
+
+Esse projeto é um \template \enquote{opinionado} de como estruturar e organizar um trabalho de conclusão de curso---focado em Ciência da Computação---utilizando a classe \href{https://www.ctan.org/pkg/abntex2}{\abntex}.
+
+O projeto somente oferece um ponto de partida para criação de documento, com configurações e inclusões de pacotes que o autor considera útil, assim sendo, é recomendado a leitura da documentação oficial da classe \abntex. O projeto também vem configurado com automação para compilação com \texttt{latexmk} ou \texttt{make}, e com sistema de CI/CD no GitHub.
+
+\section{Por onde começo?}
+
+\subsection{Tenho experiência com \LaTeX{}} \label{sub:tenho-xp-com-latex}
+
+Se você já tem familiaridade com \LaTeX{} e quer um resumo de como usar esse \template, você pode olhar o código fonte desse documento e entender como montar sua monografia. Essas informações irão te auxiliar:
+
+\begin{alineas}
+	\item edite o arquivo  \metadatafile com os dados do seu trabalho;
+
+	\item altere o arquivo de ficha catalográfica localizada em:
+
+	\contentdir{}\texttt{ficha-catalografica/index.pdf}, com o documento correspondente ao seu trabalho;
+
+	\item o arquivo \mainfile é o arquivo principal, ele inclui os arquivos no diretório \contentdir;
+
+	\item o \template foi construído de forma que cada seção fica em um subdiretório com o seguinte padrão: \contentdir{}\texttt{\{nome-da-seção\}/index.tex}:
+
+	\begin{alineas}
+		\item lembre-se de atualizar o arquivo \mainfile ao renomear o diretório ou o arquivo;
+			
+		\item sinta-se a vontade de mudar a organização, como por exemplo:
+
+		\contentdir{}\texttt{section-01/index.tex}.
+	\end{alineas}
+		
+	\item termos que aparecem frequentemente no texto podem ser movidos para macros no arquivo \macrofile para garantir grafia e formatação consistentes;
+
+	\item a inclusão e configuração de pacotes estão no arquivo \pkgfile;
+
+	\item as referências bibliográficas estão em \bibfile.
+\end{alineas}
+
+O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latexmk}. Um \texttt{Makefile} é usado para oferecer uma interface mais simples de compilação, os seguintes comandos são suportados:
+
+\begin{alineas}
+	\item \texttt{make}: compila o projeto e gera o PDF;
+
+	\item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
+
+	\item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
+
+	\item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.
+\end{alineas}
+
+Também deve ser possível compilar o projeto com o \foreign{build system} ou IDE de sua preferência.
+
+\subsection{Não tenho experiência com \LaTeX{}}
+
+Vai ter que aprender o básico até entender o que está descrito na \autoref{sub:tenho-xp-com-latex}. Esses recursos podem ser um bons pontos de partida:
+
+\begin{alineas}
+	\item \href{https://github.com/abntex/abntex2/wiki}{wiki do abntex};
+
+	\item \href{https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes}{tutorial do Overleaf};
+
+	\item \href{https://en.wikibooks.org/wiki/LaTeX}{wikibook}.
+\end{alineas}
+
+\section{Organização do texto}
+
+O restante deste documento mostra como utilizar o \template para as coisas mais comuns na monografia.
+

@@ -1,0 +1,112 @@
+% todos os pacotes e suas configuracoes ficam neste arquivo
+
+\ProvidesPackage{tccconfig}
+
+\usepackage{xltxtra} % Somente usado para escrever XeLaTeX, provavelmente pode ser removido depois de escrever todo o conteúdo da sua monografia
+
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst} % Garante recuo do primeiro parágrafo em cada seção.
+\usepackage{microtype} % Melhora a tipografia do documento com ajustes finos.
+\usepackage{color} % Permite o uso de cores no documento.
+\usepackage{graphicx} % Permite a inclusão e manipulação de gráficos e imagens no documento.
+\usepackage{listings} % Permite a inclusão e formatação de código-fonte no documento.
+\usepackage{mathtools} % Fornece melhorias e extensões para a tipografia matemática
+\usepackage{xspace} % Facilita o uso de macros personalizadas sem precisar de espaços adicionais.
+\usepackage{bm} % Permite o uso de negrito em símbolos matemáticos.
+\usepackage{pdfpages} % Permite a inclusão de páginas de arquivos PDF em documentos LaTeX.
+\usepackage[varqu]{zi4} % Fonte monoespacada (inconsolata), provavelmente existe uma opcao melhor
+\usepackage{siunitx} % Fornece uma forma consistente de apresentar unidades e números.
+\usepackage[
+	strict=true,
+	style=brazilian,
+]{csquotes}
+\usepackage[
+	brazilian, 
+	hyperpageref % Link para a página 
+]{backref}	 % Gera referências para páginas onde as citações aparecem na bibliografia.
+\usepackage{hyperref} % Adiciona links clicáveis para referências, notas de rodapé, e URLs no documento.
+\usepackage[
+	alf % Estilo de citacao autor + data
+]{abntex2cite} % Citações padrão ABNT (recomendo a leitura da doc se estiver com tempo: https://texdoc.org/serve/abntex2cite/0)
+
+\xspaceaddexceptions{
+	\csq@qclose@i
+}
+
+\definecolor{color-link}{rgb}{0.09,0.45,0.27}
+\definecolor{color-cite}{rgb}{0.09,0.45,0.27}
+\definecolor{color-url}{rgb}{0.09,0.45,0.27}
+
+\makeatletter
+\hypersetup{
+	colorlinks=true, % links com cor
+	linkcolor=color-link, % cor dos links internos
+	citecolor=color-cite, % cor das citacoes
+	urlcolor=color-url, % cor das url externas
+	bookmarksnumbered=true,
+	bookmarksdepth,
+	pdftitle={\@title}, % metadado do pdf, titulo
+	pdfauthor={\@author}, % metadado do pdf, autor
+}
+\makeatother
+
+% Configuração para numeração sequencial
+\AtBeginDocument{
+    \counterwithout{lstlisting}{chapter}
+}
+
+\definecolor{commentcolor}{rgb}{0.54,0.54,0.54}
+\definecolor{numberlinecolor}{rgb}{0.68,0.70,0.76}
+\definecolor{stringcolor}{rgb}{0.02,0.49,0.09}
+\definecolor{backgroundcolor}{rgb}{0.93,0.95,0.92}
+\definecolor{identifiercolor}{rgb}{0,0.2,0.70}
+
+\lstdefinestyle{baseStyle}{
+	backgroundcolor=\color{white},
+	commentstyle=\color{commentcolor},	
+	numberstyle=\scriptsize\color{numberlinecolor},
+	keywordstyle=\bfseries\color{identifiercolor},
+	stringstyle=\color{stringcolor},
+	basicstyle=\small\ttfamily,
+	rulecolor=\color{numberlinecolor},
+	captionpos=b,
+	frame=single,
+	showstringspaces=false,
+	breaklines=true,
+	tabsize=4,
+	numbers=left,
+	captionpos=b,
+	numberbychapter=true,
+	escapeinside={(*@}{@*)},
+	numbersep=10pt,
+}
+
+\lstdefinestyle{javaStyle}{
+	style=baseStyle,
+	language=java, 
+	morekeywords={String},
+}
+
+\lstdefinestyle{latexStyle}{
+	style=baseStyle,
+	language=[LaTeX]TeX,
+	morekeywords={
+		lstinputlisting,
+		chapter,
+		subsection,
+	},
+}
+
+\renewcommand*{\backrefalt}[4]{
+	\ifcase #1 %
+		Nenhuma citação no texto.%
+	\or
+		Citado na página #2.%
+	\else
+		Citado #1 vezes nas páginas #2.%
+\fi}%
+
+\setlength{\parindent}{1.3cm} % paragraph identation
+\setlength{\parskip}{0.2cm} % space between paragraph
+\renewcommand{\lstlistingname}{Código}
+

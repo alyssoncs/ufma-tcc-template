@@ -1,0 +1,208 @@
+\chapter{\foreign{Misc}}\label{chap:solucao}
+
+\section{Código}
+
+Inclusão de código pode ser feita através do pacote \href{https://ctan.org/pkg/listings}{listings}. Utilize conforme o \autoref{lst:factorial-inline}.
+
+\lstinputlisting[
+	float=htb, 
+	style=latexStyle, 
+	label=lst:factorial-inline, 
+	caption=Inclusão de código
+]{\CurrentFilePath/res/code/lstlisting.tex}
+
+O conteúdo dentro do bloco \texttt{\textbackslash lstlisting} será colocado dentro do seu documento, como os exemplos de código que você viu até agora, no caso do \autoref{lst:factorial-inline}, este iria gerar como output o \autoref{lst:factorial-inline-output}.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=javaStyle, 
+    caption={Fatorial},
+    label=lst:factorial-inline-output
+]
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(factorial(10));
+    }
+    
+    static int factorial(int n) {
+        if (n == 1) return 1;
+        
+        return n * factorial(n - 1);
+    }
+}
+\end{lstlisting}
+
+Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu código em um arquivo separado e incluir em seu documento com o comando \texttt{\textbackslash lstinputlisting}. Esse \template sugere que coloque esse códigos em \contentdir{}\texttt{\{nome-da-seção\}/}\codedir. Assumindo que o código existe em um arquivo \texttt{Factorial.java} dentro desse diretório, o exemplo anterior poderia ser escrito conforme o \autoref{lst:factorial-include}.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Inclusão de código através de um arquivo externo},
+    label=lst:factorial-include
+]
+\lstinputlisting[
+	float=htb, 
+	style=javaStyle, 
+	label=lst:factorial-include-output, 
+	caption=Fatorial
+]{\CurrentFilePath/res/code/Factorial.java}
+\end{lstlisting}
+
+\subsection{Linguagens e estilos}
+
+Você pode especificar o estilo de código para uma determinada linguagem alterando o arquivo \pkgfile, incluindo cores e palavras reservadas adicionais, siga conforme os estilos já definidos. Consulte a documentação oficial para coisas mais complexas.
+
+\section{Remissões internas} \label{sec:cross-ref}
+
+Se você quer referenciar partes do seu documento, como: capítulos, seções, subseções, figuras, tabelas e códigos, você deve primeiramente adicionar uma \labelterm nesse elemento, depois deve usar o comando \texttt{\textbackslash autoref} ou \texttt{\textbackslash ref} no local que deseja mencioná-lo.
+
+O comando \texttt{\textbackslash autoref} adiciona um link para o elemento contendo o nome que o identifica (como: \enquote{capítulo}, \enquote{seção}, \enquote{subseção}, \enquote{tabela} e etc.) seguido do número desse elemento no documento.
+
+O comando \texttt{\textbackslash ref} adiciona um link para o elemento contendo \emph{apenas} o número do elemento no documento.
+
+Como exemplo, adicionei a \labelterm \enquote{\texttt{sec:cross-ref}} na seção atual, ao utilizar o comando \texttt{\textbackslash autoref\{sec:cross-ref\}}, vou obter o seguinte resultado: \enquote{\autoref{sec:cross-ref}}. 
+Entretanto, se utilizar \texttt{\textbackslash ref\{sec:cross-ref\}}, vou obter apenas: \enquote{\ref{sec:cross-ref}}, que pode ser útil ao referenciar múltiplos elementos ao mesmo tempo.
+
+A forma de adicionar \labels é ligeiramente diferente dependendo do tipo de elemento sendo referenciado.
+
+\subsection{\Labels em capítulos, seções e subseções}
+
+Para capítulos, seções e subseções, usamos o comando \texttt{label} seguido do id da \labelterm que queremos atribuir, conforme o \autoref{lst:chap-sec-subsec-label}.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Atribuição de \labels em capítulos, seções e subseções},
+    label=lst:chap-sec-subsec-label,
+]
+\chapter{Introdução} \label{chap:intro}
+
+Blá.
+
+\section{Panorama Geral} \label{sec:overview}
+
+Blá.
+
+\subsection{Questões Fundamentais} \label{sub:fundamental-questions}
+
+Blá.
+\end{lstlisting}
+
+Desta forma, eu posso referenciar o capítulo \enquote{Introdução} usando o comando: \texttt{\textbackslash autoref\{chap:intro\}}.
+
+\subsection{\Labels em figuras}
+
+Também se utiliza o comando \texttt{label}, entretanto, dentro do ambiente \texttt{figure} e após a macro \texttt{caption}, consulte o \autoref{lst:figure}.
+
+\subsection{\Labels em tabelas}
+
+Também se utiliza o comando \texttt{label}, entretanto, dentro do primeiro bloco do comando \texttt{IBGEtab} e após a macro \texttt{caption}, consulte o \autoref{lst:tab}.
+
+\subsection{\Labels em códigos}
+
+\emph{Não} utilizamos comando \texttt{label} nesse caso, utilizaremos o argumento opcional \texttt{label} presente no ambiente \texttt{lstlisting} e no comando \texttt{lstinputlisting}, consulte os códigos \ref{lst:factorial-inline} e \ref{lst:factorial-include}.
+
+\section{Aspas}
+
+Aspas em \LaTeX\ são mais complicadas do que parecem. Ao tentar usar os caracteres \enquote{\texttt{\textquotesingle}} ou \enquote{\texttt{"}} (aspas simples e dupla, respectivamente), o resultado não será o esperado, não gerando as aspas curvas.
+O uso errôneo desse caracteres no \autoref{lst:wrong-quotation} irá gerar o seguinte resultado:
+'Aspas simples' e "aspas duplas".
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Uso incorreto de aspas},
+    label=lst:wrong-quotation,
+]
+(*@\textquotesingle@*)Aspas simples(*@\textquotesingle@*) e "aspas duplas".
+\end{lstlisting}
+
+Note que \enquote{\texttt{\textquotesingle}} sempre gera aspas direitas e \enquote{\texttt{"}} sempre gera aspas duplas retas.
+Para produzir aspas corretamente, o \LaTeX\ espera que se utilize os símbolos presentes na \autoref{tab:quotes}.
+
+\begin{table}[htb] 
+	\begin{center} 
+		\IBGEtab{
+			\caption{Uso de aspas no \LaTeX}
+			\label{tab:quotes}
+		}{
+			\begin{tabular}{lclc}
+				\toprule
+				Resultado desejado    & Símbolo                                   & Descrição do símbolo & Resultado \\
+				\midrule 
+				Aspa simples esquerda & \texttt{\`}                               & 1 acento grave       & ` \\ 
+				Aspa simples direita  & \texttt{\textquotesingle}                 & 1 aspa simples       & ' \\ 
+				Aspa dupla esquerda   & \texttt{\`{}\`{}}                         & 2 acentos grave      & `` \\ 
+				Aspa dupla direita    & \texttt{\textquotesingle\textquotesingle} & 2 aspas simples      & '' \\ 
+				\bottomrule 
+			\end{tabular} 
+		}{ 
+			\fonte {\autoriapropria} 
+		} 
+	\end{center} 
+\end{table} 
+
+Ou seja, o exemplo anterior deveria ser escrito conforme o \autoref{lst:correct-quotation}, gerando:
+`Aspas simples' e ``aspas duplas''.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Uso correto de aspas},
+    label=lst:correct-quotation,
+]
+(*@\`{}@*)Aspas simples(*@\textquotesingle@*) e (*@\`{}\`{}@*)aspas duplas(*@\textquotesingle\textquotesingle@*).
+\end{lstlisting}
+
+
+\enquote{abc}
+\enquote*{abc}
+Como esse método de inclusão de aspas é pouco intuitivo e fácil de errar, podemos usar o pacote \href{https://ctan.org/pkg/csquotes}{csquotes} para auxiliar. Usamos os comando \texttt{enquote*} para aspas simples e \texttt{enquote} para aspas duplas.
+O exemplo pode ser então reescrito conforme o \autoref{lst:csquotes}, gerando:
+\enquote*{Aspas simples} e \enquote{Aspas duplas}.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Uso do pacote csquotes},
+    label=lst:csquotes,
+]
+\enquote*{Aspas simples} e \enquote{Aspas duplas}.
+\end{lstlisting}
+
+\section{Termos muito usados no documento}
+
+Se o seu texto utiliza com bastante frequência termos que você quer que tenham tipografia e escrita consistente, elas podem ser adicionadas como macros no arquivo \macrofile, com o comando \texttt{newterm}. Vamos olhar alguns exemplos no \autoref{lst:newterm}.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Definição de macros},
+    label=lst:newterm,
+]
+\newterm{\api}{API}
+\newterm{\broadcast}{\foreign{broadcast}}
+\newterm{\printf}{\texttt{printf}}
+\end{lstlisting}
+
+Neste caso, foram definidos 3 macros (\texttt{\textbackslash api}, \texttt{\textbackslash broadcast} e \texttt{\textbackslash printf}), a intenção do autor é que o termo \api sempre seja escrito em maiúsculo, o termo \broadcast sempre seja escrito como uma palavra estrangeira e o termo \printf sempre seja formatado com fonte monoespaçada.
+
+Para usar os macros definidos pelo autor, basta incluir no texto desejado, conforme o \autoref{lst:macro-usage}, gerando o seguinte resultado:
+
+Usando essa \api, você pode fazer um \broadcast de dados para vários dispositivos. Para verificar o status, pode-se utilizar \printf para imprimir mensagens no console.
+
+\begin{lstlisting}[
+    float=htb, 
+    style=latexStyle, 
+    caption={Uso de macros},
+    label=lst:macro-usage,
+]
+Usando essa \api, você pode fazer um \broadcast de dados para 
+vários dispositivos. Para verificar o status, pode-se utilizar 
+\printf para imprimir mensagens no console.
+\end{lstlisting}
+
+\section{Fonte}
+
+A \abnt não determina um tipo de fonte específico, mas é um equívoco comum que deve ser utilizado a fonte Arial. Se você precisar mudar a fonte, esse documento é compilado com \XeLaTeX\ então você pode remover o pacote fontenc e usar o pacote \href{https://ctan.org/pkg/fontspec}{fontspec} e usar qualquer fonte em seu computador.
+
