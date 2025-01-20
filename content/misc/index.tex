@@ -170,7 +170,7 @@ O exemplo pode ser então reescrito conforme o \autoref{lst:csquotes}, gerando:
 \enquote*{Aspas simples} e \enquote{Aspas duplas}.
 \end{lstlisting}
 
-\section{Termos muito usados no documento}
+\section{Termos muito usados no seu documento}
 
 Se o seu texto utiliza com bastante frequência termos que você quer que tenham tipografia e escrita consistente, elas podem ser adicionadas como macros no arquivo \macrofile, com o comando \texttt{newterm}. Vamos olhar alguns exemplos no \autoref{lst:newterm}.
 
@@ -201,6 +201,48 @@ Usando essa \api, você pode fazer um \broadcast de dados para
 vários dispositivos. Para verificar o status, pode-se utilizar 
 \printf para imprimir mensagens no console.
 \end{lstlisting}
+
+\section{Unidades de media}
+
+Aconselho o uso do pacote \href{https://ctan.org/pkg/siunitx}{siunitx}, a leitura do manual é extremamente útil para descobrir todos os comandos que você vai precisar usar. Aqui está um resumo:
+
+\subsection{Unidades}
+
+Use \texttt{unit} para escrever unidades de medida. Esse comando aceita duas sintaxes, uma usando macros predefinidas, e outra usando strings. Por exemplo, para escrever \enquote{metros por segundo ao quadrado}, podemos usar \verb|\unit{\meter\per\second\squared}| ou \verb|\unit{m/s^2}|. Entretanto, esses dois comandos vão produzir resultados levemente diferente, conforme
+
+\begin{table}[htb] 
+	\begin{center} 
+		\IBGEtab{
+			\caption{Especificando unidades de media}
+			\label{tab:unit}
+		}{
+			\begin{tabular}{lc}
+				\toprule
+				Comando                                                                                                           & Resultado \\
+				\midrule 
+                \texttt{\textbackslash unit\{\textbackslash meter\textbackslash per\textbackslash second\textbackslash squared\}} & \unit{\meter\per\second\squared} \\
+                \texttt{\textbackslash unit\{m/s\textasciicircum 2\}}                                                             & \unit{m/s^2} \\ 
+				\bottomrule 
+			\end{tabular} 
+		}{ 
+			\fonte {\autoriapropria} 
+		} 
+	\end{center} 
+\end{table} 
+
+Apesar de representar a mesma unidade, por padrão, o macro  \verb|\per| usa o formato de exponencial, isso pode ser alterado passando um argumento opcional, da seguinte forma: \verb|\unit[per-mode=symbol]{\meter\per\second\squared}|, gerando: \unit[per-mode=symbol]{\meter\per\second\squared}.
+
+Também existem alguns macros abreviados, no caso anterior, poderíamos escrever
+\verb|\unit[per-mode=symbol]{\m\per\s\squared}|, para obter: \unit[per-mode=symbol]{\m\per\s\squared}.
+
+Os prefixos como quilo, mega, e giga também estão definidos e podem ser usados normalmente, para obter  
+\unit{\kilo\gram}, usa-se \verb|\unit{\kilo\gram}|. 
+
+Prefixos binários também estão disponíveis (kibi, mebi, gibi, etc), assim como macros para bit e byte, por exemplo: \verb|\unit[per-mode=symbol]{\mibi\byte\per\second}|, produz \unit[per-mode=symbol]{\kibi\byte\per\second}.
+
+\subsection{Quantidades}
+
+Quantidades podem ser especificadas com a macro \texttt{qty}, essa macro aceita dois parâmetros obrigatórios, o número e a unidade. Para especificar \enquote{5 gibibytes}, você usaria \verb|\qty{5}{\gibi\byte}|, que produz: \qty{5}{\gibi\byte}.
 
 \section{Fonte}
 
