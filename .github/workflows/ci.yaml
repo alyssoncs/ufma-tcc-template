@@ -21,7 +21,7 @@ jobs:
     container: texlive/texlive:latest
     steps:
       - name: 🛎️ Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: 📜 Make PDF
         run: make
       - name: 📤 Upload PDF artifact
@@ -37,7 +37,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: 🛎️ Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: 📥 Upload PDF artifact
         uses: actions/download-artifact@v6
         with:
