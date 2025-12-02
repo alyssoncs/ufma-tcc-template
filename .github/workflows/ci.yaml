@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
 
 permissions:
   contents: write
@@ -33,6 +34,7 @@ jobs:
     name: deploy 🚀
     needs: [build]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v4
