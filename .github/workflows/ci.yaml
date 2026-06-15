@@ -44,7 +44,7 @@ jobs:
           name: monografia
       - name: 📂 Move PDF to output directory
         run: |
-          mkdir ${{ env.OUT_DIR }}
+          mkdir -p ${{ env.OUT_DIR }}
           mv ${{ env.PDF_NAME }} ${{ env.OUT_DIR }}
       - name: 🚀 Upload PDF to orphan branch
         uses: JamesIves/github-pages-deploy-action@v4
