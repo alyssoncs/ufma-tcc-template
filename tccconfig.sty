@@ -7,7 +7,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{indentfirst} % Garante recuo do primeiro parágrafo em cada seção.
 \usepackage{microtype} % Melhora a tipografia do documento com ajustes finos.
-\usepackage{color} % Permite o uso de cores no documento.
+\usepackage{xcolor} % Permite o uso de cores no documento.
 \usepackage{graphicx} % Permite a inclusão e manipulação de gráficos e imagens no documento.
 \usepackage{listings} % Permite a inclusão e formatação de código-fonte no documento.
 \usepackage{mathtools} % Fornece melhorias e extensões para a tipografia matemática
@@ -33,9 +33,10 @@
 	\csq@qclose@i
 }
 
-\definecolor{color-link}{rgb}{0.09,0.45,0.27}
-\definecolor{color-cite}{rgb}{0.09,0.45,0.27}
-\definecolor{color-url}{rgb}{0.09,0.45,0.27}
+\definecolor{base-green}{rgb}{0.09,0.45,0.27}
+\colorlet{color-link}{base-green}
+\colorlet{color-cite}{base-green}
+\colorlet{color-url}{base-green}
 
 \makeatletter
 \hypersetup{

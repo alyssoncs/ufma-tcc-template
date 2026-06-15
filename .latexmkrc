@@ -1,7 +1,7 @@
 @default_files = ('monografia.tex');
 
 $pdf_mode = 1;                        # Enable PDF output
-$pdflatex = 'xelatex %O %S';          # Use XeLaTeX
+$pdflatex = 'xelatex -interaction=nonstopmode %O %S';          # Use XeLaTeX
 
 $aux_dir = 'build';                   # Set auxiliary files directory
 $out_dir = 'output';                  # Set output directory
