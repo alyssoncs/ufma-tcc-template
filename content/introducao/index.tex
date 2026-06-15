@@ -50,6 +50,14 @@ O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latex
 	\item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.
 \end{alineas}
 
+O projeto está configurado para separar os arquivos gerados do código fonte:
+
+\begin{alineas}
+	\item \texttt{output/}: diretório onde o PDF final é gerado;
+
+	\item \texttt{build/}: diretório onde ficam os arquivos auxiliares de compilação. Esses são arquivos temporários que o \LaTeX{} cria durante o processo de compilação (índices, referências cruzadas, logs de erro, etc.) e não precisam ser versionados ou editados manualmente.
+\end{alineas}
+
 Também deve ser possível compilar o projeto com o \foreign{build system} ou IDE de sua preferência.
 
 \subsection{Não tenho experiência com \LaTeX{}}

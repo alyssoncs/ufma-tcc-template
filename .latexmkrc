@@ -13,6 +13,6 @@ $clean_full_ext = 'pdf';
 $bibtex_use = 2;
 $bibtex = 'bibtex %O %B';             # Bibliography command
 
-$success_cmd = 'echo "Compiled successfully to build/monografia.pdf";';
-$failure_cmd = 'echo "Compilation failed! Check build/monografia.log";';
+$success_cmd = "echo \"Compiled successfully to $out_dir/%R.pdf\";";
+$failure_cmd = "echo \"Compilation failed! Check $aux_dir/%R.log\";";
 

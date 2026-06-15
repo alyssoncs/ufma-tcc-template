@@ -6,7 +6,10 @@ O tutorial de como usar esse template se encontra [nesse PDF](https://github.com
 
 tl;dr: Crie uma cópia desse projeto e mude o conteúdo para o seu trabalho, a maior parte da formatação vai ser feita pelo LaTeX.
 
-Se você tem um distribuição LaTeX na sua máquina, você deve ser capaz de rodar o comando `make` para compilar o projeto, o PDF vai ser gerado no diretório `output`.
+Se você tem um distribuição LaTeX na sua máquina, você deve ser capaz de rodar o comando `make` para compilar o projeto.
+
+- O PDF final será gerado no diretório `output/`.
+- Os arquivos auxiliares ficam no diretório `build/`. Esses são arquivos temporários que o LaTeX cria durante a compilação (índices, referências cruzadas, logs, etc.) — você não precisa se preocupar com eles, mas se algo der errado, o log de erros estará em `build/`.
 
 Também pode ser usado o comando `make continuous` para ficar compilando continuamente a cada mudança.
 
