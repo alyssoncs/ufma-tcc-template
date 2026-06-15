@@ -17,7 +17,13 @@ Você também pode usar overleaf ou outras soluções para compilar o projeto.
 
 ## CI/CD
 
-O projeto está configurado de forma que a cada vez que você suba um update aqui no github, o PDF será gerado e salvo na branch `pdf`, ficando fácil de compartilhar com outras pessoas.
+O projeto vem com um workflow do GitHub Actions que automatiza a compilação e publicação do PDF. Funciona assim:
+
+- A cada push na branch `master`, o projeto é compilado automaticamente.
+- Se a compilação for bem-sucedida, o PDF é publicado na branch `pdf` do repositório, ficando fácil de compartilhar com outras pessoas.
+- Pull requests também disparam a compilação, mas sem fazer deploy.
+
+> **Nota:** O deploy só é disparado por pushes na branch `master`. Se o seu fork usa `main` como branch padrão, renomeie para `master` ou ajuste o arquivo `.github/workflows/ci.yaml`.
 
 ## FAQ
 
