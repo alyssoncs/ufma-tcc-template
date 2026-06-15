@@ -32,9 +32,9 @@ O texto que vem antes, geralmente, deve terminar com \enquote*{:}, desta forma: 
 
 \section{Citações}
 
-O \template utiliza bibtex para gerenciar as referências do artigo, eles devem ser salvos no arquivo \bibfile, a sintaxe se assemelha ao que está descrito no \autoref{lst:bibtex-syntax}.
+O \template utiliza biblatex com o estilo \texttt{abnt} para gerenciar as referências do artigo, elas devem ser salvas no arquivo \bibfile, a sintaxe se assemelha ao que está descrito no \autoref{lst:bibtex-syntax}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Sintaxe bibtex}, label=lst:bibtex-syntax]
+\begin{lstlisting}[float=htb, style=latexStyle, caption={Sintaxe BibTeX}, label=lst:bibtex-syntax]
 @book{knuth:aocp:1997,
 	author = {Knuth, Donald E.},
 	title = {The art of computer programming, volume 1 (3rd ed.): fundamental algorithms},
@@ -66,7 +66,13 @@ Programar pode ser bastante prazeroso \cite{knuth:aocp:1997}.
 
 O resultado vai ser: Programar pode ser bastante prazeroso \cite{knuth:aocp:1997}.
 
-Também pode-se usar a macro \texttt{\textbackslash citeonline} para adicionar o autor sem parênteses
+Também pode-se usar a macro \texttt{\textbackslash textcite} para adicionar o autor sem parênteses, como no \autoref{lst:textcite-example}.
+
+\begin{lstlisting}[float=htb, style=latexStyle, caption={Citação com textcite}, label=lst:textcite-example]
+De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
+\end{lstlisting}
+
+O resultado vai ser: De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
 
 \subsection{Citação direta}
 
@@ -119,7 +125,7 @@ Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autor
 	\label{fig:mqtt}
 	\centering
 	\includegraphics[width=0.85\linewidth]{\CurrentFilePath/res/img/mqtt-sequence.png}
-	\fonte{\citeonline{al-fuqaha:et-al:2015}}
+	\fonte{\textcite{al-fuqaha:et-al:2015}}
 \end{figure}
 \end{lstlisting}
 
@@ -128,7 +134,7 @@ Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autor
 	\label{fig:mqtt}
 	\centering
 	\includegraphics[width=0.85\linewidth]{\CurrentFilePath/res/img/mqtt-sequence.png}
-	\fonte{\citeonline{al-fuqaha:et-al:2015}}
+	\fonte{\textcite{al-fuqaha:et-al:2015}}
 \end{figure}
 
 \section{Tabelas}

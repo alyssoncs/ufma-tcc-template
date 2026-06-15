@@ -11,7 +11,7 @@ $clean_ext = 'xdv log lof lfs lot blg brf fdb_latexmk aux bbl toc fls synctex.gz
 $clean_full_ext = 'pdf';
 
 $bibtex_use = 2;
-$bibtex = 'bibtex %O %B';             # Bibliography command
+$biber = 'biber %O %B';                # Bibliography command (biblatex+biber)
 
 $success_cmd = "echo \"Compiled successfully to $out_dir/%R.pdf\";";
 $failure_cmd = "echo \"Compilation failed! Check $aux_dir/%R.log\";";

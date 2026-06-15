@@ -20,14 +20,17 @@
 	strict=true,
 	style=brazilian,
 ]{csquotes}
-\usepackage[
-	brazilian, 
-	hyperpageref % Link para a página 
-]{backref}	 % Gera referências para páginas onde as citações aparecem na bibliografia.
 \usepackage{hyperref} % Adiciona links clicáveis para referências, notas de rodapé, e URLs no documento.
 \usepackage[
-	alf % Estilo de citacao autor + data
-]{abntex2cite} % Citações padrão ABNT (recomendo a leitura da doc se estiver com tempo: https://texdoc.org/serve/abntex2cite/0)
+	style=abnt,
+	backend=biber,
+	pretty,
+	giveninits,
+	noslsn,
+	backref=true,
+    citecount
+]{biblatex} % Citações padrão ABNT com biblatex-abnt (https://ctan.org/pkg/biblatex-abnt)
+\addbibresource{bib/biblio.bib}
 
 \xspaceaddexceptions{
 	\csq@qclose@i
@@ -95,15 +98,6 @@
 		subsection,
 	},
 }
-
-\renewcommand*{\backrefalt}[4]{
-	\ifcase #1 %
-		Nenhuma citação no texto.%
-	\or
-		Citado na página #2.%
-	\else
-		Citado #1 vezes nas páginas #2.%
-\fi}%
 
 \setlength{\parindent}{1.3cm} % paragraph identation
 \setlength{\parskip}{0.2cm} % space between paragraph
