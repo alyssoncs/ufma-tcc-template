@@ -6,7 +6,7 @@ $pdflatex = 'xelatex %O %S';          # Use XeLaTeX
 $aux_dir = 'build';                   # Set auxiliary files directory
 $out_dir = 'output';                  # Set output directory
 
-$clean_ext = 'xdv log lof lfs log lot blg brf fdb_latexmk aux bbl toc xdv fls synctex.gz';
+$clean_ext = 'xdv log lof lfs lot blg brf fdb_latexmk aux bbl toc fls synctex.gz';
 
 $clean_full_ext = 'pdf';
 
