@@ -25,12 +25,3 @@ output/
 *-blx.bib
 *.run.xml
 
-## Bibliography auxiliary files (bibtex/biblatex/biber):
-*.bbl
-*.bbl-SAVE-ERROR
-*.bcf
-*.blg
-*-blx.aux
-*-blx.bib
-*.run.xml
-
