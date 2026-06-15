@@ -1,4 +1,4 @@
-.PHONY: all clean cleanall
+.PHONY: all continuous clean cleanall
 
 all:
 	latexmk
