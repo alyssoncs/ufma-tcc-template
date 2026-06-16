@@ -1,27 +1,10 @@
-% Aplica formatação a palavras estrangeiras com o comando \foreign
-% \foreign{<palavra>}
-% Este comando aplica formatação em itálico à palavra fornecida, que é ideal para termos ou expressões estrangeiras.
-%
-% Exemplo de uso:
-% \foreign{dataset}
-% Dentro do documento, "dataset" será exibido em itálico.
-\newcommand*{\foreign}[1]{\textit{#1}}
-
-% Define um novo termo com o comando \newterm
-% \newterm{<nome do comando>}{<termo>}
-% Este comando cria um novo comando de nome <nome do comando>, que representa o termo <termo>.
-% O comando pode ser usado dentro do corpo do documento e será substituído pelo termo definido.
-%
-% Exemplo de uso:
-% \newterm{\iot}{IoT}
-% Agora, dentro do documento, ao usar \iot, ele será substituído por IoT.
-% Você também pode definir um termo que inclua formatações extra. Exemplo:
-% \newterm{\importantnote}{\textbf{Nota importante}} % negrito
-% \newterm{\println}{\texttt{printf}} % monoespaçado
-\newcommand*{\newterm}[2]{\newcommand*{#1}{#2\xspace}}
-
-% Defina aqui os termos comumente usados no seu documento onde você quer garantir uma escrita e/ou formatação consistente; Sinta-se livre para organizar como bem entender.
-% Algumas palavras estrangeiras são consideradas comuns o suficiente de forma que é aceito e aconselhável que não sejam grafadas com itálico, não existe uma regra, use o bom senso. Você também pode seguir o manual de comunicação da SECOM como referência: https://www12.senado.leg.br/manualdecomunicacao/estilos/estrangeirismos-grafados-sem-italico-ou-aspas
+% Defina aqui os termos comumente usados no seu documento onde você quer garantir
+% uma escrita e/ou formatação consistente; Sinta-se livre para organizar como bem
+% entender.
+% Algumas palavras estrangeiras são consideradas comuns o suficiente de forma que é
+% aceito e aconselhável que não sejam grafadas com itálico, não existe uma regra, use
+% o bom senso. Você também pode seguir o manual de comunicação da SECOM como
+% referência: https://www12.senado.leg.br/manualdecomunicacao/estilos/estrangeirismos-grafados-sem-italico-ou-aspas
 
 % Meta
 \newterm{\mainfile}{\texttt{monografia.tex}}

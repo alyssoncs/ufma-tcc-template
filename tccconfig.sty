@@ -119,6 +119,28 @@
   \newcommand{\imprimirorientadortitulacao}{#2}%
 }
 \newcommand{\datadefesa}[1]{\newcommand{\imprimirdatadefesa}{#1}}
+
+% Aplica formatação a palavras estrangeiras com o comando \foreign
+% \foreign{<palavra>}
+% Este comando aplica formatação em itálico à palavra fornecida, que é ideal para termos ou expressões estrangeiras.
+%
+% Exemplo de uso:
+% \foreign{dataset}
+% Dentro do documento, "dataset" será exibido em itálico.
+\newcommand*{\foreign}[1]{\textit{#1}}
+
+% Define um novo termo com o comando \newterm
+% \newterm{<nome do comando>}{<termo>}
+% Este comando cria um novo comando de nome <nome do comando>, que representa o termo <termo>.
+% O comando pode ser usado dentro do corpo do documento e será substituído pelo termo definido.
+%
+% Exemplo de uso:
+% \newterm{\iot}{IoT}
+% Agora, dentro do documento, ao usar \iot, ele será substituído por IoT.
+% Você também pode definir um termo que inclua formatações extra. Exemplo:
+% \newterm{\importantnote}{\textbf{Nota importante}} % negrito
+% \newterm{\println}{\texttt{printf}} % monoespaçado
+\newcommand*{\newterm}[2]{\newcommand*{#1}{#2\xspace}}
 \newcommand{\imprimirmembrosbanca}{%
   \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
   \def\do##1{\expandafter\imprimirassinaturabanca##1}%
