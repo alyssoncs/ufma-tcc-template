@@ -1,0 +1,22 @@
+name: Scheduled Build Check
+
+on:
+  schedule:
+    #        ┌─ minute
+    #        │ ┌─ hour (UTC)
+    #        │ │ ┌─ day of month
+    #        │ │ │    ┌─ month
+    #        │ │ │    │ ┌─ day of week
+    - cron: '0 8 1,15 * *'
+
+jobs:
+  build:
+    name: scheduled build check 🕐
+    if: vars.ENABLE_SCHEDULE_CI == 'true'
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      - name: 🛎️ Checkout code
+        uses: actions/checkout@v6
+      - name: 📜 Make PDF
+        run: make
