@@ -4,7 +4,6 @@
 
 \usepackage{metalogo} % Define macros \XeLaTeX e \XeTeX, pode ser removido se não usar esses logos
 
-\usepackage[T1]{fontenc}
 \usepackage{indentfirst} % Garante recuo do primeiro parágrafo em cada seção.
 \usepackage{microtype} % Melhora a tipografia do documento com ajustes finos.
 \usepackage{xcolor} % Permite o uso de cores no documento.
@@ -14,7 +13,12 @@
 \usepackage{xspace} % Facilita o uso de macros personalizadas sem precisar de espaços adicionais.
 \usepackage{bm} % Permite o uso de negrito em símbolos matemáticos.
 \usepackage{pdfpages} % Permite a inclusão de páginas de arquivos PDF em documentos LaTeX.
-\usepackage[varqu]{zi4} % Fonte monoespacada (inconsolata), provavelmente existe uma opcao melhor
+\usepackage{fontspec} % Gerenciamento de fontes para XeLaTeX
+\setmonofont{CascadiaCode}[
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  Scale=MatchLowercase,
+]
 \usepackage{siunitx} % Fornece uma forma consistente de apresentar unidades e números.
 \usepackage[
 	strict=true,
