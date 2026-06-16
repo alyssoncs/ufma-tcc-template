@@ -108,3 +108,22 @@
 \setlength{\parskip}{0.2cm} % space between paragraph
 \renewcommand{\lstlistingname}{Código}
 
+% --- Membros da banca (número variável) ---
+\usepackage{etoolbox}
+\newcommand{\listamembrosbanca}{}
+\newcommand{\membrobanca}[2]{%
+  \listadd{\listamembrosbanca}{{#1}{#2}}%
+}
+\newcommand{\orientadorbanca}[2]{%
+  \orientador{#1}%
+  \newcommand{\imprimirorientadortitulacao}{#2}%
+}
+\newcommand{\imprimirmembrosbanca}{%
+  \assinatura{\textbf{\imprimirorientador} \\ \imprimirorientadortitulacao}%
+  \def\do##1{\expandafter\imprimirassinaturabanca##1}%
+  \forlistloop{\do}{\listamembrosbanca}%
+}
+\newcommand{\imprimirassinaturabanca}[2]{%
+  \assinatura{\textbf{#1} \\ #2}%
+}
+
