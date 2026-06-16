@@ -119,7 +119,7 @@
   \newcommand{\imprimirorientadortitulacao}{#2}%
 }
 \newcommand{\imprimirmembrosbanca}{%
-  \assinatura{\textbf{\imprimirorientador} \\ \imprimirorientadortitulacao}%
+  \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
   \def\do##1{\expandafter\imprimirassinaturabanca##1}%
   \forlistloop{\do}{\listamembrosbanca}%
 }
