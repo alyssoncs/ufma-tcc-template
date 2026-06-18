@@ -29,4 +29,3 @@ O projeto vem com um workflow do GitHub Actions que automatiza a compilação e 
 
 * Existe algum TCC real escrito com esse template?
     * Sim: https://github.com/alyssoncs/Monografia
-

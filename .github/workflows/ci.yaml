@@ -58,6 +58,3 @@ jobs:
         with:
           folder: ${{ env.OUT_DIR }}
           branch: pdf
-
-
-

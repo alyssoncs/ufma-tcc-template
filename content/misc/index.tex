@@ -5,10 +5,10 @@
 Inclusão de código pode ser feita através do pacote \href{https://ctan.org/pkg/listings}{listings}. Como lembra \textcite{knuth:goto:1974}, programas devem ser escritos para humanos lerem. Utilize conforme o \autoref{lst:factorial-inline}.
 
 \lstinputlisting[
-	float=htb,
-	style=latexStyle,
-	label=lst:factorial-inline,
-	caption=Inclusão de código
+  float=htb,
+  style=latexStyle,
+  label=lst:factorial-inline,
+  caption=Inclusão de código
 ]{\CurrentFilePath/res/code/lstlisting.tex}
 
 O conteúdo dentro do bloco \texttt{\textbackslash lstlisting} será colocado dentro do seu documento, como os exemplos de código que você viu até agora, no caso do \autoref{lst:factorial-inline}, este iria gerar como output o \autoref{lst:factorial-inline-output}.
@@ -41,10 +41,10 @@ Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu 
     label=lst:factorial-include
 ]
 \lstinputlisting[
-	float=htb,
-	style=javaStyle,
-	label=lst:factorial-include-output,
-	caption=Fatorial
+  float=htb,
+  style=javaStyle,
+  label=lst:factorial-include-output,
+  caption=Fatorial
 ]{\CurrentFilePath/res/code/Factorial.java}
 \end{lstlisting}
 
@@ -121,25 +121,25 @@ Note que \enquote{\texttt{\textquotesingle}} sempre gera aspas direitas e \enquo
 Para produzir aspas corretamente, o \LaTeX\ espera que se utilize os símbolos presentes na \autoref{tab:quotes}.
 
 \begin{table}[htb]
-	\begin{center}
-		\IBGEtab{
-			\caption{Uso de aspas no \LaTeX}
-			\label{tab:quotes}
-		}{
-			\begin{tabular}{lclc}
-				\toprule
-				Resultado desejado    & Símbolo                                   & Descrição do símbolo & Resultado \\
-				\midrule
-				Aspa simples esquerda & \texttt{\`}                               & 1 acento grave       & ` \\
-				Aspa simples direita  & \texttt{\textquotesingle}                 & 1 aspa simples       & ' \\
-				Aspa dupla esquerda   & \texttt{\`{}\`{}}                         & 2 acentos grave      & `` \\
-				Aspa dupla direita    & \texttt{\textquotesingle\textquotesingle} & 2 aspas simples      & '' \\
-				\bottomrule
-			\end{tabular}
-		}{
-			\fonte {\autoriapropria}
-		}
-	\end{center}
+  \begin{center}
+    \IBGEtab{
+      \caption{Uso de aspas no \LaTeX}
+      \label{tab:quotes}
+    }{
+      \begin{tabular}{lclc}
+        \toprule
+        Resultado desejado    & Símbolo                                   & Descrição do símbolo & Resultado \\
+        \midrule
+        Aspa simples esquerda & \texttt{\`}                               & 1 acento grave       & ` \\
+        Aspa simples direita  & \texttt{\textquotesingle}                 & 1 aspa simples       & ' \\
+        Aspa dupla esquerda   & \texttt{\`{}\`{}}                         & 2 acentos grave      & `` \\
+        Aspa dupla direita    & \texttt{\textquotesingle\textquotesingle} & 2 aspas simples      & '' \\
+        \bottomrule
+      \end{tabular}
+    }{
+      \fonte {\autoriapropria}
+    }
+  \end{center}
 \end{table}
 
 Ou seja, o exemplo anterior deveria ser escrito conforme o \autoref{lst:correct-quotation}, gerando:
@@ -208,23 +208,23 @@ Aconselho o uso do pacote \href{https://ctan.org/pkg/siunitx}{siunitx}, a leitur
 Use \texttt{unit} para escrever unidades de medida. Esse comando aceita duas sintaxes, uma usando macros predefinidas, e outra usando strings. Por exemplo, para escrever \enquote{metros por segundo ao quadrado}, podemos usar \verb|\unit{\meter\per\second\squared}| ou \verb|\unit{m/s^2}|. Entretanto, esses dois comandos vão produzir resultados levemente diferente, conforme
 
 \begin{table}[htb]
-	\begin{center}
-		\IBGEtab{
-			\caption{Especificando unidades de media}
-			\label{tab:unit}
-		}{
-			\begin{tabular}{lc}
-				\toprule
-				Comando                                                                                                           & Resultado \\
-				\midrule
+  \begin{center}
+    \IBGEtab{
+      \caption{Especificando unidades de media}
+      \label{tab:unit}
+    }{
+      \begin{tabular}{lc}
+        \toprule
+        Comando                                                                                                           & Resultado \\
+        \midrule
                 \texttt{\textbackslash unit\{\textbackslash meter\textbackslash per\textbackslash second\textbackslash squared\}} & \unit{\meter\per\second\squared} \\
                 \texttt{\textbackslash unit\{m/s\textasciicircum 2\}}                                                             & \unit{m/s^2} \\
-				\bottomrule
-			\end{tabular}
-		}{
-			\fonte {\autoriapropria}
-		}
-	\end{center}
+        \bottomrule
+      \end{tabular}
+    }{
+      \fonte {\autoriapropria}
+    }
+  \end{center}
 \end{table}
 
 Apesar de representar a mesma unidade, por padrão, o macro  \verb|\per| usa o formato de exponencial, isso pode ser alterado passando um argumento opcional, da seguinte forma: \verb|\unit[per-mode=symbol]{\meter\per\second\squared}|, gerando: \unit[per-mode=symbol]{\meter\per\second\squared}.
@@ -244,4 +244,3 @@ Quantidades podem ser especificadas com a macro \texttt{qty}, essa macro aceita 
 \section{Fonte}
 
 A \abnt não determina um tipo de fonte específico, mas é um equívoco comum que deve ser utilizado a fonte Arial. Se você precisar mudar a fonte, esse documento é compilado com \XeLaTeX\ e usa o pacote \href{https://ctan.org/pkg/fontspec}{fontspec}, que permite usar qualquer fonte instalada no seu computador através do comando \lstinline[style=latexStyle]|\setmainfont{Nome da Fonte}|.
-

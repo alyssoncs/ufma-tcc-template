@@ -13,49 +13,49 @@ O projeto somente oferece um ponto de partida para criação de documento, com c
 Se você já tem familiaridade com \LaTeX{} e quer um resumo de como usar esse \template, você pode olhar o código fonte desse documento e entender como montar sua monografia. Essas informações irão te auxiliar:
 
 \begin{alineas}
-	\item edite o arquivo  \metadatafile com os dados do seu trabalho;
+  \item edite o arquivo  \metadatafile com os dados do seu trabalho;
 
-	\item altere o arquivo de ficha catalográfica localizada em:
+  \item altere o arquivo de ficha catalográfica localizada em:
 
-	\contentdir{}\texttt{ficha-catalografica/index.pdf}, com o documento correspondente ao seu trabalho;
+  \contentdir{}\texttt{ficha-catalografica/index.pdf}, com o documento correspondente ao seu trabalho;
 
-	\item o arquivo \mainfile é o arquivo principal, ele inclui os arquivos no diretório \contentdir;
+  \item o arquivo \mainfile é o arquivo principal, ele inclui os arquivos no diretório \contentdir;
 
-	\item o \template foi construído de forma que cada seção fica em um subdiretório com o seguinte padrão: \contentdir{}\texttt{\{nome-da-seção\}/index.tex}:
+  \item o \template foi construído de forma que cada seção fica em um subdiretório com o seguinte padrão: \contentdir{}\texttt{\{nome-da-seção\}/index.tex}:
 
-	\begin{alineas}
-		\item lembre-se de atualizar o arquivo \mainfile ao renomear o diretório ou o arquivo;
-			
-		\item sinta-se a vontade de mudar a organização, como por exemplo:
+  \begin{alineas}
+    \item lembre-se de atualizar o arquivo \mainfile ao renomear o diretório ou o arquivo;
 
-		\contentdir{}\texttt{section-01/index.tex}.
-	\end{alineas}
-		
-	\item termos que aparecem frequentemente no texto podem ser movidos para macros no arquivo \macrofile para garantir grafia e formatação consistentes;
+    \item sinta-se a vontade de mudar a organização, como por exemplo:
 
-	\item a inclusão e configuração de pacotes estão no arquivo \pkgfile;
+    \contentdir{}\texttt{section-01/index.tex}.
+  \end{alineas}
 
-	\item as referências bibliográficas estão em \bibfile.
+  \item termos que aparecem frequentemente no texto podem ser movidos para macros no arquivo \macrofile para garantir grafia e formatação consistentes;
+
+  \item a inclusão e configuração de pacotes estão no arquivo \pkgfile;
+
+  \item as referências bibliográficas estão em \bibfile.
 \end{alineas}
 
 O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latexmk}. Um \texttt{Makefile} é usado para oferecer uma interface mais simples de compilação, os seguintes comandos são suportados:
 
 \begin{alineas}
-	\item \texttt{make}: compila o projeto e gera o PDF;
+  \item \texttt{make}: compila o projeto e gera o PDF;
 
-	\item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
+  \item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
 
-	\item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
+  \item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
 
-	\item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.
+  \item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.
 \end{alineas}
 
 O projeto está configurado para separar os arquivos gerados do código fonte:
 
 \begin{alineas}
-	\item \texttt{output/}: diretório onde o PDF final é gerado;
+  \item \texttt{output/}: diretório onde o PDF final é gerado;
 
-	\item \texttt{build/}: diretório onde ficam os arquivos auxiliares de compilação. Esses são arquivos temporários que o \LaTeX{} cria durante o processo de compilação (índices, referências cruzadas, logs de erro, etc.) e não precisam ser versionados ou editados manualmente.
+  \item \texttt{build/}: diretório onde ficam os arquivos auxiliares de compilação. Esses são arquivos temporários que o \LaTeX{} cria durante o processo de compilação (índices, referências cruzadas, logs de erro, etc.) e não precisam ser versionados ou editados manualmente.
 \end{alineas}
 
 Também deve ser possível compilar o projeto com o \foreign{build system} ou IDE de sua preferência.
@@ -65,14 +65,13 @@ Também deve ser possível compilar o projeto com o \foreign{build system} ou ID
 Vai ter que aprender o básico até entender o que está descrito na \autoref{sub:tenho-xp-com-latex}. Esses recursos podem ser um bons pontos de partida:
 
 \begin{alineas}
-	\item \href{https://github.com/abntex/abntex2/wiki}{wiki do abntex};
+  \item \href{https://github.com/abntex/abntex2/wiki}{wiki do abntex};
 
-	\item \href{https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes}{tutorial do Overleaf};
+  \item \href{https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes}{tutorial do Overleaf};
 
-	\item \href{https://en.wikibooks.org/wiki/LaTeX}{wikibook}.
+  \item \href{https://en.wikibooks.org/wiki/LaTeX}{wikibook}.
 \end{alineas}
 
 \section{Organização do texto}
 
 O restante deste documento mostra como utilizar o \template para as coisas mais comuns na monografia. Ao longo do texto, algumas citações são inseridas propositalmente em diferentes páginas para demonstrar o comportamento das referências bibliográficas (como o backref e a contagem de citações).
-

@@ -14,4 +14,3 @@ cleanall: clean
 	latexmk -C
 	rm -rf build/
 	rm -rf output/
-

@@ -15,4 +15,3 @@ $biber = 'biber %O %B';                # Bibliography command (biblatex+biber)
 
 $success_cmd = "echo \"Compiled successfully to $out_dir/%R.pdf\";";
 $failure_cmd = "echo \"Compilation failed! Check $aux_dir/%R.log\";";
-
