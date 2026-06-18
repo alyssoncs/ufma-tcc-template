@@ -1,4 +1,4 @@
-## Build directoy when compiling with latexmk
+## Build directory when compiling with latexmk
 build/
 output/
 
