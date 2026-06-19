@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v6
-      - name: 📥 Upload PDF artifact
+      - name: 📥 Download PDF artifact
         uses: actions/download-artifact@v8
         with:
           name: monografia
