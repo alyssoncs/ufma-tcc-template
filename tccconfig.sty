@@ -135,6 +135,10 @@
 % Você também pode definir um termo que inclua formatações extra. Exemplo:
 % \newterm{\importantnote}{\textbf{Nota importante}} % negrito
 % \newterm{\println}{\texttt{printf}} % monoespaçado
+%
+% Atenção: como qualquer comando LaTeX, um termo seguido de espaço e mais
+% texto engole esse espaço (ex.: "\iot é" vira "IoTé"). Nesses casos, use a
+% forma explícita "\iot{} é". Antes de uma pontuação (.,;:) não é necessário.
 \newcommand*{\newterm}[2]{\newcommand*{#1}{#2}}
 \newcommand{\imprimirmembrosbanca}{%
   \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
