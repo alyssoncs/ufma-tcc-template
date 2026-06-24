@@ -43,10 +43,8 @@ WordDash { 3 }
 # emitir o falso positivo. Esta lista faz append à Silent do rc global.
 Silent
 {
-    # \textbackslash imprime "\" em tutoriais (\textbackslash cite etc.); o
-    # espaco seguinte e intencional e nao e perdido na saida. \textasciicircum
-    # (imprime "^") segue a mesma logica.
-    \textbackslash \textasciicircum
+    # \textasciicircum (imprime "^") em tutoriais.
+    \textasciicircum
 }
 
 # Ambientes verbatim do projeto (código não deve ser "linted").
