@@ -43,8 +43,6 @@ WordDash { 3 }
 # emitir o falso positivo. Esta lista faz append à Silent do rc global.
 Silent
 {
-    # Macros de termo definidas em macros.tex (todas usam \xspace)
-    \autoriapropria
     # Comandos de estrutura/layout do abntex2
     \imprimircapa \imprimirfolhaderosto \imprimirtitulo \imprimirpreambulo
     \imprimirlocal \imprimirdatadefesa \imprimirmembrosbanca
