@@ -14,10 +14,10 @@ Inclusão de código pode ser feita através do pacote \href{https://ctan.org/pk
 O conteúdo dentro do bloco \texttt{\textbackslash lstlisting} será colocado dentro do seu documento, como os exemplos de código que você viu até agora, no caso do \autoref{lst:factorial-inline}, este iria gerar como output o \autoref{lst:factorial-inline-output}.
 
 \begin{lstlisting}[
-    float=htb,
-    style=javaStyle,
-    caption={Fatorial},
-    label=lst:factorial-inline-output
+  float=htb,
+  style=javaStyle,
+  caption={Fatorial},
+  label=lst:factorial-inline-output
 ]
 public class Main {
     public static void main(String[] args) {
@@ -35,10 +35,10 @@ public class Main {
 Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu código em um arquivo separado e incluir em seu documento com o comando \texttt{\textbackslash lstinputlisting}. Esse \template sugere que coloque esse códigos em \contentdir{}\texttt{\{nome-da-seção\}/}\codedir. Assumindo que o código existe em um arquivo \texttt{Factorial.java} dentro desse diretório, o exemplo anterior poderia ser escrito conforme o \autoref{lst:factorial-include}.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Inclusão de código através de um arquivo externo},
-    label=lst:factorial-include
+  float=htb,
+  style=latexStyle,
+  caption={Inclusão de código através de um arquivo externo},
+  label=lst:factorial-include
 ]
 \lstinputlisting[
   float=htb,
@@ -70,10 +70,10 @@ A forma de adicionar \labels é ligeiramente diferente dependendo do tipo de ele
 Para capítulos, seções e subseções, usamos o comando \texttt{label} seguido do id da \labelterm que queremos atribuir, conforme o \autoref{lst:chap-sec-subsec-label}.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Atribuição de \labels em capítulos, seções e subseções},
-    label=lst:chap-sec-subsec-label,
+  float=htb,
+  style=latexStyle,
+  caption={Atribuição de \labels em capítulos, seções e subseções},
+  label=lst:chap-sec-subsec-label,
 ]
 \chapter{Introdução} \label{chap:intro}
 
@@ -109,10 +109,10 @@ O uso errôneo desse caracteres no \autoref{lst:wrong-quotation} irá gerar o se
 'Aspas simples' e "aspas duplas". % chktex 18 % chktex 32
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Uso incorreto de aspas},
-    label=lst:wrong-quotation,
+  float=htb,
+  style=latexStyle,
+  caption={Uso incorreto de aspas},
+  label=lst:wrong-quotation,
 ]
 (*@\textquotesingle@*)Aspas simples(*@\textquotesingle@*) e "aspas duplas".
 \end{lstlisting}
@@ -146,10 +146,10 @@ Ou seja, o exemplo anterior deveria ser escrito conforme o \autoref{lst:correct-
 `Aspas simples' e ``aspas duplas''.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Uso correto de aspas},
-    label=lst:correct-quotation,
+  float=htb,
+  style=latexStyle,
+  caption={Uso correto de aspas},
+  label=lst:correct-quotation,
 ]
 (*@\`{}@*)Aspas simples(*@\textquotesingle@*) e (*@\`{}\`{}@*)aspas duplas(*@\textquotesingle\textquotesingle@*).
 \end{lstlisting}
@@ -159,10 +159,10 @@ O exemplo pode ser então reescrito conforme o \autoref{lst:csquotes}, gerando:
 \enquote*{Aspas simples} e \enquote{Aspas duplas}.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Uso do pacote csquotes},
-    label=lst:csquotes,
+  float=htb,
+  style=latexStyle,
+  caption={Uso do pacote csquotes},
+  label=lst:csquotes,
 ]
 \enquote*{Aspas simples} e \enquote{Aspas duplas}.
 \end{lstlisting}
@@ -172,10 +172,10 @@ O exemplo pode ser então reescrito conforme o \autoref{lst:csquotes}, gerando:
 Se o seu texto utiliza com bastante frequência termos que você quer que tenham tipografia e escrita consistente, elas podem ser adicionadas como macros no arquivo \macrofile, com o comando \texttt{newterm}. Vamos olhar alguns exemplos no \autoref{lst:newterm}.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Definição de macros},
-    label=lst:newterm,
+  float=htb,
+  style=latexStyle,
+  caption={Definição de macros},
+  label=lst:newterm,
 ]
 \newterm{\api}{API}
 \newterm{\broadcast}{\foreign{broadcast}}
@@ -189,10 +189,10 @@ Para usar os macros definidos pelo autor, basta incluir no texto desejado, confo
 Usando essa \api, você pode fazer um \broadcast de dados para vários dispositivos. Para verificar o status, pode-se utilizar \printf para imprimir mensagens no console.
 
 \begin{lstlisting}[
-    float=htb,
-    style=latexStyle,
-    caption={Uso de macros},
-    label=lst:macro-usage,
+  float=htb,
+  style=latexStyle,
+  caption={Uso de macros},
+  label=lst:macro-usage,
 ]
 Usando essa \api, você pode fazer um \broadcast de dados para
 vários dispositivos. Para verificar o status, pode-se utilizar
