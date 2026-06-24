@@ -45,6 +45,10 @@ O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latex
 
   \item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
 
+  \item \texttt{make format}: formata todos os arquivos fonte (\texttt{.tex}, \texttt{.sty}, \texttt{.cls} e \texttt{.bib}) do projeto com o \texttt{latexindent};
+
+  \item \texttt{make format-check}: verifica se os arquivos fonte estão formatados, sem alterá-los, e falha caso algum precise ser formatado (usado na CI);
+
   \item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
 
   \item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.

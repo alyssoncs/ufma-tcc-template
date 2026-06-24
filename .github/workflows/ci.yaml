@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v6
+      - name: 🧹 Check LaTeX formatting
+        run: make format-check
       - name: 📜 Make PDF
         run: make
       - name: 📤 Upload PDF artifact
