@@ -44,7 +44,6 @@ WordDash { 3 }
 Silent
 {
     # Macros de termo definidas em macros.tex (todas usam \xspace)
-    \dataset
     \abnt \abntfull \ufma \mqtt \printf \autoriapropria
     # Comandos de estrutura/layout do abntex2
     \imprimircapa \imprimirfolhaderosto \imprimirtitulo \imprimirpreambulo
