@@ -12,12 +12,12 @@ continuous:
 
 # Formata in-place. Backups e indent.log vao para build/ (gitignored).
 format:
-	@for f in $(FORMAT_FILES); do latexindent -w -s -l -c build/ "$$f"; done
+	@for f in $(FORMAT_FILES); do latexindent -w -s -l -m -c build/ "$$f"; done
 
 # So verifica (nao altera). Falha se algum arquivo precisar de formatacao.
 format-check:
 	@for f in $(FORMAT_FILES); do \
-	  latexindent -k -s -l -c build/ "$$f" || \
+	  latexindent -k -s -l -m -c build/ "$$f" || \
 	  { echo "Fora de formatacao: $$f (rode 'make format')"; exit 1; }; \
 	done
 

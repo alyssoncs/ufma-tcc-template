@@ -2,6 +2,9 @@ defaultIndent: "  "
 
 indentPreamble: 1
 
+modifyLineBreaks:
+  condenseMultipleBlankLinesInto: 1
+
 # Mantem a indentacao das entradas .bib estavel entre versoes do latexindent.
 # A partir do latexindent 4.x (usado no container texlive/texlive:latest da CI),
 # os blocos @entry{...} passaram a receber um nivel extra de indentacao; este
