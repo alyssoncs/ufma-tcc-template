@@ -44,7 +44,6 @@ WordDash { 3 }
 Silent
 {
     # Comandos de estrutura/layout do abntex2
-    \imprimirmembrosbanca
     \textual \pretextual \postextual \cleardoublepage \printbibliography
     # \textbackslash imprime "\" em tutoriais (\textbackslash cite etc.); o
     # espaco seguinte e intencional e nao e perdido na saida. \textasciicircum
