@@ -49,6 +49,10 @@ O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latex
 
   \item \texttt{make format-check}: verifica se os arquivos fonte estão formatados, sem alterá-los, e falha caso algum precise ser formatado (usado na CI);
 
+  % "ChkTeX" abaixo dispara um W20 (o rc global do proprio ChkTeX implica
+  % com essa grafia); aqui o nome e proposital, entao suprimimos na linha.
+  \item \texttt{make lint}: roda o \foreign{linter} \href{https://www.nongnu.org/chktex/}{ChkTeX} sobre os arquivos \texttt{.tex}, apontando problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de \texttt{\textbackslash{}cite}, etc.) e falha caso encontre algum (usado na CI); % chktex 20
+
   \item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
 
   \item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado.
