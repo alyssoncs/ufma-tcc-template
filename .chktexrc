@@ -44,7 +44,7 @@ WordDash { 3 }
 Silent
 {
     # Macros de termo definidas em macros.tex (todas usam \xspace)
-    \macrofile \pkgfile \contentdir \bibfile \codedir
+    \pkgfile \contentdir \bibfile \codedir
     \abntex \template \labelterm \labels \Label \Labels \api \broadcast \dataset
     \abnt \abntfull \ufma \mqtt \printf \autoriapropria
     # Comandos de estrutura/layout do abntex2
