@@ -37,16 +37,6 @@ HyphDash { 1 3 }
 NumDash  { 2 }
 WordDash { 3 }
 
-# W1 "Command terminated with space": as macros de \newterm já anexam \xspace
-# (tccconfig.sty:143), então o espaço NÃO é perdido. Listamos aqui essas macros
-# e os comandos de layout do abntex2 (que ficam sozinhos na linha) para não
-# emitir o falso positivo. Esta lista faz append à Silent do rc global.
-Silent
-{
-    # \textasciicircum (imprime "^") em tutoriais.
-    \textasciicircum
-}
-
 # Ambientes verbatim do projeto (código não deve ser "linted").
 VerbEnvir
 {
