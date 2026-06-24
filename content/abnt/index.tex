@@ -8,26 +8,26 @@ Alíneas são listas, devemos usar o ambiente \texttt{alineas}, desta forma:
 
 \begin{lstlisting}[float=htb, style=latexStyle, caption={Alíneas}, label=lst:alineas]
 \begin{alineas}
-  \item primeira alínea;                          % termina com ;
-  \item segunda alínea                            % termina com :
+  \item primeira alínea;                        % termina com ;
+  \item segunda alínea                          % termina com :
   \begin{alineas}
     \item primeira subalínea da segunda alínea; % termina com ;
     \item última subalínea da segunda alínea.   % termina com .
   \end{alineas}
-  \item última alínea.                            % termina com .
+  \item última alínea.                          % termina com .
 \end{alineas}
 \end{lstlisting}
 
 O texto que vem antes, geralmente, deve terminar com \enquote*{:}, desta forma: O \autoref{lst:alineas} vai gerar o seguinte:
 
 \begin{alineas}
-  \item primeira alínea;                          % termina com ;
-  \item segunda alínea                            % termina com :
+  \item primeira alínea;                        % termina com ;
+  \item segunda alínea                          % termina com :
   \begin{alineas}
     \item primeira subalínea da segunda alínea; % termina com ;
     \item última subalínea da segunda alínea.   % termina com .
   \end{alineas}
-  \item última alínea.                            % termina com .
+  \item última alínea.                          % termina com .
 \end{alineas}
 
 \section{Citações}
@@ -61,10 +61,10 @@ O \template utiliza biblatex com o estilo \texttt{abnt} para gerenciar as refer�
 Para fazer uma citação indireta, é apenas necessário usar a macro \texttt{\textbackslash cite}, passando o id da referência. Como apresentado no \autoref{lst:indirect-citation}.
 
 \begin{lstlisting}[float=htb, style=latexStyle, caption={Citação indireta}, label=lst:indirect-citation]
-Programar pode ser bastante prazeroso \cite{knuth:aocp:1997}.
+Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
 \end{lstlisting}
 
-O resultado vai ser: Programar pode ser bastante prazeroso \cite{knuth:aocp:1997}.
+O resultado vai ser: Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
 
 Também pode-se usar a macro \texttt{\textbackslash textcite} para adicionar o autor sem parênteses, como no \autoref{lst:textcite-example}.
 
@@ -85,8 +85,7 @@ the quality of programmers is a decreasing function of the density of
 go to statements in the programs they produce. More recently I
 discovered why the use of the go to statement has such disastrous
 effects, and I became convinced that the go to statement should be
-abolished from all \enquote{higher level} programming languages.
-\cite{dijkstra:goto:1968}.
+abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
 \end{citacao}
 \end{lstlisting}
 
@@ -98,8 +97,7 @@ O resultado será:
   go to statements in the programs they produce. More recently I
   discovered why the use of the go to statement has such disastrous
   effects, and I became convinced that the go to statement should be
-  abolished from all \enquote{higher level} programming languages.
-  \cite{dijkstra:goto:1968}.
+  abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
 \end{citacao}
 
 Como o texto em questão está em inglês, deveríamos usar a opção \texttt{english}, desta forma:
@@ -111,8 +109,7 @@ Como o texto em questão está em inglês, deveríamos usar a opção \texttt{en
   go to statements in the programs they produce. More recently I
   discovered why the use of the go to statement has such disastrous
   effects, and I became convinced that the go to statement should be
-  abolished from all \enquote{higher level} programming languages.
-  \cite{dijkstra:goto:1968}.
+  abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
 \end{citacao}
 
 \section{Figuras}
@@ -204,8 +201,10 @@ Você vai encontrar outras tabelas nesse capítulo, consulte o código fonte des
         \bottomrule
       \end{tabular}
     }{
-      \fonte{ChatGPT :)}
-    }
+      % O smiley ":)" e proposital; o ")" confunde o balanceamento do ChkTeX
+      % (W9/W10) e o espaco antes do ":" dispara W26 -- falsos positivos aqui.
+      \fonte{ChatGPT :)} % chktex 9 % chktex 26
+    } % chktex 10
   \end{center}
 \end{table}
 

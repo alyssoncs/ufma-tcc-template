@@ -1,0 +1,89 @@
+# Configuração do ChkTeX (linter de LaTeX) para o ufma-tcc-template.
+#
+# Filosofia: manter ligados os avisos de alto valor (chaves/parênteses
+# desbalanceados, math mode aberto, pontuação etc.) e silenciar apenas os
+# falsos positivos sistemáticos deste template, sempre de forma documentada.
+#
+# Este arquivo é lido automaticamente quando o chktex roda a partir da raiz do
+# repositório, e COMPLEMENTA (faz append) as listas do chktexrc global do TeX
+# Live (que já cobre \cite, \ref, \label, \href etc. via WipeArg). Supressões
+# por número de aviso (ex.: -n24) ficam no bloco CmdLine no fim deste arquivo.
+#
+# Referência das opções: https://www.nongnu.org/chktex/
+
+# Aspas: exige `` '' (estilo lógico/tipográfico) em vez de aspas retas (W18/W38).
+QuoteStyle = Logical
+
+# Espaçamento após comandos (W12/W13): desligado. Este template usa muitas
+# macros de termo (\ufma, \abnt, \template, ...) e comandos de layout do
+# abntex2, gerando falsos positivos constantes de "interword/intersentence
+# spacing". O \xspace já cuida do espaçamento real (ver tccconfig.sty).
+CmdSpaceStyle = Ignore
+
+# Largura do tab para as colunas do relatório (casa com .editorconfig).
+TabSize = 2
+
+# Comprimento de traços aceitos (W8), seguindo a tipografia pt-BR. O valor e o
+# CONJUNTO de quantidades de traços consecutivos aceitas em cada contexto:
+#   HyphDash - entre letras:  1 (hifen: "guarda-chuva") ou 3 (travessao colado).
+#             O 2 (meia-risca) entre letras e barrado de proposito, pois indica
+#             erro comum; ligacoes tipo "Gremio--Internacional" vao em DashExcpt.
+#   NumDash  - entre numeros: 2 (meia-risca em faixas: "1995--2001").
+#   WordDash - entre espacos: 3 (so o travessao "texto --- texto" e valido em
+#             pt-BR; hifen ou meia-risca cercados de espaco sao erro tipografico).
+# Estes sao os defaults do ChkTeX e correspondem a norma pt-BR; mante-los assim
+# faz o linter pegar traços errados (ex.: "Doutor - UFMA", "São Luís -- MA").
+HyphDash { 1 3 }
+NumDash  { 2 }
+WordDash { 3 }
+
+# W1 "Command terminated with space": as macros de \newterm já anexam \xspace
+# (tccconfig.sty:143), então o espaço NÃO é perdido. Listamos aqui essas macros
+# e os comandos de layout do abntex2 (que ficam sozinhos na linha) para não
+# emitir o falso positivo. Esta lista faz append à Silent do rc global.
+Silent
+{
+    # Macros de termo definidas em macros.tex (todas usam \xspace)
+    \mainfile \metadatafile \macrofile \pkgfile \contentdir \bibfile \codedir
+    \abntex \template \labelterm \labels \Label \Labels \api \broadcast \dataset
+    \abnt \abntfull \ufma \mqtt \printf \autoriapropria
+    # Comandos de estrutura/layout do abntex2
+    \imprimircapa \imprimirfolhaderosto \imprimirtitulo \imprimirpreambulo
+    \imprimirlocal \imprimirdatadefesa \imprimirmembrosbanca
+    \textual \pretextual \postextual \cleardoublepage \printbibliography
+    # \textbackslash imprime "\" em tutoriais (\textbackslash cite etc.); o
+    # espaco seguinte e intencional e nao e perdido na saida. \textasciicircum
+    # (imprime "^") segue a mesma logica.
+    \textbackslash \textasciicircum
+}
+
+# Ambientes verbatim do projeto (código não deve ser "linted").
+VerbEnvir
+{
+    lstlisting
+}
+
+# Avisos desligados globalmente por número. Estes vao num bloco CmdLine (nao
+# soltos no arquivo, o que daria "Unsupported control word"): o chktex reinjeta
+# o conteudo de CmdLine na mesma analise de opcoes da linha de comando, entao
+# "-nN" aqui equivale a passar "-nN" no terminal e vale para qualquer invocacao
+# do chktex a partir da raiz (CI, `chktex` manual, plugins de editor).
+# Todos sao falsos positivos espalhados pelo documento inteiro:
+#   13 - "intersentence spacing" (\@) apos siglas (PDF, ABNT...) antes de pontuacao
+#   17 - contagem global de "()" no texto: o smiley ":)" em content/abnt (proposital)
+#        deixa um ")" sem par. E nao-bloqueante (tipo Message, exit 0) e e reportado
+#        no fim de escopos (nao na linha do smiley), inclusive dentro de um lstlisting
+#        verbatim -- por isso nao da pra escopar com "% chktex 17" por linha.
+#   24 - espaco/quebra antes de \label{}, em dois padroes usados em todo o
+#        documento: "\section{Titulo} \label{...}" e o \label em linha propria
+#        apos \caption em floats (convencao padrao do LaTeX). E inofensivo aqui
+#        -- apos heading o LaTeX emite \nobreak (sem quebra antes do \label) e em
+#        floats a pagina e a do proprio float. Global de proposito: e a convencao
+#        que usuarios do template seguem; sem -n24 cada "\section{} \label{}"
+#        viraria um erro bloqueante de lint.
+CmdLine
+{
+    -n13
+    -n17
+    -n24
+}

@@ -100,13 +100,13 @@ Também se utiliza o comando \texttt{label}, entretanto, dentro do primeiro bloc
 
 \subsection{\Labels em códigos}
 
-\emph{Não} utilizamos comando \texttt{label} nesse caso, utilizaremos o argumento opcional \texttt{label} presente no ambiente \texttt{lstlisting} e no comando \texttt{lstinputlisting}, consulte os códigos \ref{lst:factorial-inline} e \ref{lst:factorial-include}.
+\emph{Não} utilizamos comando \texttt{label} nesse caso, utilizaremos o argumento opcional \texttt{label} presente no ambiente \texttt{lstlisting} e no comando \texttt{lstinputlisting}, consulte os códigos~\ref{lst:factorial-inline} e~\ref{lst:factorial-include}.
 
 \section{Aspas}
 
-Aspas em \LaTeX\ são mais complicadas do que parecem. Ao tentar usar os caracteres \enquote{\texttt{\textquotesingle}} ou \enquote{\texttt{"}} (aspas simples e dupla, respectivamente), o resultado não será o esperado, não gerando as aspas curvas.
+Aspas em \LaTeX\ são mais complicadas do que parecem. Ao tentar usar os caracteres \enquote{\texttt{\textquotesingle}} ou \enquote{\texttt{"}} (aspas simples e dupla, respectivamente), o resultado não será o esperado, não gerando as aspas curvas. % chktex 18
 O uso errôneo desse caracteres no \autoref{lst:wrong-quotation} irá gerar o seguinte resultado:
-'Aspas simples' e "aspas duplas".
+'Aspas simples' e "aspas duplas". % chktex 18 % chktex 32
 
 \begin{lstlisting}[
     float=htb,
@@ -117,7 +117,7 @@ O uso errôneo desse caracteres no \autoref{lst:wrong-quotation} irá gerar o se
 (*@\textquotesingle@*)Aspas simples(*@\textquotesingle@*) e "aspas duplas".
 \end{lstlisting}
 
-Note que \enquote{\texttt{\textquotesingle}} sempre gera aspas direitas e \enquote{\texttt{"}} sempre gera aspas duplas retas.
+Note que \enquote{\texttt{\textquotesingle}} sempre gera aspas direitas e \enquote{\texttt{"}} sempre gera aspas duplas retas. % chktex 18
 Para produzir aspas corretamente, o \LaTeX\ espera que se utilize os símbolos presentes na \autoref{tab:quotes}.
 
 \begin{table}[htb]
@@ -130,14 +130,14 @@ Para produzir aspas corretamente, o \LaTeX\ espera que se utilize os símbolos p
         \toprule
         Resultado desejado    & Símbolo                                   & Descrição do símbolo & Resultado \\
         \midrule
-        Aspa simples esquerda & \texttt{\`}                               & 1 acento grave       & `         \\
+        Aspa simples esquerda & \texttt{\`{}}                             & 1 acento grave       & `         \\
         Aspa simples direita  & \texttt{\textquotesingle}                 & 1 aspa simples       & '         \\
         Aspa dupla esquerda   & \texttt{\`{}\`{}}                         & 2 acentos grave      & ``        \\
         Aspa dupla direita    & \texttt{\textquotesingle\textquotesingle} & 2 aspas simples      & ''        \\
         \bottomrule
       \end{tabular}
     }{
-      \fonte {\autoriapropria}
+      \fonte{\autoriapropria}
     }
   \end{center}
 \end{table}
@@ -222,7 +222,7 @@ Use \texttt{unit} para escrever unidades de medida. Esse comando aceita duas sin
         \bottomrule
       \end{tabular}
     }{
-      \fonte {\autoriapropria}
+      \fonte{\autoriapropria}
     }
   \end{center}
 \end{table}
