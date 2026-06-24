@@ -140,7 +140,7 @@
 % Você também pode definir um termo que inclua formatações extra. Exemplo:
 % \newterm{\importantnote}{\textbf{Nota importante}} % negrito
 % \newterm{\println}{\texttt{printf}} % monoespaçado
-\newcommand*{\newterm}[2]{\newcommand*{#1}{#2\xspace}}
+\newcommand*{\newterm}[2]{\newcommand*{#1}{#2}}
 \newcommand{\imprimirmembrosbanca}{%
   \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
   \def\do##1{\expandafter\imprimirassinaturabanca##1}%
