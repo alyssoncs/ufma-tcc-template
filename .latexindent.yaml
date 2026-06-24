@@ -1,5 +1,7 @@
 defaultIndent: "  "
 
+onlyOneBackUp: 1
+
 indentPreamble: 1
 
 modifyLineBreaks:
