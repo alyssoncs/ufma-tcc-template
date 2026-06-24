@@ -44,7 +44,7 @@ WordDash { 3 }
 Silent
 {
     # Macros de termo definidas em macros.tex (todas usam \xspace)
-    \printf \autoriapropria
+    \autoriapropria
     # Comandos de estrutura/layout do abntex2
     \imprimircapa \imprimirfolhaderosto \imprimirtitulo \imprimirpreambulo
     \imprimirlocal \imprimirdatadefesa \imprimirmembrosbanca
