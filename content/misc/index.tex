@@ -184,7 +184,7 @@ Se o seu texto utiliza com bastante frequência termos que você quer que tenham
 
 Neste caso, foram definidos 3 macros (\texttt{\textbackslash{}api}, \texttt{\textbackslash{}broadcast} e \texttt{\textbackslash{}printf}), a intenção do autor é que o termo \api{} sempre seja escrito em maiúsculo, o termo \broadcast{} sempre seja escrito como uma palavra estrangeira e o termo \printf{} sempre seja formatado com fonte monoespaçada.
 
-Para usar os macros definidos pelo autor, basta incluir no texto desejado, conforme o \autoref{lst:macro-usage}, gerando o seguinte resultado:
+Para usar os macros definidos pelo autor, basta incluí-los no texto desejado, conforme o \autoref{lst:macro-usage}, gerando o seguinte resultado:
 
 Usando essa \api, você pode fazer um \broadcast{} de dados para vários dispositivos. Para verificar o status, pode-se utilizar \printf{} para imprimir mensagens no console.
 
@@ -194,10 +194,14 @@ Usando essa \api, você pode fazer um \broadcast{} de dados para vários disposi
   caption={Uso de macros},
   label=lst:macro-usage,
 ]
-Usando essa \api, você pode fazer um \broadcast de dados para
+Usando essa \api, você pode fazer um \broadcast{} de dados para
 vários dispositivos. Para verificar o status, pode-se utilizar
-\printf para imprimir mensagens no console.
+\printf{} para imprimir mensagens no console.
 \end{lstlisting}
+
+% O "\broadcast de" abaixo (dentro do \enquote) e proposital: demonstra o termo
+% sem chaves engolindo o espaco. O W1 nessa linha e, portanto, um falso positivo.
+Repare nas chaves vazias (\texttt{\textbackslash{}broadcast\{\}}) usadas quando o termo é seguido de um espaço. Como qualquer comando \LaTeX\ sem argumentos, um termo \enquote{engole} o espaço que vem logo depois dele: escrever \texttt{\textbackslash{}broadcast de} produziria \enquote{\broadcast de}, sem o espaço. As chaves vazias delimitam o fim do comando e preservam o espaço seguinte. Quando o termo é seguido de pontuação --- como em \texttt{\textbackslash{}api,} --- as chaves não são necessárias. O projeto também roda um linter (via \texttt{make lint}), que alerta sobre termos seguidos de espaço sem as chaves. % chktex 1
 
 \section{Unidades de medida}
 
