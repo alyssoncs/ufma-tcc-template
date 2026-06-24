@@ -44,7 +44,7 @@ WordDash { 3 }
 Silent
 {
     # Comandos de estrutura/layout do abntex2
-    \imprimirfolhaderosto \imprimirtitulo \imprimirpreambulo
+    \imprimirtitulo \imprimirpreambulo
     \imprimirlocal \imprimirdatadefesa \imprimirmembrosbanca
     \textual \pretextual \postextual \cleardoublepage \printbibliography
     # \textbackslash imprime "\" em tutoriais (\textbackslash cite etc.); o
