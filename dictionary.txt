@@ -1,5 +1,6 @@
 Alysson
 Arial
+ChatGPT
 ChkTeX
 IBGEtab
 IFMA
