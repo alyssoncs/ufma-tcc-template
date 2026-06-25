@@ -41,7 +41,7 @@ Se você já tem familiaridade com \LaTeX{} e quer um resumo de como usar esse \
 O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latexmk}. Um \texttt{Makefile} é usado para oferecer uma interface mais simples de compilação, os seguintes comandos são suportados:
 
 \begin{alineas}
-  \item \texttt{make}: compila o projeto e gera o PDF;
+  \item \texttt{make pdf}: compila o projeto e gera o PDF (alvo padrão, equivalente a rodar \texttt{make} sem argumentos);
 
   \item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
 
@@ -52,6 +52,10 @@ O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latex
   % "ChkTeX" abaixo dispara um W20 (o rc global do proprio ChkTeX implica
   % com essa grafia); aqui o nome e proposital, entao suprimimos na linha.
   \item \texttt{make lint}: roda o \foreign{linter} \href{https://www.nongnu.org/chktex/}{ChkTeX} sobre os arquivos \texttt{.tex}, apontando problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de \texttt{\textbackslash{}cite}, etc.) e falha caso encontre algum (usado na CI); % chktex 20
+
+  \item \texttt{make check}: roda \texttt{make format-check} e \texttt{make lint} em sequência, validando o projeto sem compilá-lo nem alterar arquivos;
+
+  \item \texttt{make build}: executa \texttt{make check} e, se passar, compila o PDF com \texttt{make pdf};
 
   \item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
 
