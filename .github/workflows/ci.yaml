@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
 
 permissions:
   contents: read
@@ -16,35 +15,15 @@ env:
 jobs:
   build:
     name: build 🛠️
-    runs-on: ubuntu-latest
-    container: texlive/texlive:latest
+    uses: ./.github/workflows/build.yaml
     concurrency:
       group: build-${{ github.ref }}
       cancel-in-progress: true
-    steps:
-      - name: 🛎️ Checkout code
-        uses: actions/checkout@v7
-      - name: 🔤 Install hunspell + dicionários
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
-      - name: 🧹 Check LaTeX formatting
-        run: make format-check
-      - name: 🔎 Lint LaTeX (chktex)
-        run: make lint
-      - name: 🔤 Spellcheck (hunspell)
-        run: make spell
-      - name: 📜 Make PDF
-        run: make
-      - name: 📤 Upload PDF artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: monografia
-          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
 
   deploy:
     name: deploy 🚀
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
     concurrency:
       group: pdf-deploy
       cancel-in-progress: false

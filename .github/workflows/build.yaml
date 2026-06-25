@@ -1,0 +1,35 @@
+name: build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  OUT_DIR: output
+  PDF_NAME: monografia.pdf
+
+jobs:
+  build:
+    name: build 🛠️
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      - name: 🛎️ Checkout code
+        uses: actions/checkout@v7
+      - name: 🔤 Install hunspell + dicionários
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
+      - name: 🧹 Check LaTeX formatting
+        run: make format-check
+      - name: 🔎 Lint LaTeX (chktex)
+        run: make lint
+      - name: 🔤 Spellcheck (hunspell)
+        run: make spell
+      - name: 📜 Make PDF
+        run: make
+      - name: 📤 Upload PDF artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: monografia
+          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
