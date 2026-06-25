@@ -18,9 +18,13 @@ jobs:
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v6
+      - name: 🔤 Install hunspell + dicionários
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
       - name: 🧹 Check LaTeX formatting
         run: make format-check
       - name: 🔎 Lint LaTeX (chktex)
         run: make lint
+      - name: 🔤 Spellcheck (hunspell)
+        run: make spell
       - name: 📜 Make PDF
         run: make

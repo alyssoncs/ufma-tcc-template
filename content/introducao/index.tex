@@ -53,7 +53,9 @@ O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latex
   % com essa grafia); aqui o nome e proposital, entao suprimimos na linha.
   \item \texttt{make lint}: roda o \foreign{linter} \href{https://www.nongnu.org/chktex/}{ChkTeX} sobre os arquivos \texttt{.tex}, apontando problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de \texttt{\textbackslash{}cite}, etc.) e falha caso encontre algum (usado na CI); % chktex 20
 
-  \item \texttt{make check}: roda \texttt{make format-check} e \texttt{make lint} em sequência, validando o projeto sem compilá-lo nem alterar arquivos;
+  \item \texttt{make spell}: roda o corretor ortográfico \href{https://hunspell.github.io/}{hunspell} sobre o texto dos arquivos \texttt{.tex} (ignorando os comandos \LaTeX{}), usando os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema, e falha caso encontre palavras desconhecidas (usado na CI). Termos válidos que o dicionário não reconhece (siglas, nomes próprios, termos técnicos) devem ser adicionados, um por linha, ao arquivo \texttt{dictionary.txt};
+
+  \item \texttt{make check}: roda \texttt{make format-check}, \texttt{make lint} e \texttt{make spell} em sequência, validando o projeto sem compilá-lo nem alterar arquivos;
 
   \item \texttt{make build}: executa \texttt{make check} e, se passar, compila o PDF com \texttt{make pdf};
 
