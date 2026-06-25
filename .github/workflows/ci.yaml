@@ -23,7 +23,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: 🛎️ Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 🔤 Install hunspell + dicionários
         run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
       - name: 🧹 Check LaTeX formatting
@@ -52,7 +52,7 @@ jobs:
       contents: write
     steps:
       - name: 🛎️ Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 📥 Download PDF artifact
         uses: actions/download-artifact@v8
         with:
