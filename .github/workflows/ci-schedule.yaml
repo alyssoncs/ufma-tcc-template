@@ -18,5 +18,9 @@ jobs:
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v6
+      - name: 🧹 Check LaTeX formatting
+        run: make format-check
+      - name: 🔎 Lint LaTeX (chktex)
+        run: make lint
       - name: 📜 Make PDF
         run: make
