@@ -1,9 +1,5 @@
-\begin{lstlisting}[
-    float=htb,
-    style=javaStyle,
-    caption={Fatorial},
-    label=lst:factorial-inline-output
-]
+\begin{listing}[htb]
+  \begin{minted}{java}
 public class Main {
     public static void main(String[] args) {
         System.out.println(factorial(10));
@@ -15,4 +11,7 @@ public class Main {
         return n * factorial(n - 1);
     }
 }
-\end{lstlisting}
+  \end{minted}
+  \caption{Fatorial}
+  \label{lst:factorial-inline-output}
+\end{listing}
