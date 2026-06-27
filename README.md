@@ -13,6 +13,8 @@ Se você tem um distribuição LaTeX na sua máquina, você deve ser capaz de ro
 
 Também pode ser usado o comando `make continuous` para ficar compilando continuamente a cada mudança.
 
+Para ver todos os alvos disponíveis e o que cada um faz, rode `make help`.
+
 Você também pode usar overleaf ou outras soluções para compilar o projeto.
 
 ## CI/CD
