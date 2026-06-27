@@ -14,17 +14,17 @@ O conteúdo dentro do ambiente \texttt{minted} será colocado dentro do seu docu
 
 \begin{listing}[htb]
   \begin{minted}{java}
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(factorial(10));
-    }
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println(factorial(10));
+        }
 
-    static int factorial(int n) {
-        if (n == 1) return 1;
+        static int factorial(int n) {
+            if (n == 1) return 1;
 
-        return n * factorial(n - 1);
+            return n * factorial(n - 1);
+        }
     }
-}
   \end{minted}
   \caption{Fatorial}
   \label{lst:factorial-inline-output}
@@ -61,17 +61,17 @@ Para capítulos, seções e subseções, usamos o comando \texttt{label} seguido
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\chapter{Introdução} \label{chap:intro}
+    \chapter{Introdução} \label{chap:intro}
 
-Blá.
+    Blá.
 
-\section{Panorama Geral} \label{sec:overview}
+    \section{Panorama Geral} \label{sec:overview}
 
-Blá.
+    Blá.
 
-\subsection{Questões Fundamentais} \label{sub:fundamental-questions}
+    \subsection{Questões Fundamentais} \label{sub:fundamental-questions}
 
-Blá.
+    Blá.
   \end{minted}
   \caption{Atribuição de \labels{} em capítulos, seções e subseções}
   \label{lst:chap-sec-subsec-label}
@@ -99,7 +99,7 @@ O uso errôneo desse caracteres no \autoref{lst:wrong-quotation} irá gerar o se
 
 \begin{listing}[htb]
   \begin{minted}[escapeinside=||]{latex}
-|\textquotesingle|Aspas simples|\textquotesingle| e "aspas duplas".
+    |\textquotesingle|Aspas simples|\textquotesingle| e "aspas duplas".
   \end{minted}
   \caption{Uso incorreto de aspas}
   \label{lst:wrong-quotation}
@@ -135,7 +135,7 @@ Ou seja, o exemplo anterior deveria ser escrito conforme o \autoref{lst:correct-
 
 \begin{listing}[htb]
   \begin{minted}[escapeinside=||]{latex}
-|\`{}|Aspas simples|\textquotesingle| e |\`{}\`{}|aspas duplas|\textquotesingle\textquotesingle|.
+    |\`{}|Aspas simples|\textquotesingle| e |\`{}\`{}|aspas duplas|\textquotesingle\textquotesingle|.
   \end{minted}
   \caption{Uso correto de aspas}
   \label{lst:correct-quotation}
@@ -147,7 +147,7 @@ O exemplo pode ser então reescrito conforme o \autoref{lst:csquotes}, gerando:
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\enquote*{Aspas simples} e \enquote{Aspas duplas}.
+    \enquote*{Aspas simples} e \enquote{Aspas duplas}.
   \end{minted}
   \caption{Uso do pacote csquotes}
   \label{lst:csquotes}
@@ -159,9 +159,9 @@ Se o seu texto utiliza com bastante frequência termos que você quer que tenham
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\newterm{\api}{API}
-\newterm{\broadcast}{\foreign{broadcast}}
-\newterm{\printf}{\texttt{printf}}
+    \newterm{\api}{API}
+    \newterm{\broadcast}{\foreign{broadcast}}
+    \newterm{\printf}{\texttt{printf}}
   \end{minted}
   \caption{Definição de macros}
   \label{lst:newterm}
@@ -175,9 +175,9 @@ Usando essa \api, você pode fazer um \broadcast{} de dados para vários disposi
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-Usando essa \api, você pode fazer um \broadcast{} de dados para
-vários dispositivos. Para verificar o status, pode-se utilizar
-\printf{} para imprimir mensagens no console.
+    Usando essa \api, você pode fazer um \broadcast{} de dados para
+    vários dispositivos. Para verificar o status, pode-se utilizar
+    \printf{} para imprimir mensagens no console.
   \end{minted}
   \caption{Uso de macros}
   \label{lst:macro-usage}

@@ -1,16 +1,16 @@
 \begin{listing}[htb]
   \begin{minted}{java}
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(factorial(10));
-    }
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println(factorial(10));
+        }
 
-    static int factorial(int n) {
-        if (n == 1) return 1;
+        static int factorial(int n) {
+            if (n == 1) return 1;
 
-        return n * factorial(n - 1);
+            return n * factorial(n - 1);
+        }
     }
-}
   \end{minted}
   \caption{Fatorial}
   \label{lst:factorial-inline-output}

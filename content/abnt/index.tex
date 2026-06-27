@@ -8,15 +8,15 @@ Alíneas são listas, devemos usar o ambiente \texttt{alineas}, desta forma:
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\begin{alineas}
-  \item primeira alínea;                        % termina com ;
-  \item segunda alínea                          % termina com :
-  \begin{alineas}
-    \item primeira subalínea da segunda alínea; % termina com ;
-    \item última subalínea da segunda alínea.   % termina com .
-  \end{alineas}
-  \item última alínea.                          % termina com .
-\end{alineas}
+    \begin{alineas}
+      \item primeira alínea;                        % termina com ;
+      \item segunda alínea                          % termina com :
+      \begin{alineas}
+        \item primeira subalínea da segunda alínea; % termina com ;
+        \item última subalínea da segunda alínea.   % termina com .
+      \end{alineas}
+      \item última alínea.                          % termina com .
+    \end{alineas}
   \end{minted}
   \caption{Alíneas}
   \label{lst:alineas}
@@ -40,25 +40,25 @@ O \template{} utiliza biblatex com o estilo \texttt{abnt} para gerenciar as refe
 
 \begin{listing}[htb]
   \begin{minted}{bibtex}
-@book{knuth:aocp:1997,
-  author = {Knuth, Donald E.},
-  title = {The art of computer programming, volume 1 (3rd ed.): fundamental algorithms},
-  year = {1997},
-  isbn = {0201896834},
-  publisher = {Addison Wesley Longman Publishing Co., Inc.},
-  address = {USA}
-}
+    @book{knuth:aocp:1997,
+      author = {Knuth, Donald E.},
+      title = {The art of computer programming, volume 1 (3rd ed.): fundamental algorithms},
+      year = {1997},
+      isbn = {0201896834},
+      publisher = {Addison Wesley Longman Publishing Co., Inc.},
+      address = {USA}
+    }
 
-@article{dijkstra:goto:1968,
-  title={Go To Statement Considered Harmful},
-  author={Dijkstra, Edsger W},
-  journal={Communications of the ACM},
-  volume={11},
-  number={3},
-  pages={147--148},
-  year={1968},
-  publisher={ACM New York, NY, USA}
-}
+    @article{dijkstra:goto:1968,
+      title={Go To Statement Considered Harmful},
+      author={Dijkstra, Edsger W},
+      journal={Communications of the ACM},
+      volume={11},
+      number={3},
+      pages={147--148},
+      year={1968},
+      publisher={ACM New York, NY, USA}
+    }
   \end{minted}
   \caption{Sintaxe BibTeX}
   \label{lst:bibtex-syntax}
@@ -70,7 +70,7 @@ Para fazer uma citação indireta, é apenas necessário usar a macro \texttt{\t
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
+    Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
   \end{minted}
   \caption{Citação indireta}
   \label{lst:indirect-citation}
@@ -82,7 +82,7 @@ Também pode-se usar a macro \texttt{\textbackslash{}textcite} para adicionar o 
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
+    De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
   \end{minted}
   \caption{Citação com textcite}
   \label{lst:textcite-example}
@@ -96,14 +96,14 @@ Use o ambiente \texttt{citacao} como no \autoref{lst:direct-citation}.
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\begin{citacao}
-For a number of years I have been familiar with the observation that
-the quality of programmers is a decreasing function of the density of
-go to statements in the programs they produce. More recently I
-discovered why the use of the go to statement has such disastrous
-effects, and I became convinced that the go to statement should be
-abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
-\end{citacao}
+    \begin{citacao}
+      For a number of years I have been familiar with the observation that
+      the quality of programmers is a decreasing function of the density of
+      go to statements in the programs they produce. More recently I
+      discovered why the use of the go to statement has such disastrous
+      effects, and I became convinced that the go to statement should be
+      abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
+    \end{citacao}
   \end{minted}
   \caption{Citação direta}
   \label{lst:direct-citation}
@@ -138,13 +138,13 @@ Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autor
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\begin{figure}[htb]
-  \caption{Diagrama de sequência do processo de entrega de mensagens no \mqtt}
-  \label{fig:mqtt}
-  \centering
-  \includegraphics[width=0.85\linewidth]{\CurrentFilePath/res/img/mqtt-sequence.png}
-  \fonte{\textcite{al-fuqaha:et-al:2015}}
-\end{figure}
+    \begin{figure}[htb]
+      \caption{Diagrama de sequência do processo de entrega de mensagens no \mqtt}
+      \label{fig:mqtt}
+      \centering
+      \includegraphics[width=0.85\linewidth]{\CurrentFilePath/res/img/mqtt-sequence.png}
+      \fonte{\textcite{al-fuqaha:et-al:2015}}
+    \end{figure}
   \end{minted}
   \caption{Adição de imagem}
   \label{lst:figure}
@@ -164,25 +164,25 @@ Tabelas no padrão ABNT têm uma sintaxe complicada, copie e cole o \autoref{lst
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-\begin{table}[htb]
-  \begin{center}
-    \IBGEtab{
-      \caption{Exemplo}
-      \label{tab:fake}
-    }{
-      \begin{tabular}{lcr} % left, center, right
-        \toprule
-        \textbf{Col 1} & \textbf{Col 2} & \textbf{Col 3} \\
-        \midrule
-        Texto          & Outro texto    & Mais texto \\
-        1.1            & $\log_2 n $    & 3.14 \\
-        \bottomrule
-      \end{tabular}
-    }{
-      \fonte{\autoriapropria}
-    }
-  \end{center}
-\end{table}
+    \begin{table}[htb]
+      \begin{center}
+        \IBGEtab{
+          \caption{Exemplo}
+          \label{tab:fake}
+        }{
+          \begin{tabular}{lcr} % left, center, right
+            \toprule
+            \textbf{Col 1} & \textbf{Col 2} & \textbf{Col 3} \\
+            \midrule
+            Texto          & Outro texto    & Mais texto \\
+            1.1            & $\log_2 n $    & 3.14 \\
+            \bottomrule
+          \end{tabular}
+        }{
+          \fonte{\autoriapropria}
+        }
+      \end{center}
+    \end{table}
   \end{minted}
   \caption{Tabela}
   \label{lst:tab}
@@ -266,10 +266,10 @@ sobre o comportamento do usuário.
 
 \begin{listing}[htb]
   \begin{minted}{latex}
-Para a análise estatística, foi necessário utilizar um
-\foreign{dataset} abrangente, contendo uma grande quantidade
-de dados que permitiram gerar insights significativos
-sobre o comportamento do usuário.
+    Para a análise estatística, foi necessário utilizar um
+    \foreign{dataset} abrangente, contendo uma grande quantidade
+    de dados que permitiram gerar insights significativos
+    sobre o comportamento do usuário.
   \end{minted}
   \caption{Estrangeirismos}
   \label{lst:loanword}

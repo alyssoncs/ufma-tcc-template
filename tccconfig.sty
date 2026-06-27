@@ -68,7 +68,9 @@
 % Opções padrão para todos os blocos de código. Diferente do listings, as cores
 % do realce vêm do estilo Pygments acima; aqui controlamos só moldura, fonte,
 % numeração e quebra de linha. Use breakanywhere (não só breaklines) para evitar
-% que linhas longas sem espaço estourem a moldura silenciosamente.
+% que linhas longas sem espaço estourem a moldura silenciosamente. O autogobble
+% remove a indentação comum a todas as linhas, então o código pode ser indentado
+% junto do \begin{listing} no fonte sem aparecer recuado no PDF.
 \setminted{
   linenos,
   numbersep=10pt,
@@ -77,6 +79,7 @@
   fontsize=\small,
   breaklines,
   breakanywhere,
+  autogobble,
   tabsize=4,
 }
 
