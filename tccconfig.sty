@@ -8,7 +8,7 @@
 \usepackage{microtype} % Melhora a tipografia do documento com ajustes finos.
 \usepackage{xcolor} % Permite o uso de cores no documento.
 \usepackage{graphicx} % Permite a inclusão e manipulação de gráficos e imagens no documento.
-\usepackage{listings} % Permite a inclusão e formatação de código-fonte no documento.
+\usepackage[newfloat]{minted} % Inclusão e realce de código-fonte via Pygments (cria o float "listing").
 \usepackage{mathtools} % Fornece melhorias e extensões para a tipografia matemática
 \usepackage{bm} % Permite o uso de negrito em símbolos matemáticos.
 \usepackage{pdfpages} % Permite a inclusão de páginas de arquivos PDF em documentos LaTeX.
@@ -53,55 +53,38 @@
 }
 \makeatother
 
-% Configuração para numeração sequencial
+% Configuração para numeração sequencial (o float do minted é "listing", não "lstlisting")
 \AtBeginDocument{
-  \counterwithout{lstlisting}{chapter}
+  \counterwithout{listing}{chapter}
 }
 
-\definecolor{commentcolor}{rgb}{0.54,0.54,0.54}
+% Cor das réguas da moldura e da numeração de linhas.
 \definecolor{numberlinecolor}{rgb}{0.68,0.70,0.76}
-\definecolor{stringcolor}{rgb}{0.02,0.49,0.09}
-\definecolor{backgroundcolor}{rgb}{0.93,0.95,0.92}
-\definecolor{identifiercolor}{rgb}{0,0.2,0.70}
 
-\lstdefinestyle{baseStyle}{
-  backgroundcolor=\color{white},
-  commentstyle=\color{commentcolor},
-  numberstyle=\scriptsize\color{numberlinecolor},
-  keywordstyle=\bfseries\color{identifiercolor},
-  stringstyle=\color{stringcolor},
-  basicstyle=\small\ttfamily,
-  rulecolor=\color{numberlinecolor},
-  captionpos=b,
-  frame=single,
-  showstringspaces=false,
-  breaklines=true,
-  tabsize=4,
-  numbers=left,
-  escapeinside={(*@}{@*)},
+% Estilo (tema de cores) do Pygments. O realce de keywords/strings/comentários
+% vem daqui, não de cores LaTeX. Liste os estilos com `pygmentize -L styles`.
+\usemintedstyle{tango}
+
+% Opções padrão para todos os blocos de código. Diferente do listings, as cores
+% do realce vêm do estilo Pygments acima; aqui controlamos só moldura, fonte,
+% numeração e quebra de linha. Use breakanywhere (não só breaklines) para evitar
+% que linhas longas sem espaço estourem a moldura silenciosamente.
+\setminted{
+  linenos,
   numbersep=10pt,
+  frame=single,
+  rulecolor=numberlinecolor,
+  fontsize=\small,
+  breaklines,
+  breakanywhere,
+  tabsize=4,
 }
 
-\lstdefinestyle{javaStyle}{
-  style=baseStyle,
-  language=java,
-  morekeywords={String},
-}
-
-\lstdefinestyle{latexStyle}{
-  style=baseStyle,
-  language=[LaTeX]TeX,
-  morekeywords={
-      lstinputlisting,
-      chapter,
-      subsection,
-      textcite
-    },
-}
+% Nomeia o float do minted como "Código" (afeta legenda e \autoref).
+\SetupFloatingEnvironment{listing}{name=Código}
 
 \setlength{\parindent}{1.3cm} % paragraph indentation
 \setlength{\parskip}{0.2cm} % space between paragraphs
-\renewcommand{\lstlistingname}{Código}
 
 % --- Membros da banca (número variável) ---
 \usepackage{etoolbox}

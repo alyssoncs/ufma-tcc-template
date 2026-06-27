@@ -6,7 +6,8 @@ Este capítulo mostra como usar os macros específicos do pacote \abntex. Isso �
 
 Alíneas são listas, devemos usar o ambiente \texttt{alineas}, desta forma:
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Alíneas}, label=lst:alineas]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 \begin{alineas}
   \item primeira alínea;                        % termina com ;
   \item segunda alínea                          % termina com :
@@ -16,7 +17,10 @@ Alíneas são listas, devemos usar o ambiente \texttt{alineas}, desta forma:
   \end{alineas}
   \item última alínea.                          % termina com .
 \end{alineas}
-\end{lstlisting}
+  \end{minted}
+  \caption{Alíneas}
+  \label{lst:alineas}
+\end{listing}
 
 O texto que vem antes, geralmente, deve terminar com \enquote*{:}, desta forma: O \autoref{lst:alineas} vai gerar o seguinte:
 
@@ -34,7 +38,8 @@ O texto que vem antes, geralmente, deve terminar com \enquote*{:}, desta forma: 
 
 O \template{} utiliza biblatex com o estilo \texttt{abnt} para gerenciar as referências do artigo, elas devem ser salvas no arquivo \bibfile, a sintaxe se assemelha ao que está descrito no \autoref{lst:bibtex-syntax}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Sintaxe BibTeX}, label=lst:bibtex-syntax]
+\begin{listing}[htb]
+  \begin{minted}{bibtex}
 @book{knuth:aocp:1997,
   author = {Knuth, Donald E.},
   title = {The art of computer programming, volume 1 (3rd ed.): fundamental algorithms},
@@ -54,23 +59,34 @@ O \template{} utiliza biblatex com o estilo \texttt{abnt} para gerenciar as refe
   year={1968},
   publisher={ACM New York, NY, USA}
 }
-\end{lstlisting}
+  \end{minted}
+  \caption{Sintaxe BibTeX}
+  \label{lst:bibtex-syntax}
+\end{listing}
 
 \subsection{Citação indireta}
 
 Para fazer uma citação indireta, é apenas necessário usar a macro \texttt{\textbackslash{}cite}, passando o id da referência. Como apresentado no \autoref{lst:indirect-citation}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Citação indireta}, label=lst:indirect-citation]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
-\end{lstlisting}
+  \end{minted}
+  \caption{Citação indireta}
+  \label{lst:indirect-citation}
+\end{listing}
 
 O resultado vai ser: Programar pode ser bastante prazeroso~\cite{knuth:aocp:1997}.
 
 Também pode-se usar a macro \texttt{\textbackslash{}textcite} para adicionar o autor sem parênteses, como no \autoref{lst:textcite-example}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Citação com textcite}, label=lst:textcite-example]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
-\end{lstlisting}
+  \end{minted}
+  \caption{Citação com textcite}
+  \label{lst:textcite-example}
+\end{listing}
 
 O resultado vai ser: De acordo com \textcite{knuth:goto:1974}, otimização prematura é a raiz de todo mal.
 
@@ -78,7 +94,8 @@ O resultado vai ser: De acordo com \textcite{knuth:goto:1974}, otimização prem
 
 Use o ambiente \texttt{citacao} como no \autoref{lst:direct-citation}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Citação direta}, label=lst:direct-citation]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 \begin{citacao}
 For a number of years I have been familiar with the observation that
 the quality of programmers is a decreasing function of the density of
@@ -87,7 +104,10 @@ discovered why the use of the go to statement has such disastrous
 effects, and I became convinced that the go to statement should be
 abolished from all \enquote{higher level} programming languages.~\cite{dijkstra:goto:1968}.
 \end{citacao}
-\end{lstlisting}
+  \end{minted}
+  \caption{Citação direta}
+  \label{lst:direct-citation}
+\end{listing}
 
 O resultado será:
 
@@ -116,7 +136,8 @@ Como o texto em questão está em inglês, deveríamos usar a opção \texttt{en
 
 Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autoref{fig:mqtt}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Adição de imagem}, label=lst:figure]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 \begin{figure}[htb]
   \caption{Diagrama de sequência do processo de entrega de mensagens no \mqtt}
   \label{fig:mqtt}
@@ -124,7 +145,10 @@ Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autor
   \includegraphics[width=0.85\linewidth]{\CurrentFilePath/res/img/mqtt-sequence.png}
   \fonte{\textcite{al-fuqaha:et-al:2015}}
 \end{figure}
-\end{lstlisting}
+  \end{minted}
+  \caption{Adição de imagem}
+  \label{lst:figure}
+\end{listing}
 
 \begin{figure}[htb]
   \caption{Diagrama de sequência do processo de entrega de mensagens no \mqtt}
@@ -138,7 +162,8 @@ Use o ambiente \texttt{figure} como no \autoref{lst:figure}, que produz a \autor
 
 Tabelas no padrão ABNT têm uma sintaxe complicada, copie e cole o \autoref{lst:tab} altere os dados, ele vai gerar a \autoref{tab:fake}.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Tabela}, label=lst:tab]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 \begin{table}[htb]
   \begin{center}
     \IBGEtab{
@@ -158,7 +183,10 @@ Tabelas no padrão ABNT têm uma sintaxe complicada, copie e cole o \autoref{lst
     }
   \end{center}
 \end{table}
-\end{lstlisting}
+  \end{minted}
+  \caption{Tabela}
+  \label{lst:tab}
+\end{listing}
 
 \begin{table}[htb]
   \begin{center}
@@ -236,11 +264,15 @@ Para a análise estatística, foi necessário utilizar um
 de dados que permitiram gerar insights significativos
 sobre o comportamento do usuário.
 
-\begin{lstlisting}[float=htb, style=latexStyle, caption={Estrangeirismos}, label=lst:loanword]
+\begin{listing}[htb]
+  \begin{minted}{latex}
 Para a análise estatística, foi necessário utilizar um
 \foreign{dataset} abrangente, contendo uma grande quantidade
 de dados que permitiram gerar insights significativos
 sobre o comportamento do usuário.
-\end{lstlisting}
+  \end{minted}
+  \caption{Estrangeirismos}
+  \label{lst:loanword}
+\end{listing}
 
 Não existe uma regra, mas entende-se que algumas palavras já sofreram aportuguesamento e não necessitam de grafia especial, o \href{https://www12.senado.leg.br/manualdecomunicacao/verbetes-acessorio/estrangeirismos-grafados-sem-italico-ou-aspas}{manual da SECOM} pode ser usado como referência.

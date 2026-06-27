@@ -2,6 +2,11 @@
 build/
 output/
 
+## minted cache (normalmente fica em build/, mas ignoramos por robustez caso
+## o aux_dir mude).
+_minted/
+*.minted
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
