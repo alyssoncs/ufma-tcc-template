@@ -2,7 +2,11 @@
 
 \section{Código}
 
-Inclusão de código pode ser feita através do pacote \href{https://ctan.org/pkg/minted}{minted}. Como lembra \textcite{knuth:goto:1974}, programas devem ser escritos para humanos lerem. Utilize conforme o \autoref{lst:factorial-inline}.
+Frequentemente você vai precisar mencionar pequenos trechos de código no meio de um parágrafo, como o nome de um comando, de um arquivo ou de uma variável. Para isso, o comando \texttt{\textbackslash{}texttt} (de \foreign{typewriter text}) formata o seu argumento com uma fonte monoespaçada, sinalizando ao leitor que aquilo é código. Por exemplo, \texttt{\textbackslash{}texttt\{int x = 0;\}} produz \texttt{int x = 0;}. Repare, porém, que o \texttt{\textbackslash{}texttt} apenas troca a fonte: ele não conhece a linguagem do trecho e, portanto, não aplica realce de sintaxe.
+
+Quando o trecho inline for código de verdade e o realce de sintaxe ajudar na leitura, prefira o comando \texttt{\textbackslash{}mintinline}, fornecido pelo pacote \href{https://ctan.org/pkg/minted}{minted}. Ele recebe a linguagem como primeiro argumento e o código delimitado por um par de caracteres iguais à sua escolha (por exemplo, barras verticais). Assim, escrever \mintinline{latex}@\mintinline{java}|int x = 0;|@ produz \mintinline{java}|int x = 0;|. Use o \texttt{\textbackslash{}texttt} para menções curtas e simples (nomes de comandos, arquivos e identificadores) e reserve o \texttt{\textbackslash{}mintinline} para trechos de código reais em que o realce agregar clareza.
+
+Para trechos maiores, que merecem destaque próprio e uma legenda, use o ambiente \texttt{minted} dentro de um float \texttt{listing}. Como lembra \textcite{knuth:goto:1974}, programas devem ser escritos para humanos lerem. Utilize conforme o \autoref{lst:factorial-inline}.
 
 \begin{listing}[htb]
   \inputminted{latex}{\CurrentFilePath/res/code/minted.tex}

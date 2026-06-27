@@ -36,6 +36,7 @@ latexmk
 linter
 lof
 lst
+mintinline
 monoespaçada
 newterm
 opinionado
@@ -46,6 +47,7 @@ siunitx
 tccconfig
 tex
 textcite
+texttt
 txt
 usemintedstyle
 wikibook
