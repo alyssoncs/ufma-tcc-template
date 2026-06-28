@@ -33,3 +33,30 @@ Resumindo: com uma distribuição LaTeX na sua máquina, rode `make` para gerar 
 
 * **Existe algum TCC real escrito com esse template?**
     * Sim: https://github.com/alyssoncs/Monografia. Este template nasceu a partir dessa monografia, mas já evoluiu bastante em relação ao original.
+
+## Dependências
+
+Uma distribuição LaTeX moderna e completa (como o **TeX Live full**) já traz
+praticamente tudo — inclusive o **Python** necessário para o `minted` e as fontes utilizadas nesse template.
+
+<details>
+<summary>Ver lista de dependências</summary>
+
+**Para compilar o PDF:**
+
+- **XeLaTeX** (engine fixada em `.latexmkrc`; pdfLaTeX não é suportado)
+- **latexmk** e **biber**
+- Classe **abntex2** e estilo **biblatex-abnt**
+- Pacotes LaTeX: `biblatex`, `fontspec`, `minted`, `hyperref`, `csquotes`, `siunitx`, entre outros
+- Fonte monoespaçada **Cascadia Code**
+- **Python 3** + **Pygments** (usados pelo `minted`)
+
+**Para os checks (`make check`) — opcionais:**
+
+- **latexindent** (formatação)
+- **chktex** (lint)
+- **hunspell** + dicionários **pt_BR** e **en_US** (ortografia)
+
+**Build/scripts:** `make`, `find`, `awk`, `sed`, `sort` (POSIX; já presentes em Linux/macOS).
+
+</details>
