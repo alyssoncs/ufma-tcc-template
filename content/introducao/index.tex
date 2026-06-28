@@ -88,6 +88,62 @@ Vai ter que aprender o básico até entender o que está descrito na \autoref{su
   \item \href{https://en.wikibooks.org/wiki/LaTeX}{wikibook}.
 \end{alineas}
 
+\section{Fluxo de trabalho}
+
+Esta seção descreve como usar o projeto no dia a dia, desde a escrita até a validação final antes de versionar as alterações.
+
+\subsection{Escrevendo: \texttt{make continuous}}
+
+Durante a escrita, o comando mais útil é o \texttt{make continuous}: ele compila o PDF e recompila automaticamente a cada alteração salva, mostrando o resultado quase em tempo real. Para encerrar, interrompa o processo (\texttt{Ctrl+C}).
+
+Para aproveitar bem esse fluxo, use um visualizador de PDF que detecte alterações no arquivo e atualize a exibição sozinho (por exemplo, Zathura, Okular, Skim ou Evince). Caso contrário, será preciso reabrir ou atualizar o PDF manualmente a cada mudança.
+
+\subsection{Validando: \texttt{make build}} \label{sub:validando-make-build}
+
+Antes de um \foreign{commit}, é uma boa prática rodar o \texttt{make build}: ele executa o \texttt{make check} (\texttt{format-check}, \texttt{lint} e \texttt{spell}) e, se tudo passar, compila o PDF. Como são os mesmos passos da CI, rodá-lo localmente evita quebrar o \foreign{pipeline}. Para só validar sem gerar o PDF, use \texttt{make check}; para formatar automaticamente, use \texttt{make format}.
+
+As verificações que mais costumam exigir intervenção são o \foreign{linter} (\texttt{make lint}) e o corretor ortográfico (\texttt{make spell}), tratados a seguir.
+
+\subsubsection{Suprimindo avisos do ChkTeX} % chktex 20
+
+O \texttt{make lint} usa o ChkTeX, um \foreign{linter} que aponta problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de aspas, etc.). Cada problema tem um identificador numérico, mostrado na saída do \texttt{make lint} (por exemplo, \enquote{\texttt{Warning 26}}), e é com esse número que o aviso é suprimido. % chktex 20
+
+A maioria dos avisos vale a pena corrigir, mas às vezes o ChkTeX acusa um falso positivo: uma construção proposital que dispara o aviso. Um exemplo é escrever um emoticon, em que o espaço antes do \enquote{\texttt{:}} vira o aviso 26 (espaço antes de pontuação) e o \enquote{\texttt{)}} vira o aviso 10 (parêntese de fechamento solto). Para silenciar avisos, basta um comentário \texttt{\% chktex N} no fim da linha, encadeando vários se necessário: % chktex 9 % chktex 10 % chktex 20
+
+\begin{listing}[htb]
+  \begin{minted}{latex}
+    % Dispara os avisos 26 e 10
+    Fiquei muito feliz :)
+
+    % Comentario no fim da linha silencia ambos
+    Fiquei muito feliz :) % chktex 26 % chktex 10
+  \end{minted}
+  \caption{Supressão de avisos do ChkTeX}
+  \label{lst:chktex-suppress}
+\end{listing}
+
+O \texttt{\% chktex N} precisa ficar no fim da linha, pois o \texttt{\%} inicia um comentário e tudo após ele é descartado. Para desligar um aviso em todo o projeto, adicione o número ao bloco \texttt{CmdLine} do \texttt{.chktexrc} (por exemplo, \texttt{-n26}), mas prefira a supressão por linha, para não perder o aviso onde ele é legítimo.
+
+\subsubsection{Adicionando palavras ao dicionário} \label{sub:dicionario}
+
+O \texttt{make spell} usa o hunspell com os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema. Siglas, nomes próprios e termos técnicos não reconhecidos são reportados como palavras desconhecidas e fazem a verificação falhar. Quando a palavra estiver correta, adicione-a (uma por linha) ao \texttt{dictionary.txt}, que guarda os termos válidos do projeto.
+
+Note que esses dicionários vêm do sistema operacional e a versão pode variar entre a sua máquina e a CI, então uma palavra aceita localmente pode ser apontada como desconhecida na CI (ou vice-versa). Mantê-la no \texttt{dictionary.txt} resolve a divergência, já que o arquivo é versionado e vale para todos os ambientes.
+
+\subsection{Workflows alternativos}
+
+Manter o \texttt{dictionary.txt} é um custo recorrente que nem todo mundo vai querer pagar. Se a verificação ortográfica não fizer sentido para o seu fluxo, há alternativas:
+
+\begin{alineas}
+  \item remover o \texttt{spell} do alvo \texttt{check} no \texttt{Makefile}, mantendo formatação e \foreign{linter}, mas não o corretor;
+
+  \item remover de vez o alvo \texttt{spell} do \texttt{Makefile} e o passo correspondente na CI (\texttt{.github/workflows/ci.yaml});
+
+  \item ignorar as validações e usar só o \texttt{make pdf} (ou \texttt{make continuous}) para compilar.
+\end{alineas}
+
+O mesmo vale para o \texttt{format-check} e o \texttt{lint}: são um ponto de partida, e cada autor pode ajustar o \texttt{Makefile} e a CI ao seu gosto.
+
 \section{Organização do texto}
 
 O restante deste documento mostra como utilizar o \template{} para as coisas mais comuns na monografia. Ao longo do texto, algumas citações são inseridas propositalmente em diferentes páginas para demonstrar o comportamento das referências bibliográficas (como o backref e a contagem de citações).

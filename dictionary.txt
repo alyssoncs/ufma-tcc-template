@@ -3,15 +3,19 @@ Arial
 BibTeX
 ChatGPT
 ChkTeX
+CmdLine
+Ctrl
 IBGEtab
 IFMA
 MQTT
 Makefile
 Monier
+Okular
 Piet
 Pygments
 SECOM
 Salles
+Zathura
 abnt
 abntex
 alineas
@@ -20,6 +24,9 @@ autoref
 backref
 biblatex
 catalografica
+chktex
+chktexrc
+ci
 citacao
 cleanall
 cls
@@ -28,6 +35,7 @@ english
 enquote
 fontspec
 gibibytes
+github
 htb
 hunspell
 inputminted
@@ -38,6 +46,7 @@ lof
 lst
 mintinline
 monoespaçada
+nN
 newterm
 opinionado
 pdf
@@ -51,3 +60,4 @@ texttt
 txt
 usemintedstyle
 wikibook
+yaml
