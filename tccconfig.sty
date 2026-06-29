@@ -91,15 +91,17 @@
 
 % --- Membros da banca (número variável) ---
 \usepackage{etoolbox}
+% Container expansível para a lista (etoolbox guarda a lista no corpo da macro;
+% \NewDocumentCommand seria robusta e vazaria " code" no 1.o membro).
 \newcommand{\listamembrosbanca}{}
-\newcommand{\membrobanca}[2]{%
+\NewDocumentCommand{\membrobanca}{mm}{%
   \listadd{\listamembrosbanca}{{#1}{#2}}%
 }
-\newcommand{\orientadorbanca}[2]{%
+\NewDocumentCommand{\orientadorbanca}{mm}{%
   \orientador{#1}%
-  \newcommand{\imprimirorientadortitulacao}{#2}%
+  \NewDocumentCommand{\imprimirorientadortitulacao}{}{#2}%
 }
-\newcommand{\datadefesa}[1]{\newcommand{\imprimirdatadefesa}{#1}}
+\NewDocumentCommand{\datadefesa}{m}{\NewDocumentCommand{\imprimirdatadefesa}{}{#1}}
 
 % Aplica formatação a palavras estrangeiras com o comando \foreign
 % \foreign{<palavra>}
@@ -108,7 +110,7 @@
 % Exemplo de uso:
 % \foreign{dataset}
 % Dentro do documento, "dataset" será exibido em itálico.
-\newcommand*{\foreign}[1]{\textit{#1}}
+\NewDocumentCommand{\foreign}{m}{\textit{#1}}
 
 % Define um novo termo com o comando \newterm
 % \newterm{<nome do comando>}{<termo>}
@@ -125,12 +127,12 @@
 % Atenção: como qualquer comando LaTeX, um termo seguido de espaço e mais
 % texto engole esse espaço (ex.: "\iot é" vira "IoTé"). Nesses casos, use a
 % forma explícita "\iot{} é". Antes de uma pontuação (.,;:) não é necessário.
-\newcommand*{\newterm}[2]{\newcommand*{#1}{#2}}
-\newcommand{\imprimirmembrosbanca}{%
+\NewDocumentCommand{\newterm}{mm}{\NewDocumentCommand{#1}{}{#2}}
+\NewDocumentCommand{\imprimirmembrosbanca}{}{%
   \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
   \def\do##1{\expandafter\imprimirassinaturabanca##1}%
   \forlistloop{\do}{\listamembrosbanca}%
 }
-\newcommand{\imprimirassinaturabanca}[2]{%
+\NewDocumentCommand{\imprimirassinaturabanca}{mm}{%
   \assinatura{\textbf{#1} \\ #2}%
 }
