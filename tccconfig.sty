@@ -98,18 +98,27 @@
 \setlength{\parskip}{0.2cm} % space between paragraphs
 
 % --- Membros da banca (número variável) ---
-\usepackage{etoolbox}
-% Container expansível para a lista (etoolbox guarda a lista no corpo da macro;
-% \NewDocumentCommand seria robusta e vazaria " code" no 1.o membro).
-\newcommand{\listamembrosbanca}{}
+% Lista de membros via l3seq (expl3): cada membro é um item com nome+titulação.
+\ExplSyntaxOn
+\seq_new:N \g_tcc_membrosbanca_seq
 \NewDocumentCommand{\membrobanca}{mm}{%
-  \listadd{\listamembrosbanca}{{#1}{#2}}%
+  \seq_gput_right:Nn \g_tcc_membrosbanca_seq {{#1}{#2}}%
 }
+\ExplSyntaxOff
 \NewDocumentCommand{\orientadorbanca}{mm}{%
   \orientador{#1}%
   \NewDocumentCommand{\imprimirorientadortitulacao}{}{#2}%
 }
 \NewDocumentCommand{\datadefesa}{m}{\NewDocumentCommand{\imprimirdatadefesa}{}{#1}}
+\ExplSyntaxOn
+\NewDocumentCommand{\imprimirmembrosbanca}{}{%
+  \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
+  \seq_map_inline:Nn \g_tcc_membrosbanca_seq {\imprimirassinaturabanca ##1}%
+}
+\ExplSyntaxOff
+\NewDocumentCommand{\imprimirassinaturabanca}{mm}{%
+  \assinatura{\textbf{#1} \\ #2}%
+}
 
 % Aplica formatação a palavras estrangeiras com o comando \foreign
 % \foreign{<palavra>}
@@ -136,11 +145,3 @@
 % texto engole esse espaço (ex.: "\iot é" vira "IoTé"). Nesses casos, use a
 % forma explícita "\iot{} é". Antes de uma pontuação (.,;:) não é necessário.
 \NewDocumentCommand{\newterm}{mm}{\NewDocumentCommand{#1}{}{#2}}
-\NewDocumentCommand{\imprimirmembrosbanca}{}{%
-  \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
-  \def\do##1{\expandafter\imprimirassinaturabanca##1}%
-  \forlistloop{\do}{\listamembrosbanca}%
-}
-\NewDocumentCommand{\imprimirassinaturabanca}{mm}{%
-  \assinatura{\textbf{#1} \\ #2}%
-}
