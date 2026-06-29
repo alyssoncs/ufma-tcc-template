@@ -40,7 +40,6 @@
 \colorlet{color-cite}{base-green}
 \colorlet{color-url}{base-green}
 
-\makeatletter
 \hypersetup{
   colorlinks=true, % links com cor
   linkcolor=color-link, % cor dos links internos
@@ -48,8 +47,17 @@
   urlcolor=color-url, % cor das url externas
   bookmarksnumbered=true,
   bookmarksdepth=subsubsection,
-  pdftitle={\@title}, % metadado do pdf, título
-  pdfauthor={\@author}, % metadado do pdf, autor
+}
+
+% Os metadados do PDF (título e autor) só são definidos depois que metadata.tex
+% é lido, então o tccconfig precisa ser carregado primeiro. Por isso embutimos os
+% metadados no \AtBeginDocument, lendo os campos brutos do abntex2 (\@title/\@author).
+\makeatletter
+\AtBeginDocument{
+  \hypersetup{
+    pdftitle={\@title}, % metadado do pdf, título
+    pdfauthor={\@author}, % metadado do pdf, autor
+  }
 }
 \makeatother
 

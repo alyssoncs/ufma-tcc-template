@@ -4,7 +4,11 @@
 %
 % Para personalizar o documento, substitua os valores dos comandos abaixo conforme necessário.
 
-\titulo{Template de monografia da UFMA em \LaTeX}
+% \texorpdfstring{ALVO}{PDF}: usa ALVO no documento (capa) e PDF nos metadados.
+% Aqui o logo \LaTeX vira só "LaTeX" na etiqueta do PDF, que não aceita comandos
+% LaTeX. Se o seu título não tiver markup (\LaTeX, fórmulas etc.), pode omitir e
+% escrever o texto direto: \titulo{Meu título}.
+\titulo{Template de monografia da UFMA em \texorpdfstring{\LaTeX}{LaTeX}}
 \autor{Alysson Cirilo Silva}
 \data{2025}
 \datadefesa{19 de Julho de 2025}

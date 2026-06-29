@@ -39,6 +39,7 @@ github
 htb
 hunspell
 inputminted
+LaTeX
 latexindent
 latexmk
 linter
