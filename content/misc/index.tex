@@ -57,9 +57,9 @@ O comando \texttt{\textbackslash{}ref} adiciona um link para o elemento contendo
 Como exemplo, adicionei a \labelterm{} \enquote{\texttt{sec:cross-ref}} na seção atual, ao utilizar o comando \texttt{\textbackslash{}autoref\{sec:cross-ref\}}, vou obter o seguinte resultado: \enquote{\autoref{sec:cross-ref}}.
 Entretanto, se utilizar \texttt{\textbackslash{}ref\{sec:cross-ref\}}, vou obter apenas: \enquote{\ref{sec:cross-ref}}, que pode ser útil ao referenciar múltiplos elementos ao mesmo tempo.
 
-A forma de adicionar \labels{} é ligeiramente diferente dependendo do tipo de elemento sendo referenciado.
+A forma de adicionar \labelterm[s] é ligeiramente diferente dependendo do tipo de elemento sendo referenciado.
 
-\subsection{\Labels{} em capítulos, seções e subseções}
+\subsection{\texorpdfstring{\labelterm*[s]}{Labels} em capítulos, seções e subseções}
 
 Para capítulos, seções e subseções, usamos o comando \texttt{label} seguido do id da \labelterm{} que queremos atribuir, conforme o \autoref{lst:chap-sec-subsec-label}.
 
@@ -77,21 +77,21 @@ Para capítulos, seções e subseções, usamos o comando \texttt{label} seguido
 
     Blá.
   \end{minted}
-  \caption{Atribuição de \labels{} em capítulos, seções e subseções}
+  \caption{Atribuição de \labelterm[s] em capítulos, seções e subseções}
   \label{lst:chap-sec-subsec-label}
 \end{listing}
 
 Desta forma, eu posso referenciar o capítulo \enquote{Introdução} usando o comando: \texttt{\textbackslash{}autoref\{chap:intro\}}.
 
-\subsection{\Labels{} em figuras}
+\subsection{\texorpdfstring{\labelterm*[s]}{Labels} em figuras}
 
 Também se utiliza o comando \texttt{label}, entretanto, dentro do ambiente \texttt{figure} e após a macro \texttt{caption}, consulte o \autoref{lst:figure}.
 
-\subsection{\Labels{} em tabelas}
+\subsection{\texorpdfstring{\labelterm*[s]}{Labels} em tabelas}
 
 Também se utiliza o comando \texttt{label}, entretanto, dentro do primeiro bloco do comando \texttt{IBGEtab} e após a macro \texttt{caption}, consulte o \autoref{lst:tab}.
 
-\subsection{\Labels{} em códigos}
+\subsection{\texorpdfstring{\labelterm*[s]}{Labels} em códigos}
 
 Assim como em figuras e tabelas, usamos o comando \texttt{label} dentro do float \texttt{listing} (criado pelo \texttt{minted}), logo após a macro \texttt{caption}, consulte os códigos~\ref{lst:factorial-inline} e~\ref{lst:factorial-include}.
 
@@ -190,6 +190,84 @@ Usando essa \api, você pode fazer um \broadcast{} de dados para vários disposi
 Repare nas chaves vazias (\texttt{\textbackslash{}broadcast\{\}}) usadas quando o termo é seguido de um espaço. Como qualquer comando \LaTeX\ sem argumentos, um termo \enquote{engole} o espaço que vem logo depois dele: escrever \texttt{\textbackslash{}broadcast de} produziria \enquote{\broadcast de}, sem o espaço. As chaves vazias delimitam o fim do comando e preservam o espaço seguinte. Quando o termo é seguido de pontuação --- como em \texttt{\textbackslash{}api,} --- as chaves não são necessárias. O projeto também roda um linter (via \texttt{make lint}), que alerta sobre termos seguidos de espaço sem as chaves. % chktex 1
 
 Como alternativa às chaves vazias, a sequência \texttt{\textbackslash{}broadcast\textbackslash{} de dados} (barra invertida seguida de espaço) também preserva o espaço após o termo, gerando: \broadcast\ de dados.
+
+\subsection{Plural e capitalização}
+
+Um mesmo termo costuma aparecer no singular, no plural e com a primeira letra maiúscula (no início de uma frase, por exemplo). Em vez de criar uma macro para cada variação, o \texttt{newterm} aceita chaves opcionais e dois modificadores de uso, conforme o \autoref{lst:newterm-plural}.
+
+\begin{listing}[htb]
+  \begin{minted}{latex}
+    \newterm{\vetor}{vetor}[plural=vetores]
+    \newterm{\framework}{\foreign{framework}}[plural=\foreign{frameworks}]
+    \newterm{\justica}{justiça}
+    \newterm{\id}{id}[plural=ids, cap=ID, capplural=IDs]
+  \end{minted}
+  \caption{Definição de termos com plural e capitalização}
+  \label{lst:newterm-plural}
+\end{listing}
+
+A opção \texttt{plural} define a forma do termo no plural. Sem ela, o termo não tem plural e o modificador \texttt{[s]} interrompe a compilação --- útil para termos incontáveis, como \texttt{\textbackslash{}justica} no \autoref{lst:newterm-plural}.
+
+As opções \texttt{cap} e \texttt{capplural} permitem fornecer formas capitalizadas explícitas, necessárias quando a capitalização automática não produz o resultado desejado. Quando omitidas, a primeira letra do singular e do plural é capitalizada automaticamente, preservando qualquer formatação (a capitalização automática atravessa comandos como \texttt{\textbackslash{}foreign} ou \texttt{\textbackslash{}texttt} e capitaliza apenas a primeira letra do texto).
+O termo \framework, definido no \macrofile, ilustra o caso automático preservando o itálico:
+\begin{alineas}
+  \item \texttt{\textbackslash{}framework} produz \enquote{\framework};
+  \item \texttt{\textbackslash{}framework*} produz \enquote{\framework*};
+  \item \texttt{\textbackslash{}framework[s]} produz \enquote{\framework[s]};
+  \item \texttt{\textbackslash{}framework*[s]} produz \enquote{\framework*[s]}.
+\end{alineas}
+
+Já o termo \texttt{\textbackslash{}id} do \autoref{lst:newterm-plural} precisa das chaves: a forma automática seria \enquote{Id} e \enquote{Ids}, mas \texttt{cap} e \texttt{capplural} fixam as siglas corretas \enquote{ID} e \enquote{IDs}.
+
+No uso, o asterisco (\texttt{*}) produz a versão capitalizada e o argumento opcional \texttt{[s]} produz a versão no plural; os dois podem ser combinados. O comando ainda age como um validador estrito: pedir o plural de um termo que não o define interrompe a compilação. O \autoref{lst:newterm-plural-usage} reúne esses casos.
+
+\begin{listing}[htb]
+  \begin{minted}{latex}
+    \vetor       % vetor
+    \vetor[s]    % vetores
+    \vetor*      % Vetor
+    \vetor*[s]   % Vetores
+    \framework   % framework (em itálico)
+    \framework*  % Framework (capitaliza preservando o itálico)
+    \justica     % justiça
+    \justica*    % Justiça
+    \justica[s]  % quebra a build: \justica não define plural
+    \id          % id
+    \id[s]       % ids
+    \id*         % ID  (sem cap, sairia "Id")
+    \id*[s]      % IDs (sem capplural, sairia "Ids")
+  \end{minted}
+  \caption{Uso dos modificadores de plural e capitalização}
+  \label{lst:newterm-plural-usage}
+\end{listing}
+
+O asterisco também pode ser usado na \emph{definição} do termo, com um papel diferente: \texttt{\textbackslash{}newterm*} cria um termo cuja capitalização fica \emph{bloqueada}, útil para nomes que nunca devem começar com maiúscula. O \autoref{lst:newterm-blocked} define dois termos assim: \texttt{\textbackslash{}iphone}, cujo \texttt{i} minúsculo faz parte da marca, e \texttt{\textbackslash{}pdfextension}, uma extensão de arquivo.
+
+\begin{listing}[htb]
+  \begin{minted}{latex}
+    \newterm*{\iphone}{iPhone}[plural=iPhones]
+    \newterm*{\pdfextension}{\texttt{.pdf}}
+  \end{minted}
+  \caption{Definição de termos com capitalização bloqueada}
+  \label{lst:newterm-blocked}
+\end{listing}
+
+Com isso, \texttt{\textbackslash{}iphone} e \texttt{\textbackslash{}iphone[s]} produzem \enquote{\iphone} e \enquote{\iphone[s]} normalmente, mas \texttt{\textbackslash{}iphone*} interrompe a compilação com um erro, impedindo a forma capitalizada. Da mesma forma, passar as opções \texttt{cap} ou \texttt{capplural} a um termo criado com \texttt{\textbackslash{}newterm*} é contraditório e falha já na definição. Esse rigor evita que variações inexistentes passem despercebidas no texto final.
+
+\subsection{Termos aninhados}
+
+O texto de um termo pode conter outros termos, inclusive com seus próprios modificadores de plural e capitalização. No \autoref{lst:newterm-nested}, o termo \texttt{\textbackslash{}tabelaponteiros} reaproveita o termo \texttt{\textbackslash{}ponteiro} na definição do singular e do plural.
+
+\begin{listing}[htb]
+  \begin{minted}{latex}
+    \newterm{\ponteiro}{ponteiro}[plural=ponteiros]
+    \newterm{\tabelaponteiros}{tabela de \ponteiro[s]}[plural=tabelas de \ponteiro[s]]
+  \end{minted}
+  \caption{Definição de termos aninhados}
+  \label{lst:newterm-nested}
+\end{listing}
+
+A capitalização aninhada também funciona: \texttt{\textbackslash{}tabelaponteiros} resulta em \enquote{\tabelaponteiros}, \texttt{\textbackslash{}tabelaponteiros[s]} em \enquote{\tabelaponteiros[s]} e \texttt{\textbackslash{}tabelaponteiros*} em \enquote{\tabelaponteiros*}, capitalizando apenas a primeira letra e preservando o termo interno.
 
 \section{Unidades de medida}
 

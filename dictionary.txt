@@ -23,6 +23,7 @@ api
 autoref
 backref
 biblatex
+capplural
 catalografica
 chktex
 chktexrc
@@ -39,6 +40,9 @@ github
 htb
 hunspell
 inputminted
+iphone
+iPhones
+justica
 LaTeX
 latexindent
 latexmk
@@ -51,9 +55,11 @@ nN
 newterm
 opinionado
 pdf
+pdfextension
 printf
 setminted
 siunitx
+tabelaponteiros
 tccconfig
 tex
 textcite
