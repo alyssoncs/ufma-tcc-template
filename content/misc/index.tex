@@ -217,7 +217,7 @@ O termo \framework, definido no \macrofile, ilustra o caso automático preservan
   \item \texttt{\textbackslash{}framework*[s]} produz \enquote{\framework*[s]}.
 \end{alineas}
 
-Já o termo \texttt{\textbackslash{}id} do \autoref{lst:newterm-plural} precisa das chaves: a forma automática seria \enquote{Id} e \enquote{Ids}, mas \texttt{cap} e \texttt{capplural} fixam as siglas corretas \enquote{ID} e \enquote{IDs}.
+Já o termo \texttt{\textbackslash{}id} do \autoref{lst:newterm-plural} precisa das opções, a forma automática seria \enquote{Id} e \enquote{Ids}, mas \texttt{cap} e \texttt{capplural} fixam as siglas corretas \enquote{\id*} e \enquote{\id*[s]}.
 
 No uso, o asterisco (\texttt{*}) produz a versão capitalizada e o argumento opcional \texttt{[s]} produz a versão no plural; os dois podem ser combinados. O comando ainda age como um validador estrito: pedir o plural de um termo que não o define interrompe a compilação. O \autoref{lst:newterm-plural-usage} reúne esses casos.
 
@@ -241,7 +241,7 @@ No uso, o asterisco (\texttt{*}) produz a versão capitalizada e o argumento opc
   \label{lst:newterm-plural-usage}
 \end{listing}
 
-O asterisco também pode ser usado na \emph{definição} do termo, com um papel diferente: \texttt{\textbackslash{}newterm*} cria um termo cuja capitalização fica \emph{bloqueada}, útil para nomes que nunca devem começar com maiúscula. O \autoref{lst:newterm-blocked} define dois termos assim: \texttt{\textbackslash{}iphone}, cujo \texttt{i} minúsculo faz parte da marca, e \texttt{\textbackslash{}pdfextension}, uma extensão de arquivo.
+O asterisco também pode ser usado na \emph{definição} do termo, com um papel diferente: \texttt{\textbackslash{}newterm*} cria um termo cuja capitalização fica \emph{bloqueada}, útil para nomes que nunca devem começar com maiúscula. O \autoref{lst:newterm-blocked} define dois termos assim: \texttt{\textbackslash{}iphone}, cujo \enquote{i} minúsculo faz parte da marca, e \texttt{\textbackslash{}pdfextension}, uma extensão de arquivo.
 
 \begin{listing}[htb]
   \begin{minted}{latex}
