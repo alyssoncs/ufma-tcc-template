@@ -15,5 +15,5 @@ permissions:
 jobs:
   build:
     name: scheduled build check 🕐
-    if: vars.ENABLE_SCHEDULE_CI == 'true'
+    if: vars.IS_TEMPLATE_REPO == 'true'
     uses: ./.github/workflows/build.yaml
