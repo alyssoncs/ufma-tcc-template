@@ -1,0 +1,10 @@
+# Normalizacao de fim de linha (EOL).
+#
+# `text=auto` deixa o Git detectar arquivos de texto e normaliza-los para LF no
+# repositorio (binarios como PDF/imagens sao detectados e ficam intactos).
+# `eol=lf` forca o checkout com LF em qualquer SO, alinhado ao .editorconfig.
+* text=auto eol=lf
+
+# Reforco explicito para os shell scripts POSIX: o shebang (#!/bin/sh) quebra com
+# CRLF (\r), entao garantimos LF independentemente do core.autocrlf no Windows.
+*.sh text eol=lf
