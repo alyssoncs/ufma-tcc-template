@@ -4,7 +4,7 @@
 
 Esse projeto é um \template{} \enquote{opinionado} de como estruturar e organizar um trabalho de conclusão de curso---focado em Ciência da Computação---utilizando a classe \href{https://www.ctan.org/pkg/abntex2}{\abntex}.
 
-O projeto somente oferece um ponto de partida para criação de documento, com configurações e inclusões de pacotes que o autor considera úteis, assim sendo, é recomendada a leitura da documentação oficial da classe \abntex. O projeto também vem configurado com automação para compilação com \texttt{latexmk} ou \texttt{make}, e com sistema de CI/CD no GitHub. Como diria \textcite{knuth:goto:1974}, devemos nos preocupar com clareza antes de performance.
+O projeto somente oferece um ponto de partida para criação de documento, com configurações e inclusões de pacotes que o autor considera úteis, assim sendo, é recomendada a leitura da documentação oficial da classe \abntex. O projeto também vem configurado com automação para compilação com \texttt{latexmk} ou \href{https://github.com/casey/just}{\texttt{just}}, e com sistema de CI/CD no GitHub. Como diria \textcite{knuth:goto:1974}, devemos nos preocupar com clareza antes de performance.
 
 \section{Por onde começo?}
 
@@ -38,32 +38,32 @@ Se você já tem familiaridade com \LaTeX{} e quer um resumo de como usar esse \
   \item as referências bibliográficas estão em \bibfile.
 \end{alineas}
 
-O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latexmk}. Um \texttt{Makefile} é usado para oferecer uma interface mais simples de compilação, os seguintes comandos são suportados:
+O documento é compilado com \XeLaTeX{} com o auxílio do programa \texttt{latexmk}. O projeto inclui um \texttt{justfile} (a configuração do \texttt{just}), que oferece uma interface mais simples de compilação; os seguintes comandos são suportados:
 
 \begin{alineas}
-  \item \texttt{make pdf}: compila o projeto e gera o PDF (alvo padrão, equivalente a rodar \texttt{make} sem argumentos);
+  \item \texttt{just pdf}: compila o projeto e gera o PDF (recipe padrão, equivalente a rodar \texttt{just} sem argumentos);
 
-  \item \texttt{make continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
+  \item \texttt{just continuous}: compila o projeto e gera o PDF, adicionalmente, fica executando e compila novamente cada vez que um arquivo do projeto muda;
 
-  \item \texttt{make format}: formata todos os arquivos fonte (\texttt{.tex}, \texttt{.sty}, \texttt{.cls} e \texttt{.bib}) do projeto com o \texttt{latexindent};
+  \item \texttt{just format}: formata todos os arquivos fonte (\texttt{.tex}, \texttt{.sty}, \texttt{.cls} e \texttt{.bib}) do projeto com o \texttt{latexindent};
 
-  \item \texttt{make format-check}: verifica se os arquivos fonte estão formatados, sem alterá-los, e falha caso algum precise ser formatado (usado na CI);
+  \item \texttt{just format-check}: verifica se os arquivos fonte estão formatados, sem alterá-los, e falha caso algum precise ser formatado (usado na CI);
 
   % "ChkTeX" abaixo dispara um W20 (o rc global do proprio ChkTeX implica
   % com essa grafia); aqui o nome e proposital, entao suprimimos na linha.
-  \item \texttt{make lint}: roda o \foreign{linter} \href{https://www.nongnu.org/chktex/}{ChkTeX} sobre os arquivos \texttt{.tex}, apontando problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de \texttt{\textbackslash{}cite}, etc.) e falha caso encontre algum (usado na CI); % chktex 20
+  \item \texttt{just lint}: roda o \foreign{linter} \href{https://www.nongnu.org/chktex/}{ChkTeX} sobre os arquivos \texttt{.tex}, apontando problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de \texttt{\textbackslash{}cite}, etc.) e falha caso encontre algum (usado na CI); % chktex 20
 
-  \item \texttt{make spell}: roda o corretor ortográfico \href{https://hunspell.github.io/}{hunspell} sobre o texto dos arquivos \texttt{.tex} (ignorando os comandos \LaTeX{}), usando os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema, e falha caso encontre palavras desconhecidas (usado na CI). Termos válidos que o dicionário não reconhece (siglas, nomes próprios, termos técnicos) devem ser adicionados, um por linha, ao arquivo \texttt{dictionary.txt};
+  \item \texttt{just spell}: roda o corretor ortográfico \href{https://hunspell.github.io/}{hunspell} sobre o texto dos arquivos \texttt{.tex} (ignorando os comandos \LaTeX{}), usando os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema, e falha caso encontre palavras desconhecidas (usado na CI). Termos válidos que o dicionário não reconhece (siglas, nomes próprios, termos técnicos) devem ser adicionados, um por linha, ao arquivo \texttt{dictionary.txt};
 
-  \item \texttt{make check}: roda \texttt{make format-check}, \texttt{make lint} e \texttt{make spell} em sequência, validando o projeto sem compilá-lo nem alterar arquivos;
+  \item \texttt{just check}: roda \texttt{just format-check}, \texttt{just lint} e \texttt{just spell} em sequência, validando o projeto sem compilá-lo nem alterar arquivos;
 
-  \item \texttt{make build}: executa \texttt{make check} e, se passar, compila o PDF com \texttt{make pdf};
+  \item \texttt{just build}: executa \texttt{just check} e, se passar, compila o PDF com \texttt{just pdf};
 
-  \item \texttt{make clean}: deleta os arquivos auxiliares de compilação;
+  \item \texttt{just clean}: deleta os arquivos auxiliares de compilação;
 
-  \item \texttt{make cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado;
+  \item \texttt{just cleanall}: deleta os arquivos auxiliares de compilação e o PDF gerado;
 
-  \item \texttt{make help}: lista todos os alvos disponíveis com uma breve descrição de cada um.
+  \item \texttt{just help}: lista todas as recipes disponíveis com uma breve descrição de cada uma.
 \end{alineas}
 
 O projeto está configurado para separar os arquivos gerados do código fonte:
@@ -92,21 +92,21 @@ Vai ter que aprender o básico até entender o que está descrito na \autoref{su
 
 Esta seção descreve como usar o projeto no dia a dia, desde a escrita até a validação final antes de versionar as alterações.
 
-\subsection{Escrevendo: \texttt{make continuous}}
+\subsection{Escrevendo: \texttt{just continuous}}
 
-Durante a escrita, o comando mais útil é o \texttt{make continuous}: ele compila o PDF e recompila automaticamente a cada alteração salva, mostrando o resultado quase em tempo real. Para encerrar, interrompa o processo (\texttt{Ctrl+C}).
+Durante a escrita, o comando mais útil é o \texttt{just continuous}: ele compila o PDF e recompila automaticamente a cada alteração salva, mostrando o resultado quase em tempo real. Para encerrar, interrompa o processo (\texttt{Ctrl+C}).
 
 Para aproveitar bem esse fluxo, use um visualizador de PDF que detecte alterações no arquivo e atualize a exibição sozinho (por exemplo, Zathura, Okular, Skim ou Evince). Caso contrário, será preciso reabrir ou atualizar o PDF manualmente a cada mudança.
 
-\subsection{Validando: \texttt{make build}} \label{sub:validando-make-build}
+\subsection{Validando: \texttt{just build}} \label{sub:validando-just-build}
 
-Antes de um \foreign{commit}, é uma boa prática rodar o \texttt{make build}: ele executa o \texttt{make check} (\texttt{format-check}, \texttt{lint} e \texttt{spell}) e, se tudo passar, compila o PDF. Como são os mesmos passos da CI, rodá-lo localmente evita quebrar o \foreign{pipeline}. Para só validar sem gerar o PDF, use \texttt{make check}; para formatar automaticamente, use \texttt{make format}.
+Antes de um \foreign{commit}, é uma boa prática rodar o \texttt{just build}: ele executa o \texttt{just check} (\texttt{format-check}, \texttt{lint} e \texttt{spell}) e, se tudo passar, compila o PDF. Como são os mesmos passos da CI, rodá-lo localmente evita quebrar o \foreign{pipeline}. Para só validar sem gerar o PDF, use \texttt{just check}; para formatar automaticamente, use \texttt{just format}.
 
-As verificações que mais costumam exigir intervenção são o \foreign{linter} (\texttt{make lint}) e o corretor ortográfico (\texttt{make spell}), tratados a seguir.
+As verificações que mais costumam exigir intervenção são o \foreign{linter} (\texttt{just lint}) e o corretor ortográfico (\texttt{just spell}), tratados a seguir.
 
 \subsubsection{Suprimindo avisos do ChkTeX} % chktex 20
 
-O \texttt{make lint} usa o ChkTeX, um \foreign{linter} que aponta problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de aspas, etc.). Cada problema tem um identificador numérico, mostrado na saída do \texttt{make lint} (por exemplo, \enquote{\texttt{Warning 26}}), e é com esse número que o aviso é suprimido. % chktex 20
+O \texttt{just lint} usa o ChkTeX, um \foreign{linter} que aponta problemas comuns de \LaTeX{} (espaçamento, balanceamento de chaves, uso de aspas, etc.). Cada problema tem um identificador numérico, mostrado na saída do \texttt{just lint} (por exemplo, \enquote{\texttt{Warning 26}}), e é com esse número que o aviso é suprimido. % chktex 20
 
 A maioria dos avisos vale a pena corrigir, mas às vezes o ChkTeX acusa um falso positivo: uma construção proposital que dispara o aviso. Um exemplo é escrever um emoticon, em que o espaço antes do \enquote{\texttt{:}} vira o aviso 26 (espaço antes de pontuação) e o \enquote{\texttt{)}} vira o aviso 10 (parêntese de fechamento solto). Para silenciar avisos, basta um comentário \texttt{\% chktex N} no fim da linha, encadeando vários se necessário: % chktex 9 % chktex 10 % chktex 20
 
@@ -126,7 +126,7 @@ O \texttt{\% chktex N} precisa ficar no fim da linha, pois o \texttt{\%} inicia 
 
 \subsubsection{Adicionando palavras ao dicionário} \label{sub:dicionario}
 
-O \texttt{make spell} usa o hunspell com os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema. Siglas, nomes próprios e termos técnicos não reconhecidos são reportados como palavras desconhecidas e fazem a verificação falhar. Quando a palavra estiver correta, adicione-a (uma por linha) ao \texttt{dictionary.txt}, que guarda os termos válidos do projeto.
+O \texttt{just spell} usa o hunspell com os dicionários \texttt{pt\_BR} e \texttt{en\_US} do sistema. Siglas, nomes próprios e termos técnicos não reconhecidos são reportados como palavras desconhecidas e fazem a verificação falhar. Quando a palavra estiver correta, adicione-a (uma por linha) ao \texttt{dictionary.txt}, que guarda os termos válidos do projeto.
 
 Note que esses dicionários vêm do sistema operacional e a versão pode variar entre a sua máquina e a CI, então uma palavra aceita localmente pode ser apontada como desconhecida na CI (ou vice-versa). Mantê-la no \texttt{dictionary.txt} resolve a divergência, já que o arquivo é versionado e vale para todos os ambientes.
 
@@ -135,14 +135,14 @@ Note que esses dicionários vêm do sistema operacional e a versão pode variar 
 Manter o \texttt{dictionary.txt} é um custo recorrente que nem todo mundo vai querer pagar. Se a verificação ortográfica não fizer sentido para o seu fluxo, há alternativas:
 
 \begin{alineas}
-  \item remover o \texttt{spell} do alvo \texttt{check} no \texttt{Makefile}, mantendo formatação e \foreign{linter}, mas não o corretor;
+  \item remover o \texttt{spell} da recipe \texttt{check} no \texttt{justfile}, mantendo formatação e \foreign{linter}, mas não o corretor;
 
-  \item remover de vez o alvo \texttt{spell} do \texttt{Makefile} e o passo correspondente na CI (\texttt{.github/workflows/ci.yaml});
+  \item remover de vez a recipe \texttt{spell} do \texttt{justfile} e o passo correspondente na CI (\texttt{.github/workflows/ci.yaml});
 
-  \item ignorar as validações e usar só o \texttt{make pdf} (ou \texttt{make continuous}) para compilar.
+  \item ignorar as validações e usar só o \texttt{just pdf} (ou \texttt{just continuous}) para compilar.
 \end{alineas}
 
-O mesmo vale para o \texttt{format-check} e o \texttt{lint}: são um ponto de partida, e cada autor pode ajustar o \texttt{Makefile} e a CI ao seu gosto.
+O mesmo vale para o \texttt{format-check} e o \texttt{lint}: são um ponto de partida, e cada autor pode ajustar o \texttt{justfile} e a CI ao seu gosto.
 
 \section{Organização do texto}
 

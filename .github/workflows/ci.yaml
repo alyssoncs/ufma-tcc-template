@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+      - epic/cross-platform
+  pull_request:
+    branches:
+      - master
+      - epic/cross-platform
 
 permissions:
   contents: read
@@ -23,6 +28,9 @@ jobs:
   deploy:
     name: deploy 🚀
     needs: [build]
+    # Publica o PDF na branch `pdf` apenas em push na master; nunca em PRs nem
+    # na branch de integracao do epico (epic/cross-platform).
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     concurrency:
       group: pdf-deploy

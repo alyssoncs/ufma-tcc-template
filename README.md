@@ -14,10 +14,10 @@ Esqueça as brigas com margens, numeração de páginas, sumário, citações e 
 - **Unidades e números consistentes** com `siunitx` — números, unidades de medida e intervalos formatados do jeito certo, sem você se preocupar com espaçamento ou notação.
 - **Listagens de código** com syntax highlighting via `minted`/Pygments.
 - **Macros utilitárias** (`\newterm`, `\foreign`) para manter termos e estrangeirismos consistentes ao longo do texto.
-- **Build com um comando**: `make` compila tudo e `make continuous` recompila a cada alteração no modo watch.
-- **Formatação automática do código-fonte** LaTeX com `latexindent` (`make format`) — o `make format-check` ainda garante que tudo está formatado.
-- **Linter integrado** com `chktex` (`make lint`) para pegar problemas comuns de LaTeX antes que virem dor de cabeça.
-- **Corretor ortográfico** com `hunspell` em pt_BR e en_US (`make spell`), com dicionário de termos do projeto.
+- **Build com um comando**: `just` compila tudo e `just continuous` recompila a cada alteração no modo watch.
+- **Formatação automática do código-fonte** LaTeX com `latexindent` (`just format`) — o `just format-check` ainda garante que tudo está formatado.
+- **Linter integrado** com `chktex` (`just lint`) para pegar problemas comuns de LaTeX antes que virem dor de cabeça.
+- **Corretor ortográfico** com `hunspell` em pt_BR e en_US (`just spell`), com dicionário de termos do projeto.
 - **CI/CD pronto**: um workflow do GitHub Actions roda formatação, lint, ortografia e compilação a cada push, e publica o PDF na branch `pdf` — fácil de compartilhar.
 - **Funciona local e no Overleaf**.
 
@@ -25,7 +25,7 @@ Esqueça as brigas com margens, numeração de páginas, sumário, citações e 
 
 O tutorial completo, passo a passo, está [neste PDF](https://github.com/alyssoncs/ufma-tcc-template/blob/pdf/monografia.pdf) — que, aliás, é gerado por este próprio template.
 
-Resumindo: com uma distribuição LaTeX na sua máquina, rode `make` para gerar o PDF em `output/`. Use `make continuous` para recompilar automaticamente a cada mudança e `make help` para ver todos os alvos disponíveis.
+Resumindo: com uma distribuição LaTeX na sua máquina, rode `just` para gerar o PDF em `output/`. Use `just continuous` para recompilar automaticamente a cada mudança e `just help` para ver todas as recipes disponíveis.
 
 > **Nota:** o deploy do PDF só é disparado por pushes na branch `master`. Se o seu fork usa `main` como branch padrão, renomeie para `master` ou ajuste o arquivo `.github/workflows/ci.yaml`.
 
@@ -51,12 +51,14 @@ praticamente tudo — inclusive o **Python** necessário para o `minted` e as fo
 - Fonte monoespaçada **Cascadia Code**
 - **Python 3** + **Pygments** (usados pelo `minted`)
 
-**Para os checks (`make check`) — opcionais:**
+**Para os checks (`just check`) — opcionais:**
 
 - **latexindent** (formatação)
 - **chktex** (lint)
 - **hunspell** + dicionários **pt_BR** e **en_US** (ortografia)
 
-**Build/scripts:** `make`, `find`, `awk`, `sed`, `sort` (POSIX; já presentes em Linux/macOS).
+**Orquestração:** [**just**](https://github.com/casey/just) (executor de comandos; não vem com o sistema, precisa ser instalado).
+
+**Build/scripts:** `find`, `awk`, `sed`, `sort` (POSIX; já presentes em Linux/macOS).
 
 </details>

@@ -18,16 +18,18 @@ jobs:
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
+      - name: ⚙️ Install just
+        uses: extractions/setup-just@v4
       - name: 🔤 Install hunspell + dicionários
         run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
       - name: 🧹 Check LaTeX formatting
-        run: make format-check
+        run: just format-check
       - name: 🔎 Lint LaTeX (chktex)
-        run: make lint
+        run: just lint
       - name: 🔤 Spellcheck (hunspell)
-        run: make spell
-      - name: 📜 Make PDF
-        run: make
+        run: just spell
+      - name: 📜 Build PDF
+        run: just pdf
       - name: 📤 Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
