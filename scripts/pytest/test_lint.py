@@ -1,4 +1,4 @@
-"""Porta lint.bats: o lint.sh roda o chktex (exit 0 num .tex limpo, falha quando
+"""lint.sh roda o chktex (exit 0 num .tex limpo, falha quando
 acha um problema) e passa TODOS os arquivos numa unica invocacao (o script monta
 os parametros posicionais a partir da descoberta).
 

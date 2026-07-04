@@ -1,4 +1,4 @@
-"""Porta find-sources.bats: descoberta de arquivos por categoria
+"""find-sources.sh: descoberta de arquivos por categoria
 (format/lint/spell), exclusao de build/output/scripts e das listagens em
 */res/code/*, e validacao de categoria/uso. A arvore de teste e montada num
 diretorio temporario (nao depende da arvore real do repo).

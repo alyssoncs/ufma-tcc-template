@@ -16,19 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     container: texlive/texlive:latest
     steps:
-      - name: 🧰 Install git (checkout de submodules)
-        run: apt-get update && apt-get install -y --no-install-recommends git
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
-        with:
-          submodules: recursive
       - name: ⚙️ Install just
         uses: extractions/setup-just@v4
       - name: 🔧 Install shellcheck + hunspell + dicionários + python
-        run: apt-get install -y --no-install-recommends shellcheck hunspell hunspell-pt-br hunspell-en-us python3 python3-pip
+        run: apt-get update && apt-get install -y --no-install-recommends shellcheck hunspell hunspell-pt-br hunspell-en-us python3 python3-pip
       - name: 🐍 Install pytest (deps do harness)
         run: pip install --break-system-packages -r scripts/pytest/requirements.txt
-      - name: 🧪 Test scripts (shellcheck + bats + pytest)
+      - name: 🧪 Test scripts (shellcheck + pytest)
         run: just test
 
   build:

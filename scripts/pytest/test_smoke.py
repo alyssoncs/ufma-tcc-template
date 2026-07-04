@@ -1,4 +1,4 @@
-"""Porta smoke.bats: cada script de scripts/main rejeita uso incorreto (sem
+"""Cada script de scripts/main rejeita uso incorreto (sem
 argumentos) com exit 2 e mensagem de uso no stderr. Cobre o contrato de CLI
 compartilhado por todos os scripts.
 """

@@ -1,4 +1,4 @@
-"""Porta clean.bats: clean.sh e cleanall.sh removem os diretorios certos e,
+"""clean.sh e cleanall.sh removem os diretorios certos e,
 crucialmente, ABORTAM sem apagar nada quando recebem um argumento vazio (guarda
 ${var:?}). Esse guard e critico para o port PowerShell.
 

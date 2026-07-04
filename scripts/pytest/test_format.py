@@ -1,4 +1,4 @@
-"""Porta format.bats: o format.sh reescreve os fontes in-place (deixando-os
+"""format.sh reescreve os fontes in-place (deixando-os
 formatados) e roteia backups/log do latexindent para build/, sem sujar o
 diretorio do fonte.
 """

@@ -20,8 +20,7 @@ def run_script():
 
 @pytest.fixture
 def tree(tmp_path):
-    """Diretorio de trabalho limpo, ja com build/ criado (equivale ao
-    'TREE=...; mkdir -p "$TREE/build"' repetido nos .bats)."""
+    """Diretorio de trabalho limpo, ja com build/ criado."""
     (tmp_path / "build").mkdir()
     return tmp_path
 
@@ -32,7 +31,7 @@ def latexmk_stub(tmp_path):
 
     clean.sh roda `latexmk -c`, que num diretorio sem .tex sai com exit 10 e, sob
     'set -eu', abortaria o script antes do `rm`. O stub evita depender do latexmk
-    real (equivale ao stub_latexmk do bats)."""
+    real."""
     bindir = tmp_path / "stubbin"
     bindir.mkdir()
     if CURRENT_PLATFORM is Platform.POSIX:

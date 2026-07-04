@@ -1,4 +1,4 @@
-"""Porta spell.bats: remocao dos blocos minted, deduplicacao das palavras
+"""spell.sh: remocao dos blocos minted, deduplicacao das palavras
 desconhecidas, uso do dicionario do projeto e codigos de saida.
 
 O spell.sh e chamado direto com <lang> <dict> <arquivo.tex>..., usando as

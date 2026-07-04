@@ -1,4 +1,4 @@
-"""Porta format-check.bats: falha (exit 1) quando ha arquivo desformatado, passa
+"""format-check.sh falha (exit 1) quando ha arquivo desformatado, passa
 (exit 0) apos formatar (round-trip) e roteia a mensagem de erro para o stderr.
 
 Round-trip (formatar com o proprio script e entao checar) evita depender de um
