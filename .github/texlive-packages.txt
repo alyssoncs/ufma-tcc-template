@@ -1,33 +1,56 @@
 # Lista curada de pacotes TeX Live para o job macOS do CI (setup-texlive-action).
-# Um pacote/coleção por linha; linhas iniciadas por '#' sao comentarios.
+# Um item por linha; use apenas linhas de comentario (iniciadas por '#'),
+# sem comentario no fim da linha.
 #
-# Instalada sobre o scheme-infraonly (minimo). Preferimos algumas COLECOES
-# (collection-*) em vez de scheme-full para manter a instalacao enxuta e rapida
-# (com cache), cobrindo as dependencias transitivas dos pacotes do template.
+# Instalada sobre o scheme-infraonly (minimo). Usamos poucas COLECOES-base
+# pequenas (collection-basic/latex/latexrecommended/xetex/fontsrecommended) e
+# listamos os demais pacotes de forma especifica: o tlmgr resolve as
+# dependencias, evitando as colecoes gigantes (ex.: collection-latexextra, que
+# sozinha traz milhares de pacotes). Assim a instalacao fica enxuta e rapida.
 #
 # No Linux o container texlive/texlive:latest ja traz tudo; esta lista vale so
-# para o macOS. Se o PDF falhar por pacote faltante, adicione-o aqui.
+# para o macOS. Se o PDF/suite falhar por pacote faltante, adicione-o aqui.
+# NAO liste latexminted: ele nao esta na API do CTAN (a action falha ao valida-lo)
+# e ja vem como dependencia do minted.
 
-# --- Infra basica de compilacao ---
+# Base de compilacao
+collection-basic
+collection-latex
+collection-latexrecommended
+collection-xetex
+collection-fontsrecommended
 latexmk
-collection-latex              # nucleo LaTeX (graphicx, xcolor, hyperref, etc.)
-collection-latexrecommended   # fontspec, csquotes, microtype, ...
-collection-latexextra         # abntex2, pdfpages, minted, framed, ...
-collection-xetex              # engine XeLaTeX (fixada em .latexmkrc)
 
-# --- Fontes ---
-collection-fontsrecommended   # Latin Modern e afins (usadas pelo abntex2/memoir)
-cascadia-code                 # fonte monoespacada do template (CascadiaCode-*.otf)
+# Classe/estrutura do template (memoir e a base do abntex2)
+abntex2
+memoir
 
-# --- Bibliografia (biblatex + biber, estilo ABNT) ---
-collection-bibtexextra        # biber, biblatex, biblatex-abnt
+# Bibliografia (biblatex + biber, estilo ABNT)
+biblatex
+biblatex-abnt
+biber
 
-# --- Matematica / unidades ---
-collection-mathscience        # mathtools, siunitx, bm
-
-# --- minted (realce via Pygments/latexminted) ---
+# Realce de codigo (minted v3 puxa latexminted como dependencia)
 minted
-latexminted
+fvextra
+newfloat
 
-# --- Ferramentas dos checks (format/lint) ---
-collection-binextra           # latexindent, chktex, texlua, ...
+# Pacotes usados pelo preambulo
+fontspec
+csquotes
+siunitx
+hyperref
+pdfpages
+mathtools
+metalogo
+microtype
+xcolor
+bm
+indentfirst
+
+# Fonte monoespacada (fornece CascadiaCode-*.otf via arvore texmf)
+cascadia-code
+
+# Ferramentas dos checks (format/lint)
+latexindent
+chktex
