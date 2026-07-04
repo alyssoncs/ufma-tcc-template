@@ -82,6 +82,12 @@ jobs:
           brew install cpanminus
           cpanm --notest YAML::Tiny File::HomeDir
 
+      - name: 🔤 Refresh TeX filename database (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          mktexlsr
+          kpsewhich CascadiaCode-Regular.otf || echo "CascadiaCode-Regular.otf NAO encontrado pelo kpathsea"
+
       - name: 🔤 Fetch hunspell dictionaries (pinned, same on both OSes)
         run: |
           set -eu
