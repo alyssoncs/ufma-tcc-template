@@ -1,14 +1,40 @@
-"""Testes-prova do setup do harness: mostram que da para invocar um script de
-`scripts/main` e fazer assert tanto no exit code quanto na saida (stderr).
-Nao portam a suite bats --- servem so para validar a base do pytest.
+"""Porta smoke.bats: cada script de scripts/main rejeita uso incorreto (sem
+argumentos) com exit 2 e mensagem de uso no stderr. Cobre o contrato de CLI
+compartilhado por todos os scripts.
 """
 
+import pytest
 
-def test_format_sem_args_sai_com_2(run_script):
-    result = run_script("format")
+
+@pytest.mark.parametrize(
+    "script",
+    [
+        "format",
+        "format-check",
+        "lint",
+        "clean",
+        "cleanall",
+        "find-sources",
+        "spell",
+    ],
+)
+def test_sem_args_sai_com_2(run_script, script):
+    result = run_script(script)
     assert result.returncode == 2
 
 
-def test_format_sem_args_mostra_uso(run_script):
-    result = run_script("format")
+@pytest.mark.parametrize(
+    "script",
+    [
+        "format",
+        "format-check",
+        "lint",
+        "clean",
+        "cleanall",
+        "find-sources",
+        "spell",
+    ],
+)
+def test_sem_args_mostra_uso(run_script, script):
+    result = run_script(script)
     assert "Uso:" in result.stderr
