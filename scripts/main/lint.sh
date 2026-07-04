@@ -18,9 +18,13 @@ dir=$(dirname "$0")
 files=$("$dir/find-sources.sh" "$root" lint "$build_dir" "$out_dir")
 set --
 while IFS= read -r f; do
-  set -- "$@" "$f"
+  [ -n "$f" ] && set -- "$@" "$f"
 done <<EOF
 $files
 EOF
+
+# Sem arquivos para lintar: sai limpo (nao chama o chktex sem argumentos, o que
+# o faria ler do stdin e travar).
+[ "$#" -eq 0 ] && exit 0
 
 chktex -q "$@"
