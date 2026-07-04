@@ -25,6 +25,9 @@ latexmk
 abntex2
 memoir
 
+# Idioma pt-BR (babel: opcao brazil, carregada pelo abntex2)
+babel-portuges
+
 # Bibliografia (biblatex + biber, estilo ABNT)
 biblatex
 biblatex-abnt
