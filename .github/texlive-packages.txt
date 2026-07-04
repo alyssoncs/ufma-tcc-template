@@ -1,0 +1,33 @@
+# Lista curada de pacotes TeX Live para o job macOS do CI (setup-texlive-action).
+# Um pacote/coleção por linha; linhas iniciadas por '#' sao comentarios.
+#
+# Instalada sobre o scheme-infraonly (minimo). Preferimos algumas COLECOES
+# (collection-*) em vez de scheme-full para manter a instalacao enxuta e rapida
+# (com cache), cobrindo as dependencias transitivas dos pacotes do template.
+#
+# No Linux o container texlive/texlive:latest ja traz tudo; esta lista vale so
+# para o macOS. Se o PDF falhar por pacote faltante, adicione-o aqui.
+
+# --- Infra basica de compilacao ---
+latexmk
+collection-latex              # nucleo LaTeX (graphicx, xcolor, hyperref, etc.)
+collection-latexrecommended   # fontspec, csquotes, microtype, ...
+collection-latexextra         # abntex2, pdfpages, minted, framed, ...
+collection-xetex              # engine XeLaTeX (fixada em .latexmkrc)
+
+# --- Fontes ---
+collection-fontsrecommended   # Latin Modern e afins (usadas pelo abntex2/memoir)
+cascadia-code                 # fonte monoespacada do template (CascadiaCode-*.otf)
+
+# --- Bibliografia (biblatex + biber, estilo ABNT) ---
+collection-bibtexextra        # biber, biblatex, biblatex-abnt
+
+# --- Matematica / unidades ---
+collection-mathscience        # mathtools, siunitx, bm
+
+# --- minted (realce via Pygments/latexminted) ---
+minted
+latexminted
+
+# --- Ferramentas dos checks (format/lint) ---
+collection-binextra           # latexindent, chktex, texlua, ...

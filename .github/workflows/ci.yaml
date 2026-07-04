@@ -43,7 +43,7 @@ jobs:
       - name: 📥 Download PDF artifact
         uses: actions/download-artifact@v8
         with:
-          name: monografia
+          name: monografia-ubuntu-latest
       - name: 📂 Move PDF to output directory
         run: |
           mkdir -p ${{ env.OUT_DIR }}
