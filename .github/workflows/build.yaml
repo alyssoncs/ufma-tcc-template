@@ -11,14 +11,16 @@ env:
   PDF_NAME: monografia.pdf
 
 jobs:
-  shellcheck:
-    name: shellcheck 🐚
+  test:
+    name: test 🧪
     runs-on: ubuntu-latest
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
-      - name: 🐚 Shellcheck (POSIX sh)
-        run: shellcheck --shell=sh scripts/*.sh
+      - name: ⚙️ Install just
+        uses: extractions/setup-just@v4
+      - name: 🧪 Test scripts (shellcheck)
+        run: just test
 
   build:
     name: build 🛠️
