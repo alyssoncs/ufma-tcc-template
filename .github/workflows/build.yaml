@@ -76,6 +76,12 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install hunspell
 
+      - name: 🔧 Install latexindent Perl deps (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cpanminus
+          cpanm --notest YAML::Tiny File::HomeDir
+
       - name: 🔤 Fetch hunspell dictionaries (pinned, same on both OSes)
         run: |
           set -eu
