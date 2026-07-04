@@ -15,7 +15,7 @@ env:
   DICT_REF: 8cfea406b505e4d7df52d5a19bce525df98c54ab
 
 jobs:
-  # Fonte unica da matriz de SOs, consumida por `test` e `build` via fromJSON.
+  # Fonte unica da matriz de SOs, consumida pelo job `build` via fromJSON.
   # O GitHub Actions nao tem matrix a nivel de workflow nem suporta YAML anchors,
   # entao centralizamos a lista aqui. `container` so eh usado pelo job `build`
   # (Linux roda no container do TeX Live; macOS roda direto no runner).
@@ -29,37 +29,23 @@ jobs:
         id: matrix
         run: echo 'matrix={"include":[{"os":"ubuntu-latest","container":"texlive/texlive:latest"},{"os":"macos-latest","container":""}]}' >> "$GITHUB_OUTPUT"
 
-  # Suite dos scripts: nao precisa de LaTeX, so shellcheck + python/pytest.
-  test:
-    name: test ${{ matrix.os }} 🧪
-    needs: setup
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
+  # Analise estatica dos scripts POSIX. Nao depende do toolchain LaTeX, entao roda
+  # uma unica vez (Linux) num runner leve. Espelha a parte shellcheck do
+  # `just test` (a parte pytest roda no job `build`, que tem o toolchain).
+  shellcheck:
+    name: shellcheck 🐚
+    runs-on: ubuntu-latest
     steps:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
 
-      - name: ⚙️ Install just
-        uses: extractions/setup-just@v4
+      - name: 🐚 ShellCheck (scripts POSIX)
+        run: shellcheck --shell=sh scripts/main/*.sh
 
-      - name: 🔧 Install shellcheck (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck
-
-      - name: 🔧 Install shellcheck (macOS)
-        if: runner.os == 'macOS'
-        run: brew install shellcheck
-
-      - name: 🐍 Install pytest (deps do harness)
-        run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
-
-      - name: 🧪 Test scripts (shellcheck + pytest)
-        run: just test
-
-  # Checks de LaTeX + compilacao do PDF. Cada OS publica seu proprio artifact;
-  # a branch `pdf` (deploy em ci.yaml) usa apenas o artifact do Linux.
+  # Checks de LaTeX + suite pytest + compilacao do PDF. A suite exercita os
+  # wrappers (format/lint/spell) e por isso exige o toolchain completo
+  # (latexindent, chktex, hunspell) — roda aqui, nos dois SOs. Cada OS publica
+  # seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa so o do Linux.
   build:
     name: build ${{ matrix.os }} 🛠️
     needs: setup
@@ -77,16 +63,16 @@ jobs:
 
       - name: 📦 Setup TeX Live (macOS)
         if: runner.os == 'macOS'
-        uses: teatimeguest/setup-texlive-action@v3
+        uses: TeX-Live/setup-texlive-action@v4
         with:
           package-file: .github/texlive-packages.txt
           cache: true
 
-      - name: 🔤 Install hunspell (Linux)
+      - name: 🔧 Install hunspell + python (Linux)
         if: runner.os == 'Linux'
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell curl
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell curl python3 python3-pip
 
-      - name: 🔤 Install hunspell (macOS)
+      - name: 🔧 Install hunspell (macOS)
         if: runner.os == 'macOS'
         run: brew install hunspell
 
@@ -102,6 +88,9 @@ jobs:
           curl -fsSL "$base/en/index.dic" -o "$dir/en_US.dic"
           echo "DICPATH=$dir" >> "$GITHUB_ENV"
 
+      - name: 🐍 Install pytest (deps do harness)
+        run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
+
       - name: 🧹 Check LaTeX formatting
         run: just format-check
 
@@ -110,6 +99,9 @@ jobs:
 
       - name: 🔤 Spellcheck (hunspell)
         run: just spell
+
+      - name: 🧪 Test scripts (pytest)
+        run: python3 -m pytest scripts/test
 
       - name: 📜 Build PDF
         run: just pdf
