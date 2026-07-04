@@ -46,11 +46,11 @@ build: check pdf
 # Roda a verificacao dos scripts: shellcheck (analise estatica) + suite pytest.
 # Standalone: NAO entra em check/build --- e para quem MANTEM o template, nao
 # para quem escreve a monografia. Requer as deps do pytest
-# (scripts/pytest/requirements.txt).
+# (scripts/test/requirements.txt).
 [unix]
 test:
     shellcheck --shell=sh scripts/main/*.sh
-    python3 -m pytest scripts/pytest
+    python3 -m pytest scripts/test
 
 # Remove os artefatos de build (build/).
 [unix]
