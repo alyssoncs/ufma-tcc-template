@@ -43,11 +43,15 @@ check: format-check lint spell
 # Pipeline completo: valida (check) e compila o PDF.
 build: check pdf
 
-# Roda a verificacao estatica dos scripts (shellcheck). Standalone: NAO entra em
-# check/build --- e para quem MANTEM o template, nao para quem escreve a monografia.
+# Roda a verificacao dos scripts: shellcheck (analise estatica) + suite bats +
+# suite pytest. Standalone: NAO entra em check/build --- e para quem MANTEM o
+# template, nao para quem escreve a monografia. Requer os submodules
+# (git submodule update --init) e as deps do pytest (scripts/pytest/requirements.txt).
 [unix]
 test:
     shellcheck --shell=sh scripts/main/*.sh
+    ./scripts/test/bats/bin/bats scripts/test
+    python3 -m pytest scripts/pytest
 
 # Remove os artefatos de build (build/).
 [unix]
