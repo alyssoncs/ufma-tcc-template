@@ -38,3 +38,15 @@ def test_erro_no_stderr(run_script, tree):
     # stdout limpo; a mensagem fica no stderr (contrato importante para o port).
     assert result.stdout == ""
     assert "Fora de formatacao" in result.stderr
+
+
+def test_para_no_primeiro_desformatado(run_script, tree):
+    require_latexindent()
+    # Dois arquivos desformatados: o script deve sair no PRIMEIRO, sem checar o
+    # segundo (short-circuit). Observavel pela contagem de mensagens de erro.
+    copy_fixture("format/unformatted.tex", tree / "a.tex")
+    copy_fixture("format/unformatted.tex", tree / "b.tex")
+
+    result = run_script("format-check", str(tree), "build", "output")
+    assert result.returncode == 1
+    assert result.stderr.count("Fora de formatacao") == 1

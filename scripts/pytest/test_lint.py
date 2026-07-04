@@ -6,7 +6,18 @@ A arvore e hermetica (sem .chktexrc) -> chktex usa os defaults. Usamos o aviso
 W26 (espaco antes de pontuacao), estavel entre versoes do chktex.
 """
 
-from helpers import copy_fixture, require_chktex
+from helpers import copy_fixture, make_files, require_chktex
+
+
+def test_sem_fontes_sai_limpo(run_script, tree):
+    require_chktex()
+    # Arvore sem nenhum .tex: nada a lintar. O script deve sair 0 SEM chamar o
+    # chktex (evita o WARNING de abrir '' e o risco de travar lendo stdin).
+    make_files(tree, "notes.md")
+
+    result = run_script("lint", str(tree), "build", "output")
+    assert result.returncode == 0
+    assert "WARNING" not in result.stderr
 
 
 def test_tex_limpo_passa(run_script, tree):

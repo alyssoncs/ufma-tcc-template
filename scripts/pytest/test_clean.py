@@ -17,6 +17,19 @@ def test_clean_remove_build_dir(run_script, tmp_path, latexmk_stub):
     assert not build.exists()
 
 
+def test_clean_invoca_latexmk_c(run_script, tmp_path, latexmk_spy):
+    env, logpath = latexmk_spy
+    build = tmp_path / "build"
+    build.mkdir()
+
+    result = run_script("clean", "build", cwd=tmp_path, env=env)
+    assert result.returncode == 0
+    # clean.sh deve rodar `latexmk -c` (limpa aux fora de build/); provamos que o
+    # latexmk foi de fato chamado, e com -c, e nao apenas o `rm` do build.
+    assert logpath.exists()
+    assert "-c" in logpath.read_text()
+
+
 def test_cleanall_remove_build_e_output(run_script, tmp_path, latexmk_stub):
     build = tmp_path / "build"
     output = tmp_path / "output"

@@ -46,3 +46,26 @@ def latexmk_stub(tmp_path):
     env = dict(os.environ)
     env["PATH"] = f"{bindir}{os.pathsep}{env.get('PATH', '')}"
     return env
+
+
+@pytest.fixture
+def latexmk_spy(tmp_path):
+    """Como o latexmk_stub, mas REGISTRA os argumentos de cada invocacao.
+
+    O stub anexa `"$@"` (uma invocacao por linha) a um arquivo de log e sai 0.
+    Devolve `(env, logpath)`: o env com o stub no PATH e o caminho do log, para
+    o teste provar que o script realmente chamou `latexmk` (e com quais args)."""
+    bindir = tmp_path / "spybin"
+    bindir.mkdir()
+    logpath = tmp_path / "latexmk-calls.log"
+    if CURRENT_PLATFORM is Platform.POSIX:
+        stub = bindir / "latexmk"
+        stub.write_text(f'#!/bin/sh\necho "$@" >>"{logpath}"\nexit 0\n')
+        stub.chmod(0o755)
+    else:
+        raise NotImplementedError(
+            "spy de latexmk ainda nao implementado (Windows)"
+        )
+    env = dict(os.environ)
+    env["PATH"] = f"{bindir}{os.pathsep}{env.get('PATH', '')}"
+    return env, logpath
