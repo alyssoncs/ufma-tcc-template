@@ -39,9 +39,10 @@ def latexmk_stub(tmp_path):
         stub.write_text("#!/bin/sh\nexit 0\n")
         stub.chmod(0o755)
     else:
-        raise NotImplementedError(
-            "stub de latexmk ainda nao implementado (Windows)"
-        )
+        # No Windows o PATH resolve latexmk.cmd (via PATHEXT); um .sh nao seria
+        # executavel. O .cmd sai 0 como o stub POSIX.
+        stub = bindir / "latexmk.cmd"
+        stub.write_text("@echo off\r\nexit /b 0\r\n")
     env = dict(os.environ)
     env["PATH"] = f"{bindir}{os.pathsep}{env.get('PATH', '')}"
     return env
@@ -62,9 +63,9 @@ def latexmk_spy(tmp_path):
         stub.write_text(f'#!/bin/sh\necho "$@" >>"{logpath}"\nexit 0\n')
         stub.chmod(0o755)
     else:
-        raise NotImplementedError(
-            "spy de latexmk ainda nao implementado (Windows)"
-        )
+        # Analogo Windows: latexmk.cmd registra os argumentos (%*) no log e sai 0.
+        stub = bindir / "latexmk.cmd"
+        stub.write_text(f'@echo off\r\necho %*>>"{logpath}"\r\nexit /b 0\r\n')
     env = dict(os.environ)
     env["PATH"] = f"{bindir}{os.pathsep}{env.get('PATH', '')}"
     return env, logpath

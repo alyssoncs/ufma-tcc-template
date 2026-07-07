@@ -80,6 +80,22 @@ jobs:
       - name: 🐍 Install pytest (deps do harness)
         run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
 
+      # O runner macOS ja traz o pwsh; no container Debian do TeX Live (Linux)
+      # instalamos o PowerShell 7 pelo tarball oficial para validar os .ps1 na
+      # CI unix (andaime SCRIPT_IMPL=ps1, removido pela #65).
+      - name: 🔧 Install PowerShell (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          set -eu
+          apt-get install -y --no-install-recommends libicu-dev
+          ver=7.4.6
+          curl -fsSL -o /tmp/pwsh.tar.gz "https://github.com/PowerShell/PowerShell/releases/download/v${ver}/powershell-${ver}-linux-x64.tar.gz"
+          mkdir -p /opt/microsoft/powershell
+          tar -xzf /tmp/pwsh.tar.gz -C /opt/microsoft/powershell
+          chmod +x /opt/microsoft/powershell/pwsh
+          ln -sf /opt/microsoft/powershell/pwsh /usr/local/bin/pwsh
+          pwsh --version
+
       # --- Checagens ---
       - name: 🧹 Check LaTeX formatting
         run: just format-check
@@ -92,6 +108,11 @@ jobs:
 
       - name: 🧪 Test scripts (shellcheck + pytest)
         run: just test
+
+      # Valida a MESMA suite contra os .ps1 via pwsh (paridade sh <-> ps1 por
+      # construcao). Andaime SCRIPT_IMPL=ps1, removido pela #65.
+      - name: 🧪 Test scripts (PowerShell via pwsh)
+        run: SCRIPT_IMPL=ps1 python3 -m pytest scripts/test
 
       - name: 📜 Build PDF
         run: just pdf

@@ -17,6 +17,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAIN = REPO_ROOT / "scripts" / "main"
+POSIX_MAIN = MAIN / "posix"
+WINDOWS_MAIN = MAIN / "windows"
 FIXTURES = REPO_ROOT / "scripts" / "fixtures"
 
 
@@ -36,11 +38,21 @@ def _detect_platform():
 CURRENT_PLATFORM = _detect_platform()
 
 
+def _script_impl():
+    """Implementacao a exercitar: 'ps1' forca os .ps1 via pwsh em qualquer SO
+    (andaime para validar o porte na CI unix, removido pela #65); vazio segue a
+    plataforma atual."""
+    return os.environ.get("SCRIPT_IMPL", "").strip().lower()
+
+
 def _script_command(name, args):
-    if CURRENT_PLATFORM is Platform.POSIX:
-        return ["sh", str(MAIN / f"{name}.sh"), *args]
+    impl = _script_impl()
+    if impl == "ps1" or (impl == "" and CURRENT_PLATFORM is Platform.WINDOWS):
+        return ["pwsh", "-NoProfile", "-File", str(WINDOWS_MAIN / f"{name}.ps1"), *args]
+    if impl in ("", "sh") and CURRENT_PLATFORM is Platform.POSIX:
+        return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
     raise NotImplementedError(
-        "invocacao de scripts .ps1 ainda nao implementada (Windows)"
+        f"combinacao nao suportada: SCRIPT_IMPL={impl!r}, plataforma={CURRENT_PLATFORM}"
     )
 
 

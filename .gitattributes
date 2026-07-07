@@ -8,3 +8,6 @@
 # Reforco explicito para os shell scripts POSIX: o shebang (#!/bin/sh) quebra com
 # CRLF (\r), entao garantimos LF independentemente do core.autocrlf no Windows.
 *.sh text eol=lf
+
+# Simetria com os .sh: os scripts PowerShell tambem ficam em LF no repositorio.
+*.ps1 text eol=lf

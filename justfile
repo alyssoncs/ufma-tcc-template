@@ -2,6 +2,9 @@
 BUILD_DIR := "build"
 OUT_DIR := "output"
 
+# O just no Windows nao usa pwsh por padrao; os checks sao PowerShell 7.
+set windows-shell := ["pwsh", "-NoProfile", "-Command"]
+
 # Idiomas do hunspell (dicionarios do SO). pt_BR + en_US porque a monografia tem
 # resumo/abstract e citacoes em ingles. Sobrescreva com 'just SPELL_LANG=pt_BR spell'.
 SPELL_LANG := "pt_BR,en_US"
@@ -20,22 +23,38 @@ continuous:
 # Formata todos os arquivos fonte in-place (latexindent).
 [unix]
 format:
-    ./scripts/main/format.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/posix/format.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+
+[windows]
+format:
+    ./scripts/main/windows/format.ps1 . {{ BUILD_DIR }} {{ OUT_DIR }}
 
 # Verifica a formatacao sem alterar (falha se houver pendencia).
 [unix]
 format-check:
-    ./scripts/main/format-check.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/posix/format-check.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+
+[windows]
+format-check:
+    ./scripts/main/windows/format-check.ps1 . {{ BUILD_DIR }} {{ OUT_DIR }}
 
 # Roda o linter LaTeX (chktex) nos arquivos de conteudo.
 [unix]
 lint:
-    ./scripts/main/lint.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/posix/lint.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+
+[windows]
+lint:
+    ./scripts/main/windows/lint.ps1 . {{ BUILD_DIR }} {{ OUT_DIR }}
 
 # Roda o corretor ortografico (hunspell) nos arquivos de conteudo.
 [unix]
 spell:
-    ./scripts/main/spell.sh {{ SPELL_LANG }} {{ SPELL_DICT }} $(./scripts/main/find-sources.sh . spell {{ BUILD_DIR }} {{ OUT_DIR }})
+    ./scripts/main/posix/spell.sh {{ SPELL_LANG }} {{ SPELL_DICT }} $(./scripts/main/posix/find-sources.sh . spell {{ BUILD_DIR }} {{ OUT_DIR }})
+
+[windows]
+spell:
+    ./scripts/main/windows/spell.ps1 {{ SPELL_LANG }} {{ SPELL_DICT }} (./scripts/main/windows/find-sources.ps1 . spell {{ BUILD_DIR }} {{ OUT_DIR }})
 
 # Valida tudo (format-check, lint e spell) sem compilar.
 check: format-check lint spell
@@ -49,18 +68,32 @@ build: check pdf
 # (scripts/test/requirements.txt).
 [unix]
 test:
-    shellcheck --shell=sh scripts/main/*.sh
+    shellcheck --shell=sh scripts/main/posix/*.sh
+    python3 -m pytest scripts/test
+
+# No Windows so a suite pytest (o PSScriptAnalyzer --- analogo do shellcheck ---
+# entra em slice propria).
+[windows]
+test:
     python3 -m pytest scripts/test
 
 # Remove os artefatos de build (build/).
 [unix]
 clean:
-    ./scripts/main/clean.sh {{ BUILD_DIR }}
+    ./scripts/main/posix/clean.sh {{ BUILD_DIR }}
+
+[windows]
+clean:
+    ./scripts/main/windows/clean.ps1 {{ BUILD_DIR }}
 
 # Remove os artefatos de build e o PDF final (output/).
 [unix]
 cleanall:
-    ./scripts/main/cleanall.sh {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/posix/cleanall.sh {{ BUILD_DIR }} {{ OUT_DIR }}
+
+[windows]
+cleanall:
+    ./scripts/main/windows/cleanall.ps1 {{ BUILD_DIR }} {{ OUT_DIR }}
 
 # Mostra esta ajuda com as recipes disponiveis.
 help:
