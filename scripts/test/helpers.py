@@ -88,7 +88,9 @@ def require_hunspell():
     if shutil.which("hunspell") is None:
         pytest.fail("hunspell nao instalado")
     result = subprocess.run(["hunspell", "-D"], capture_output=True, text=True)
-    listing = result.stdout + result.stderr
+    # Normaliza as barras: no Windows os caminhos de dicionario vem com '\'
+    # (ex.: C:\...\hunspell-dicts\pt_BR), e o ancoramento '/pt_BR' nao casaria.
+    listing = (result.stdout + result.stderr).replace("\\", "/")
     if "/pt_BR" not in listing:
         pytest.fail("dicionario pt_BR ausente")
     if "/en_US" not in listing:
