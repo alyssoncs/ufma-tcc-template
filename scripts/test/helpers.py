@@ -17,6 +17,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAIN = REPO_ROOT / "scripts" / "main"
+POSIX_MAIN = MAIN / "posix"
+WINDOWS_MAIN = MAIN / "windows"
 FIXTURES = REPO_ROOT / "scripts" / "fixtures"
 
 
@@ -38,7 +40,7 @@ CURRENT_PLATFORM = _detect_platform()
 
 def _script_command(name, args):
     if CURRENT_PLATFORM is Platform.POSIX:
-        return ["sh", str(MAIN / f"{name}.sh"), *args]
+        return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
     raise NotImplementedError(
         "invocacao de scripts .ps1 ainda nao implementada (Windows)"
     )
