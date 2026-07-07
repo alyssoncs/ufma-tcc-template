@@ -9,10 +9,6 @@ permissions:
 env:
   OUT_DIR: output
   PDF_NAME: monografia.pdf
-  # Dicionarios do hunspell: mesma fonte pinada nos dois SOs, para o resultado do
-  # spell ser identico entre Linux e macOS (wooorm/dictionaries: pt -> pt_BR,
-  # en -> en_US).
-  DICT_REF: 8cfea406b505e4d7df52d5a19bce525df98c54ab
 
 jobs:
   # Todas as checagens + compilacao do PDF, nos dois SOs. A suite (`just test`)
@@ -49,9 +45,14 @@ jobs:
           package-file: .github/texlive-packages.txt
           cache: true
 
+      # No Linux os dicionarios vem dos pacotes hunspell-pt-br/hunspell-en-us
+      # (em /usr/share/hunspell, achados sem DICPATH); no macOS o Homebrew nao os
+      # empacota, entao baixamos do LibreOffice/dictionaries e apontamos DICPATH.
+      # O en_US diverge entre as fontes (SCOWL no apt vs LibreOffice no macOS):
+      # palavra so conhecida por um lado entra em dictionary.txt.
       - name: 🔧 Install tooling (Linux)
         if: runner.os == 'Linux'
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell curl python3 python3-pip shellcheck
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us curl python3 python3-pip shellcheck
 
       - name: 🔧 Install tooling (macOS)
         if: runner.os == 'macOS'
@@ -63,16 +64,17 @@ jobs:
           brew install cpanminus
           cpanm --notest YAML::Tiny File::HomeDir
 
-      - name: 🔤 Fetch hunspell dictionaries (pinned, same on both OSes)
+      - name: 🔤 Fetch hunspell dictionaries (macOS)
+        if: runner.os == 'macOS'
         run: |
           set -eu
           dir="$HOME/hunspell-dicts"
           mkdir -p "$dir"
-          base="https://raw.githubusercontent.com/wooorm/dictionaries/${DICT_REF}/dictionaries"
-          curl -fsSL "$base/pt/index.aff" -o "$dir/pt_BR.aff"
-          curl -fsSL "$base/pt/index.dic" -o "$dir/pt_BR.dic"
-          curl -fsSL "$base/en/index.aff" -o "$dir/en_US.aff"
-          curl -fsSL "$base/en/index.dic" -o "$dir/en_US.dic"
+          base="https://raw.githubusercontent.com/LibreOffice/dictionaries/master"
+          curl -fsSL "$base/pt_BR/pt_BR.aff" -o "$dir/pt_BR.aff"
+          curl -fsSL "$base/pt_BR/pt_BR.dic" -o "$dir/pt_BR.dic"
+          curl -fsSL "$base/en/en_US.aff" -o "$dir/en_US.aff"
+          curl -fsSL "$base/en/en_US.dic" -o "$dir/en_US.dic"
           echo "DICPATH=$dir" >> "$GITHUB_ENV"
 
       - name: 🐍 Install pytest (deps do harness)
