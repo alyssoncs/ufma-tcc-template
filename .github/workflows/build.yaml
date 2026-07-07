@@ -15,34 +15,25 @@ env:
   DICT_REF: 8cfea406b505e4d7df52d5a19bce525df98c54ab
 
 jobs:
-  # Fonte unica da matriz de SOs, consumida pelo job `build` via fromJSON.
-  # O GitHub Actions nao tem matrix a nivel de workflow nem suporta YAML anchors,
-  # entao centralizamos a lista aqui. `container` so eh usado pelo job `build`
-  # (Linux roda no container do TeX Live; macOS roda direto no runner).
-  setup:
-    name: setup ⚙️
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.matrix }}
-    steps:
-      - name: 🧩 Define OS matrix
-        id: matrix
-        run: echo 'matrix={"include":[{"os":"ubuntu-latest","container":"texlive/texlive:latest"},{"os":"macos-latest","container":""}]}' >> "$GITHUB_OUTPUT"
-
   # Todas as checagens + compilacao do PDF, nos dois SOs. A suite (`just test`)
   # exercita os wrappers (format/lint/spell) e faz shellcheck, entao exige o
   # toolchain completo (latexindent, chktex, hunspell, shellcheck) — por isso
   # tudo roda num job so. Os steps de setup vem primeiro; as checagens, depois.
   # Cada OS publica seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa
-  # so o do Linux.
+  # so o do Linux. No Linux rodamos no container do TeX Live; no macOS, direto no
+  # runner (a instalacao do TeX Live e feita pela setup-texlive-action).
   build:
     name: build ${{ matrix.os }} 🛠️
-    needs: setup
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
+      matrix:
+        include:
+          - os: ubuntu-latest
+            container: texlive/texlive:latest
+          - os: macos-latest
+            container: ''
     steps:
       # --- Setup ---
       - name: 🛎️ Checkout code
