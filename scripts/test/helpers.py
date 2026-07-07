@@ -2,9 +2,9 @@
 
 Expoe a deteccao de plataforma (`CURRENT_PLATFORM`), o invocador de scripts
 `run_script` (independente de plataforma: no unix roda o `.sh` via `sh`; no
-Windows rodara o `.ps1` via `pwsh` quando esses scripts existirem), e helpers
-puros de montagem de arvore e de exigencia de toolchain. As fixtures ficam em
-conftest.py; aqui vivem apenas funcoes reutilizaveis sem estado de teste.
+Windows roda o `.ps1` via `pwsh`), e helpers puros de montagem de arvore e de
+exigencia de toolchain. As fixtures ficam em conftest.py; aqui vivem apenas
+funcoes reutilizaveis sem estado de teste.
 """
 
 import os
@@ -38,22 +38,10 @@ def _detect_platform():
 CURRENT_PLATFORM = _detect_platform()
 
 
-def _script_impl():
-    """Implementacao a exercitar: 'ps1' forca os .ps1 via pwsh em qualquer SO
-    (andaime para validar o porte na CI unix, removido pela #65); vazio segue a
-    plataforma atual."""
-    return os.environ.get("SCRIPT_IMPL", "").strip().lower()
-
-
 def _script_command(name, args):
-    impl = _script_impl()
-    if impl == "ps1" or (impl == "" and CURRENT_PLATFORM is Platform.WINDOWS):
+    if CURRENT_PLATFORM is Platform.WINDOWS:
         return ["pwsh", "-NoProfile", "-File", str(WINDOWS_MAIN / f"{name}.ps1"), *args]
-    if impl in ("", "sh") and CURRENT_PLATFORM is Platform.POSIX:
-        return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
-    raise NotImplementedError(
-        f"combinacao nao suportada: SCRIPT_IMPL={impl!r}, plataforma={CURRENT_PLATFORM}"
-    )
+    return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
 
 
 def run_script(name, *args, cwd=None, env=None):

@@ -12,6 +12,10 @@ SPELL_LANG := "pt_BR,en_US"
 # Dicionario do projeto: termos tecnicos e nomes proprios validos (1 por linha).
 SPELL_DICT := "dictionary.txt"
 
+# Interpretador Python do harness pytest. No Windows o launcher e `python`
+# (o alias `python3` costuma apontar pra Microsoft Store); no unix, `python3`.
+PYTHON := if os() == "windows" { "python" } else { "python3" }
+
 # Recipe padrao: so compila o PDF (loop rapido de quem esta escrevendo).
 pdf:
     latexmk
@@ -69,13 +73,13 @@ build: check pdf
 [unix]
 test:
     shellcheck --shell=sh scripts/main/posix/*.sh
-    python3 -m pytest scripts/test
+    {{ PYTHON }} -m pytest scripts/test
 
 # No Windows so a suite pytest (o PSScriptAnalyzer --- analogo do shellcheck ---
 # entra em slice propria).
 [windows]
 test:
-    python3 -m pytest scripts/test
+    {{ PYTHON }} -m pytest scripts/test
 
 # Remove os artefatos de build (build/).
 [unix]
