@@ -23,6 +23,11 @@ jobs:
     name: build ${{ matrix.os }} 🛠️
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
+    # Guarda contra travas na instalacao do TeX Live (ex.: mirror lento/pendurado
+    # no cold install do Windows): falha rapido em vez de pendurar ate o teto de
+    # 6h. Linux (container) e macOS (cache) terminam em ~2min; o cold install do
+    # Windows cabe folgado nesta janela.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -48,12 +53,18 @@ jobs:
           package-file: .github/texlive-packages.txt
           cache: true
 
+      # No Windows este e um cold install (sem cache na primeira execucao): o
+      # tlmgr baixa ~355 pacotes. Fixamos um mirror CTAN confiavel (UIUC) em vez
+      # de deixar o tlmgr sortear um espelho (que ja veio lento/pendurado do
+      # redirector mirror.ctan.org). Apos o primeiro sucesso o cache aquece e os
+      # runs seguintes restauram em segundos, como no macOS.
       - name: 📦 Setup TeX Live (Windows)
         if: runner.os == 'Windows'
         uses: TeX-Live/setup-texlive-action@v4
         with:
           package-file: .github/texlive-packages.txt
           cache: true
+          repository: https://ctan.math.illinois.edu/systems/texlive/tlnet
 
       # No Linux os dicionarios vem dos pacotes hunspell-pt-br/hunspell-en-us
       # (em /usr/share/hunspell, achados sem DICPATH); no macOS o Homebrew nao os
