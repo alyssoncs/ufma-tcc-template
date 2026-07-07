@@ -33,8 +33,11 @@ if ($category -notin @('format', 'lint', 'spell')) {
   exit 2
 }
 
-# Remove uma eventual barra final para nao gerar '//' nos caminhos de saida.
+# Remove uma eventual barra final e resolve o root para caminho absoluto: o
+# Get-ChildItem devolve FullName absoluto, entao precisamos do root absoluto
+# para recortar o caminho relativo (com root='.' o cwd e a raiz do repo).
 $rootTrim = $root.TrimEnd([char]47, [char]92)
+$rootFull = [System.IO.Path]::GetFullPath($rootTrim)
 
 # .tex para todas as categorias; format inclui tambem .sty/.cls/.bib.
 $extensions = if ($category -eq 'format') {
@@ -43,11 +46,11 @@ $extensions = if ($category -eq 'format') {
   @('.tex')
 }
 
-Get-ChildItem -Path $rootTrim -Recurse -File -ErrorAction SilentlyContinue |
+Get-ChildItem -Path $rootFull -Recurse -File -ErrorAction SilentlyContinue |
   Where-Object { $extensions -contains $_.Extension } |
   ForEach-Object {
     $full = $_.FullName
-    $rel = $full.Substring($rootTrim.Length + 1).Replace([char]92, [char]47)
+    $rel = $full.Substring($rootFull.Length + 1).Replace([char]92, [char]47)
 
     # Exclusoes ancoradas na raiz: build_dir/, out_dir/ e scripts/.
     if ($rel -like "$buildDir/*") { return }
