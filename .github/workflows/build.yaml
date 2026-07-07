@@ -63,14 +63,9 @@ jobs:
           brew install cpanminus
           cpanm --notest YAML::Tiny File::HomeDir
 
-      - name: 🔤 Install Cascadia font for XeTeX (macOS)
+      - name: 🔤 Refresh TeX filename database (macOS)
         if: runner.os == 'macOS'
-        run: |
-          mktexlsr
-          dir=$(dirname "$(kpsewhich CascadiaCode-Regular.otf)")
-          mkdir -p "$HOME/Library/Fonts"
-          cp "$dir"/CascadiaCode-*.otf "$HOME/Library/Fonts/"
-          ls "$HOME/Library/Fonts/"
+        run: mktexlsr
 
       - name: 🔤 Fetch hunspell dictionaries (pinned, same on both OSes)
         run: |
