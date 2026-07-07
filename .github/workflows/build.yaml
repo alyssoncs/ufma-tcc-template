@@ -57,15 +57,11 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install hunspell shellcheck
 
-      - name: 🔧 Install latexindent Perl deps (macOS)
+      - name: 🔤 Install latexindent Perl deps (macOS)
         if: runner.os == 'macOS'
         run: |
           brew install cpanminus
           cpanm --notest YAML::Tiny File::HomeDir
-
-      - name: 🔤 Refresh TeX filename database (macOS)
-        if: runner.os == 'macOS'
-        run: mktexlsr
 
       - name: 🔤 Fetch hunspell dictionaries (pinned, same on both OSes)
         run: |
