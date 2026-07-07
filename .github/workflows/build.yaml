@@ -29,23 +29,12 @@ jobs:
         id: matrix
         run: echo 'matrix={"include":[{"os":"ubuntu-latest","container":"texlive/texlive:latest"},{"os":"macos-latest","container":""}]}' >> "$GITHUB_OUTPUT"
 
-  # Analise estatica dos scripts POSIX. Nao depende do toolchain LaTeX, entao roda
-  # uma unica vez (Linux) num runner leve. Espelha a parte shellcheck do
-  # `just test` (a parte pytest roda no job `build`, que tem o toolchain).
-  shellcheck:
-    name: shellcheck 🐚
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🛎️ Checkout code
-        uses: actions/checkout@v7
-
-      - name: 🐚 ShellCheck (scripts POSIX)
-        run: shellcheck --shell=sh scripts/main/*.sh
-
-  # Checks de LaTeX + suite pytest + compilacao do PDF. A suite exercita os
-  # wrappers (format/lint/spell) e por isso exige o toolchain completo
-  # (latexindent, chktex, hunspell) — roda aqui, nos dois SOs. Cada OS publica
-  # seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa so o do Linux.
+  # Todas as checagens + compilacao do PDF, nos dois SOs. A suite (`just test`)
+  # exercita os wrappers (format/lint/spell) e faz shellcheck, entao exige o
+  # toolchain completo (latexindent, chktex, hunspell, shellcheck) — por isso
+  # tudo roda num job so. Os steps de setup vem primeiro; as checagens, depois.
+  # Cada OS publica seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa
+  # so o do Linux.
   build:
     name: build ${{ matrix.os }} 🛠️
     needs: setup
@@ -55,6 +44,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
     steps:
+      # --- Setup ---
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
 
@@ -68,13 +58,13 @@ jobs:
           package-file: .github/texlive-packages.txt
           cache: true
 
-      - name: 🔧 Install hunspell + python (Linux)
+      - name: 🔧 Install tooling (Linux)
         if: runner.os == 'Linux'
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell curl python3 python3-pip
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell curl python3 python3-pip shellcheck
 
-      - name: 🔧 Install hunspell (macOS)
+      - name: 🔧 Install tooling (macOS)
         if: runner.os == 'macOS'
-        run: brew install hunspell
+        run: brew install hunspell shellcheck
 
       - name: 🔧 Install latexindent Perl deps (macOS)
         if: runner.os == 'macOS'
@@ -106,6 +96,7 @@ jobs:
       - name: 🐍 Install pytest (deps do harness)
         run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
 
+      # --- Checagens ---
       - name: 🧹 Check LaTeX formatting
         run: just format-check
 
@@ -115,8 +106,8 @@ jobs:
       - name: 🔤 Spellcheck (hunspell)
         run: just spell
 
-      - name: 🧪 Test scripts (pytest)
-        run: python3 -m pytest scripts/test
+      - name: 🧪 Test scripts (shellcheck + pytest)
+        run: just test
 
       - name: 📜 Build PDF
         run: just pdf
