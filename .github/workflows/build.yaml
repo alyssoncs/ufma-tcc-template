@@ -11,43 +11,93 @@ env:
   PDF_NAME: monografia.pdf
 
 jobs:
-  test:
-    name: test 🧪
-    runs-on: ubuntu-latest
-    container: texlive/texlive:latest
+  # Todas as checagens + compilacao do PDF, nos dois SOs. A suite (`just test`)
+  # exercita os wrappers (format/lint/spell) e faz shellcheck, entao exige o
+  # toolchain completo (latexindent, chktex, hunspell, shellcheck) — por isso
+  # tudo roda num job so. Os steps de setup vem primeiro; as checagens, depois.
+  # Cada OS publica seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa
+  # so o do Linux. No Linux rodamos no container do TeX Live; no macOS, direto no
+  # runner (a instalacao do TeX Live e feita pela setup-texlive-action).
+  build:
+    name: build ${{ matrix.os }} 🛠️
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            container: texlive/texlive:latest
+          - os: macos-latest
+            container: ''
     steps:
+      # --- Setup ---
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
+
       - name: ⚙️ Install just
         uses: extractions/setup-just@v4
-      - name: 🔧 Install shellcheck + hunspell + dicionários + python
-        run: apt-get update && apt-get install -y --no-install-recommends shellcheck hunspell hunspell-pt-br hunspell-en-us python3 python3-pip
+
+      - name: 📦 Setup TeX Live (macOS)
+        if: runner.os == 'macOS'
+        uses: TeX-Live/setup-texlive-action@v4
+        with:
+          package-file: .github/texlive-packages.txt
+          cache: true
+
+      # No Linux os dicionarios vem dos pacotes hunspell-pt-br/hunspell-en-us
+      # (em /usr/share/hunspell, achados sem DICPATH); no macOS o Homebrew nao os
+      # empacota, entao baixamos do LibreOffice/dictionaries e apontamos DICPATH.
+      # O en_US diverge entre as fontes (SCOWL no apt vs LibreOffice no macOS):
+      # palavra so conhecida por um lado entra em dictionary.txt.
+      - name: 🔧 Install tooling (Linux)
+        if: runner.os == 'Linux'
+        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us curl python3 python3-pip shellcheck
+
+      - name: 🔧 Install tooling (macOS)
+        if: runner.os == 'macOS'
+        run: brew install hunspell shellcheck
+
+      - name: 🔤 Install latexindent Perl deps (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cpanminus
+          cpanm --notest YAML::Tiny File::HomeDir
+
+      - name: 🔤 Fetch hunspell dictionaries (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          set -eu
+          dir="$HOME/hunspell-dicts"
+          mkdir -p "$dir"
+          base="https://raw.githubusercontent.com/LibreOffice/dictionaries/master"
+          curl -fsSL "$base/pt_BR/pt_BR.aff" -o "$dir/pt_BR.aff"
+          curl -fsSL "$base/pt_BR/pt_BR.dic" -o "$dir/pt_BR.dic"
+          curl -fsSL "$base/en/en_US.aff" -o "$dir/en_US.aff"
+          curl -fsSL "$base/en/en_US.dic" -o "$dir/en_US.dic"
+          echo "DICPATH=$dir" >> "$GITHUB_ENV"
+
       - name: 🐍 Install pytest (deps do harness)
-        run: pip install --break-system-packages -r scripts/test/requirements.txt
+        run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
+
+      # --- Checagens ---
+      - name: 🧹 Check LaTeX formatting
+        run: just format-check
+
+      - name: 🔎 Lint LaTeX (chktex)
+        run: just lint
+
+      - name: 🔤 Spellcheck (hunspell)
+        run: just spell
+
       - name: 🧪 Test scripts (shellcheck + pytest)
         run: just test
 
-  build:
-    name: build 🛠️
-    runs-on: ubuntu-latest
-    container: texlive/texlive:latest
-    steps:
-      - name: 🛎️ Checkout code
-        uses: actions/checkout@v7
-      - name: ⚙️ Install just
-        uses: extractions/setup-just@v4
-      - name: 🔤 Install hunspell + dicionários
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us
-      - name: 🧹 Check LaTeX formatting
-        run: just format-check
-      - name: 🔎 Lint LaTeX (chktex)
-        run: just lint
-      - name: 🔤 Spellcheck (hunspell)
-        run: just spell
       - name: 📜 Build PDF
         run: just pdf
+
       - name: 📤 Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
-          name: monografia
+          name: monografia-${{ matrix.os }}
           path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}

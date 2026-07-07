@@ -1,0 +1,59 @@
+# Lista curada de pacotes TeX Live para o job macOS do CI (setup-texlive-action).
+# Um item por linha; use apenas linhas de comentario (iniciadas por '#'),
+# sem comentario no fim da linha.
+#
+# Instalada sobre o scheme-infraonly (minimo). Usamos poucas COLECOES-base
+# pequenas (collection-basic/latex/latexrecommended/xetex/fontsrecommended) e
+# listamos os demais pacotes de forma especifica: o tlmgr resolve as
+# dependencias, evitando as colecoes gigantes (ex.: collection-latexextra, que
+# sozinha traz milhares de pacotes). Assim a instalacao fica enxuta e rapida.
+#
+# No Linux o container texlive/texlive:latest ja traz tudo; esta lista vale so
+# para o macOS. Se o PDF/suite falhar por pacote faltante, adicione-o aqui.
+# NAO liste latexminted: ele nao esta na API do CTAN (a action falha ao valida-lo)
+# e ja vem como dependencia do minted.
+
+# Base de compilacao
+collection-basic
+collection-latex
+collection-latexrecommended
+collection-xetex
+collection-fontsrecommended
+latexmk
+
+# Classe/estrutura do template (memoir e a base do abntex2)
+abntex2
+memoir
+
+# Idioma pt-BR (babel: opcao brazil, carregada pelo abntex2)
+babel-portuges
+
+# Bibliografia (biblatex + biber, estilo ABNT)
+biblatex
+biblatex-abnt
+biber
+
+# Realce de codigo (minted v3 puxa latexminted como dependencia)
+minted
+fvextra
+newfloat
+
+# Pacotes usados pelo preambulo
+fontspec
+csquotes
+siunitx
+hyperref
+pdfpages
+mathtools
+metalogo
+microtype
+xcolor
+bm
+indentfirst
+
+# Fonte monoespacada (fornece CascadiaCode-*.otf via arvore texmf)
+cascadia-code
+
+# Ferramentas dos checks (format/lint)
+latexindent
+chktex
