@@ -27,4 +27,12 @@ EOF
 # o faria ler do stdin e travar).
 [ "$#" -eq 0 ] && exit 0
 
-chktex -q "$@"
+# Passa o .chktexrc do projeto explicitamente (-l, append ao global) quando ele
+# existe: no Windows o chktex nao faz a busca automatica do .chktexrc no
+# diretorio atual, e sem ele as supressoes (-n13/-n17/-n24) nao valeriam. Sem
+# .chktexrc (ex.: arvores de teste hermeticas) usa os defaults do chktex.
+if [ -f "$root/.chktexrc" ]; then
+  chktex -q -l "$root/.chktexrc" "$@"
+else
+  chktex -q "$@"
+fi

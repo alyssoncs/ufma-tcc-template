@@ -22,5 +22,14 @@ if ($files.Count -eq 0) {
   exit 0
 }
 
-chktex -q @files
+# Passa o .chktexrc do projeto explicitamente (-l, append ao global) quando ele
+# existe: no Windows o chktex nao faz a busca automatica do .chktexrc no
+# diretorio atual, e sem ele as supressoes (-n13/-n17/-n24) nao valeriam. Sem
+# .chktexrc (ex.: arvores de teste hermeticas) usa os defaults do chktex.
+$rc = "$root/.chktexrc"
+if (Test-Path -LiteralPath $rc -PathType Leaf) {
+  chktex -q -l $rc @files
+} else {
+  chktex -q @files
+}
 exit $LASTEXITCODE
