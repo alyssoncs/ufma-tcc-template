@@ -87,11 +87,16 @@ def require_chktex():
 def require_hunspell():
     if shutil.which("hunspell") is None:
         pytest.fail("hunspell nao instalado")
-    result = subprocess.run(["hunspell", "-D"], capture_output=True, text=True)
-    # Normaliza as barras: no Windows os caminhos de dicionario vem com '\'
-    # (ex.: C:\...\hunspell-dicts\pt_BR), e o ancoramento '/pt_BR' nao casaria.
-    listing = (result.stdout + result.stderr).replace("\\", "/")
-    if "/pt_BR" not in listing:
-        pytest.fail("dicionario pt_BR ausente")
-    if "/en_US" not in listing:
-        pytest.fail("dicionario en_US ausente")
+    # Testa funcionalmente se cada dicionario carrega (via DICPATH ou caminhos
+    # padrao), em vez de parsear `hunspell -D` --- cujo formato/paths variam entre
+    # plataformas. `hunspell -d <nome> -l` sai 0 quando o dicionario carrega e !=0
+    # ("Can't open ...") quando falta; e o mesmo mecanismo que o `just spell` usa.
+    for name in ("pt_BR", "en_US"):
+        result = subprocess.run(
+            ["hunspell", "-d", name, "-l"],
+            input="teste\n",
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            pytest.fail(f"dicionario {name} ausente")
