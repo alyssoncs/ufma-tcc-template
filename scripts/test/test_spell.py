@@ -136,6 +136,22 @@ def test_remove_multiplos_blocos_minted(run_script):
     assert "zzblocodoiszz" not in result.stdout
 
 
+def test_remove_argumentos_de_citacao(run_script):
+    require_hunspell()
+    # As chaves do biblatex (\cite, \textcite, ...) nao sao prosa e sao removidas
+    # antes do hunspell. Necessario para paridade entre plataformas: o hunspell
+    # novo (unix, 1.7.2) pula \textcite, mas o build antigo do Windows nao ---
+    # sem isso, as chaves seriam marcadas so no Windows.
+    result = run_script(
+        "spell", "pt_BR,en_US", os.devnull, str(SPELL / "with-citation.tex")
+    )
+    assert result.returncode == 1
+    # A prosa fora da citacao e reportada...
+    assert "zzdeadbeefzz" in result.stdout
+    # ...mas a chave de citacao (dentro de \textcite/\cite) NAO.
+    assert "zzkeyonlyzz" not in result.stdout
+
+
 def test_falha_se_dicionario_ausente(run_script):
     require_hunspell()
     # Regressao: com um dicionario do -d ausente, o hunspell segue so com os que

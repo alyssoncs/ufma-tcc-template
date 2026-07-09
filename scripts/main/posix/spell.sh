@@ -7,7 +7,8 @@
 # O hunspell em modo LaTeX (-t) pula \verb e ambientes verbatim conhecidos, mas
 # NAO conhece o pacote minted: sem tratamento, todo o codigo dentro de blocos
 # \begin{minted}...\end{minted} viraria "erro de ortografia". Por isso esses
-# blocos sao removidos (via awk) antes de passar o texto ao hunspell.
+# blocos --- e os argumentos de comandos de citacao (chaves do biblatex) --- sao
+# removidos (via awk) antes de passar o texto ao hunspell.
 #
 # Antes de corrigir, valida que TODOS os dicionarios do hunspell carregam; se
 # algum faltar, falha (exit 3) em vez de checar so parte dos idiomas em silencio.
@@ -58,19 +59,28 @@ if ! assert_dicts_load "$lang"; then
   exit 3
 fi
 
-# Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
-# que o hunspell nao tente corrigir o conteudo das listagens.
-strip_minted() {
+# Prepara cada arquivo para o hunspell, removendo o que nao deve ser corrigido:
+#   - blocos \begin{minted}...\end{minted} (codigo das listagens);
+#   - argumentos de comandos de citacao (\cite, \textcite, \parencite, ...), que
+#     sao chaves do biblatex, nao prosa. O hunspell so pula esses comandos nas
+#     versoes novas (1.7.2); o build antigo do Windows (winget FSFhu, ~1.7.0) nao
+#     conhece \textcite/\autocite e marcaria as chaves --- removemos aqui para
+#     ficar consistente entre plataformas.
+strip_for_hunspell() {
   awk '
     /\\begin\{minted\}/ { skip = 1 }
-    !skip               { print }
+    !skip {
+      line = $0
+      gsub(/\\[[:alpha:]]*[Cc]ite[[:alpha:]]*\{[^{}]*\}/, " ", line)
+      print line
+    }
     /\\end\{minted\}/   { skip = 0 }
   ' "$1"
 }
 
 status=0
 for f in "$@"; do
-  words=$(strip_minted "$f" | hunspell -t -l -i utf-8 -d "$lang" -p "$dict" | sort -u)
+  words=$(strip_for_hunspell "$f" | hunspell -t -l -i utf-8 -d "$lang" -p "$dict" | sort -u)
   if [ -n "$words" ]; then
     status=1
     echo "== $f =="

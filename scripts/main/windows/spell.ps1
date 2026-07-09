@@ -6,7 +6,8 @@
 # O hunspell em modo LaTeX (-t) pula \verb e ambientes verbatim conhecidos, mas
 # NAO conhece o pacote minted: sem tratamento, todo o codigo dentro de blocos
 # \begin{minted}...\end{minted} viraria "erro de ortografia". Por isso esses
-# blocos sao removidos antes de passar o texto ao hunspell.
+# blocos --- e os argumentos de comandos de citacao (chaves do biblatex) --- sao
+# removidos antes de passar o texto ao hunspell.
 #
 # Antes de corrigir, valida que TODOS os dicionarios do hunspell carregam; se
 # algum faltar, falha (exit 3) em vez de checar so parte dos idiomas em silencio.
@@ -76,13 +77,20 @@ if (-not (Assert-DictsLoad $lang)) {
 # Garante UTF-8 na comunicacao com o hunspell (-i utf-8).
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
-# Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
-# que o hunspell nao tente corrigir o conteudo das listagens.
+# Prepara cada arquivo para o hunspell, removendo o que nao deve ser corrigido:
+# os blocos \begin{minted}...\end{minted} (codigo das listagens) e os argumentos
+# de comandos de citacao (\cite, \textcite, \parencite, ...), que sao chaves do
+# biblatex, nao prosa. O hunspell so pula esses comandos nas versoes novas
+# (1.7.2); o build antigo do Windows (winget FSFhu, ~1.7.0) nao conhece
+# \textcite/\autocite e marcaria as chaves --- removemos aqui para ficar
+# consistente entre plataformas.
 function Skip-MintedBlock($path) {
   $skip = $false
   foreach ($line in Get-Content -LiteralPath $path) {
     if ($line -match '\\begin\{minted\}') { $skip = $true }
-    if (-not $skip) { $line }
+    if (-not $skip) {
+      $line -replace '\\[a-zA-Z]*[Cc]ite[a-zA-Z]*\{[^{}]*\}', ' '
+    }
     if ($line -match '\\end\{minted\}') { $skip = $false }
   }
 }
