@@ -5,6 +5,10 @@ OUT_DIR := "output"
 # O just no Windows nao usa pwsh por padrao; os checks sao PowerShell 7.
 set windows-shell := ["pwsh", "-NoProfile", "-Command"]
 
+# Launcher do Python por SO: no Windows e `python` (o alias `python3` costuma
+# apontar para o stub da Microsoft Store e falhar); no unix e `python3`.
+PYTHON := if os() == "windows" { "python" } else { "python3" }
+
 # Idiomas do hunspell (dicionarios do SO). pt_BR + en_US porque a monografia tem
 # resumo/abstract e citacoes em ingles. Sobrescreva com 'just SPELL_LANG=pt_BR spell'.
 SPELL_LANG := "pt_BR,en_US"
@@ -69,13 +73,13 @@ build: check pdf
 [unix]
 test:
     shellcheck --shell=sh scripts/main/posix/*.sh
-    python3 -m pytest scripts/test
+    {{ PYTHON }} -m pytest scripts/test
 
 # No Windows so a suite pytest (o PSScriptAnalyzer --- analogo do shellcheck ---
 # entra em slice propria).
 [windows]
 test:
-    python3 -m pytest scripts/test
+    {{ PYTHON }} -m pytest scripts/test
 
 # Remove os artefatos de build (build/).
 [unix]

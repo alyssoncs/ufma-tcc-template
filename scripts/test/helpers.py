@@ -38,22 +38,10 @@ def _detect_platform():
 CURRENT_PLATFORM = _detect_platform()
 
 
-def _script_impl():
-    """Implementacao a exercitar: 'ps1' forca os .ps1 via pwsh em qualquer SO
-    (andaime para validar o porte na CI unix, removido pela #65); vazio segue a
-    plataforma atual."""
-    return os.environ.get("SCRIPT_IMPL", "").strip().lower()
-
-
 def _script_command(name, args):
-    impl = _script_impl()
-    if impl == "ps1" or (impl == "" and CURRENT_PLATFORM is Platform.WINDOWS):
+    if CURRENT_PLATFORM is Platform.WINDOWS:
         return ["pwsh", "-NoProfile", "-File", str(WINDOWS_MAIN / f"{name}.ps1"), *args]
-    if impl in ("", "sh") and CURRENT_PLATFORM is Platform.POSIX:
-        return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
-    raise NotImplementedError(
-        f"combinacao nao suportada: SCRIPT_IMPL={impl!r}, plataforma={CURRENT_PLATFORM}"
-    )
+    return ["sh", str(POSIX_MAIN / f"{name}.sh"), *args]
 
 
 def run_script(name, *args, cwd=None, env=None):
