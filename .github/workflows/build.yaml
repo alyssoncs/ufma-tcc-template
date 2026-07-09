@@ -46,7 +46,7 @@ jobs:
   # Live; no macOS e Windows, direto no runner (a instalacao do TeX Live e feita
   # pela setup-texlive-action).
   build:
-    name: build ${{ matrix.os }} 🛠️
+    name: ${{ matrix.os }} 🛠️
     needs: setup
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
@@ -123,26 +123,26 @@ jobs:
           Invoke-WebRequest "$base/en/en_US.dic" -OutFile "$dir\en_US.dic"
           "DICPATH=$dir" >> $env:GITHUB_ENV
 
-      - name: 🐍 Install pytest (deps do harness, unix)
+      - name: 🐍 Install pytest (Unix)
         if: runner.os != 'Windows'
         run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
 
-      - name: 🐍 Install pytest (deps do harness, Windows)
+      - name: 🐍 Install pytest (Windows)
         if: runner.os == 'Windows'
         run: python -m pip install -r scripts/test/requirements.txt
 
       # --- Checagens ---
+      - name: 🧪 Test scripts
+        run: just test
+
       - name: 🧹 Check LaTeX formatting
         run: just format-check
 
-      - name: 🔎 Lint LaTeX (chktex)
+      - name: 🔎 Lint LaTeX
         run: just lint
 
-      - name: 🔤 Spellcheck (hunspell)
+      - name: 🔤 Spellcheck
         run: just spell
-
-      - name: 🧪 Test scripts (shellcheck + pytest)
-        run: just test
 
       - name: 📜 Build PDF
         run: just pdf
