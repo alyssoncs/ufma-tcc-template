@@ -1,4 +1,5 @@
-# Lista curada de pacotes TeX Live para o job macOS do CI (setup-texlive-action).
+# Lista curada de pacotes TeX Live para os jobs macOS e Windows do CI
+# (setup-texlive-action).
 # Um item por linha; use apenas linhas de comentario (iniciadas por '#'),
 # sem comentario no fim da linha.
 #
@@ -9,7 +10,8 @@
 # sozinha traz milhares de pacotes). Assim a instalacao fica enxuta e rapida.
 #
 # No Linux o container texlive/texlive:latest ja traz tudo; esta lista vale so
-# para o macOS. Se o PDF/suite falhar por pacote faltante, adicione-o aqui.
+# para o macOS e o Windows. Se o PDF/suite falhar por pacote faltante, adicione-o
+# aqui.
 # NAO liste latexminted: ele nao esta na API do CTAN (a action falha ao valida-lo)
 # e ja vem como dependencia do minted.
 

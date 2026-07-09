@@ -11,13 +11,13 @@ env:
   PDF_NAME: monografia.pdf
 
 jobs:
-  # Todas as checagens + compilacao do PDF, nos dois SOs. A suite (`just test`)
+  # Todas as checagens + compilacao do PDF, nos tres SOs. A suite (`just test`)
   # exercita os wrappers (format/lint/spell) e faz shellcheck, entao exige o
   # toolchain completo (latexindent, chktex, hunspell, shellcheck) — por isso
   # tudo roda num job so. Os steps de setup vem primeiro; as checagens, depois.
   # Cada OS publica seu proprio artifact; a branch `pdf` (deploy em ci.yaml) usa
-  # so o do Linux. No Linux rodamos no container do TeX Live; no macOS, direto no
-  # runner (a instalacao do TeX Live e feita pela setup-texlive-action).
+  # so o do Linux. No Linux rodamos no container do TeX Live; no macOS e Windows,
+  # direto no runner (a instalacao do TeX Live e feita pela setup-texlive-action).
   build:
     name: build ${{ matrix.os }} 🛠️
     runs-on: ${{ matrix.os }}
@@ -30,6 +30,8 @@ jobs:
             container: texlive/texlive:latest
           - os: macos-latest
             container: ''
+          - os: windows-latest
+            container: ''
     steps:
       # --- Setup ---
       - name: 🛎️ Checkout code
@@ -38,8 +40,8 @@ jobs:
       - name: ⚙️ Install just
         uses: extractions/setup-just@v4
 
-      - name: 📦 Setup TeX Live (macOS)
-        if: runner.os == 'macOS'
+      - name: 📦 Setup TeX Live (macOS/Windows)
+        if: runner.os != 'Linux'
         uses: TeX-Live/setup-texlive-action@v4
         with:
           package-file: .github/texlive-packages.txt
@@ -57,6 +59,15 @@ jobs:
       - name: 🔧 Install tooling (macOS)
         if: runner.os == 'macOS'
         run: brew install hunspell shellcheck
+
+      # No Windows o hunspell vem do winget (FSFhu.Hunspell); o diretorio de
+      # shims/binarios do WinGet entra no PATH para os steps seguintes.
+      - name: 🔧 Install hunspell (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          winget install --id FSFhu.Hunspell --exact --silent `
+            --accept-source-agreements --accept-package-agreements
+          "$env:LOCALAPPDATA\Microsoft\WinGet\Links" >> $env:GITHUB_PATH
 
       - name: 🔤 Install latexindent Perl deps (macOS)
         if: runner.os == 'macOS'
@@ -77,24 +88,27 @@ jobs:
           curl -fsSL "$base/en/en_US.dic" -o "$dir/en_US.dic"
           echo "DICPATH=$dir" >> "$GITHUB_ENV"
 
-      - name: 🐍 Install pytest (deps do harness)
+      # Mesmo approach do macOS: o winget nao empacota os dicionarios, entao os
+      # baixamos do LibreOffice/dictionaries e apontamos DICPATH (sintaxe pwsh).
+      - name: 🔤 Fetch hunspell dictionaries (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $dir = "$env:USERPROFILE\hunspell-dicts"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          $base = "https://raw.githubusercontent.com/LibreOffice/dictionaries/master"
+          Invoke-WebRequest "$base/pt_BR/pt_BR.aff" -OutFile "$dir\pt_BR.aff"
+          Invoke-WebRequest "$base/pt_BR/pt_BR.dic" -OutFile "$dir\pt_BR.dic"
+          Invoke-WebRequest "$base/en/en_US.aff" -OutFile "$dir\en_US.aff"
+          Invoke-WebRequest "$base/en/en_US.dic" -OutFile "$dir\en_US.dic"
+          "DICPATH=$dir" >> $env:GITHUB_ENV
+
+      - name: 🐍 Install pytest (deps do harness, unix)
+        if: runner.os != 'Windows'
         run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
 
-      # O runner macOS ja traz o pwsh; no container Debian do TeX Live (Linux)
-      # instalamos o PowerShell 7 pelo tarball oficial para validar os .ps1 na
-      # CI unix (andaime SCRIPT_IMPL=ps1, removido pela #65).
-      - name: 🔧 Install PowerShell (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          set -eu
-          apt-get install -y --no-install-recommends libicu-dev
-          ver=7.4.6
-          curl -fsSL -o /tmp/pwsh.tar.gz "https://github.com/PowerShell/PowerShell/releases/download/v${ver}/powershell-${ver}-linux-x64.tar.gz"
-          mkdir -p /opt/microsoft/powershell
-          tar -xzf /tmp/pwsh.tar.gz -C /opt/microsoft/powershell
-          chmod +x /opt/microsoft/powershell/pwsh
-          ln -sf /opt/microsoft/powershell/pwsh /usr/local/bin/pwsh
-          pwsh --version
+      - name: 🐍 Install pytest (deps do harness, Windows)
+        if: runner.os == 'Windows'
+        run: python -m pip install -r scripts/test/requirements.txt
 
       # --- Checagens ---
       - name: 🧹 Check LaTeX formatting
@@ -108,11 +122,6 @@ jobs:
 
       - name: 🧪 Test scripts (shellcheck + pytest)
         run: just test
-
-      # Valida a MESMA suite contra os .ps1 via pwsh (paridade sh <-> ps1 por
-      # construcao). Andaime SCRIPT_IMPL=ps1, removido pela #65.
-      - name: 🧪 Test scripts (PowerShell via pwsh)
-        run: SCRIPT_IMPL=ps1 python3 -m pytest scripts/test
 
       - name: 📜 Build PDF
         run: just pdf
