@@ -128,6 +128,24 @@ def test_remove_multiplos_blocos_minted(run_script):
     assert "zzblocodoiszz" not in result.stdout
 
 
+def test_textcite_nao_e_tratado_como_erro(run_script):
+    """A chave de um `\\textcite{...}` NUNCA pode virar erro de ortografia: o
+    hunspell (modo LaTeX, `-t`) deve pular o comando e seus argumentos.
+
+    Este teste PASSA com hunspell novo (>=1.7.1, que pula `\\textcite`) e FALHA
+    com hunspell antigo (1.7.0), que ainda reporta os fragmentos da chave como
+    palavras desconhecidas. O fix futuro no script fara com que passe em toda
+    versao."""
+    require_hunspell()
+    result = run_script(
+        "spell", "pt_BR,en_US", os.devnull, str(SPELL / "textcite.tex")
+    )
+    assert result.returncode == 0
+    # Os fragmentos obviamente-inexistentes da chave nao podem ser reportados.
+    assert "zzalphazz" not in result.stdout
+    assert "zzbetazz" not in result.stdout
+
+
 # Dicionario de idioma que nao existe: forca o hunspell a sair com codigo != 0
 # ("Can't open affix or dictionary files ...") ANTES de ler o texto, deixando o
 # stdout vazio.
