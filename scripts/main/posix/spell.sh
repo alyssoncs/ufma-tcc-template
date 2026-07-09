@@ -9,6 +9,9 @@
 # \begin{minted}...\end{minted} viraria "erro de ortografia". Por isso esses
 # blocos sao removidos (via awk) antes de passar o texto ao hunspell.
 #
+# Antes de corrigir, valida que TODOS os dicionarios do hunspell carregam; se
+# algum faltar, falha (exit 3) em vez de checar so parte dos idiomas em silencio.
+#
 # Uso: spell.sh <lang> <dict> <arquivo.tex>...
 #   lang   dicionarios do hunspell (ex.: pt_BR,en_US)
 #   dict   dicionario do projeto, palavras validas (ex.: dictionary.txt)
@@ -22,6 +25,38 @@ fi
 lang="$1"
 dict="$2"
 shift 2
+
+# Garante que TODOS os dicionarios do hunspell carregam antes de corrigir. Um
+# dicionario ausente/ilegivel faz o hunspell seguir so com os que abriu e sair 0
+# --- as vezes sem nada no stderr ---, mascarando um idioma nao verificado como
+# sucesso (falso verde). Checamos cada idioma isolado (o -d <lang> sozinho sai
+# != 0 se nao achar os arquivos) e tambem o uso combinado (alguns builds abrem
+# cada idioma isolado mas emitem "Can't open <lang>." no stderr no modo
+# -d a,b). Falha (exit 3) se qualquer verificacao acusar dicionario faltando.
+assert_dicts_load() {
+  langs="$1"
+  oldifs="$IFS"
+  IFS=','
+  for l in $langs; do
+    if ! printf '' | hunspell -d "$l" -l >/dev/null 2>&1; then
+      IFS="$oldifs"
+      echo "Erro: o dicionario do hunspell '$l' nao pode ser carregado (-d $l)." >&2
+      echo "Verifique a instalacao do dicionario e o DICPATH." >&2
+      return 1
+    fi
+  done
+  IFS="$oldifs"
+  combined_err=$(printf '' | hunspell -d "$langs" -l 2>&1 >/dev/null) || true
+  if printf '%s' "$combined_err" | grep -qi "can't open"; then
+    echo "Erro: o hunspell nao carregou todos os dicionarios de '-d $langs':" >&2
+    printf '%s\n' "$combined_err" | sed 's/^/  /' >&2
+    return 1
+  fi
+}
+
+if ! assert_dicts_load "$lang"; then
+  exit 3
+fi
 
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.

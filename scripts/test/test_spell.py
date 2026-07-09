@@ -6,8 +6,17 @@ fixtures de scripts/fixtures/spell.
 """
 
 import os
+import subprocess
 
-from helpers import FIXTURES, copy_fixture, require_hunspell
+import pytest
+from helpers import (
+    CURRENT_PLATFORM,
+    FIXTURES,
+    WINDOWS_MAIN,
+    Platform,
+    copy_fixture,
+    require_hunspell,
+)
 
 SPELL = FIXTURES / "spell"
 
@@ -125,3 +134,74 @@ def test_remove_multiplos_blocos_minted(run_script):
     # ...e nenhum conteudo dos dois blocos minted aparece.
     assert "zzblocoumzz" not in result.stdout
     assert "zzblocodoiszz" not in result.stdout
+
+
+def test_falha_se_dicionario_ausente(run_script):
+    require_hunspell()
+    # Regressao: com um dicionario do -d ausente, o hunspell segue so com os que
+    # abriu e sai 0 (as vezes sem stderr), o que mascararia um idioma nao
+    # verificado como sucesso. O preflight deve pegar isso e FALHAR (exit 3),
+    # mesmo sobre um arquivo sem erros de ortografia.
+    result = run_script(
+        "spell",
+        "pt_BR,zz_INEXISTENTE",
+        os.devnull,
+        str(SPELL / "clean.tex"),
+    )
+    assert result.returncode == 3
+    assert "zz_INEXISTENTE" in result.stderr
+
+
+def test_ingles_valido_e_aceito(run_script):
+    require_hunspell()
+    # Prova que o en_US foi realmente carregado (nao so o pt_BR): a fixture so
+    # tem palavras inglesas validas que o pt_BR sozinho reprovaria. Se o en_US
+    # nao carregasse, elas seriam reportadas e o exit seria 1.
+    result = run_script(
+        "spell", "pt_BR,en_US", os.devnull, str(SPELL / "english.tex")
+    )
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_ingles_valido_reprovado_so_com_pt_BR(run_script):
+    require_hunspell()
+    # Ancora a fixture english.tex: sem o en_US, suas palavras (inglesas) sao
+    # desconhecidas. Garante que test_ingles_valido_e_aceito prova o carregamento
+    # do en_US, e nao que as palavras ja seriam aceitas pelo pt_BR.
+    result = run_script("spell", "pt_BR", os.devnull, str(SPELL / "english.tex"))
+    assert result.returncode == 1
+    assert "abstract" in result.stdout
+
+
+@pytest.mark.skipif(
+    CURRENT_PLATFORM is not Platform.WINDOWS,
+    reason="reproduz o parsing de `pwsh -Command`, so relevante no Windows",
+)
+def test_lang_com_virgula_pelo_caminho_do_just():
+    require_hunspell()
+    # Regressao do bug real: o `just` roda a recipe via `pwsh -Command` (nao
+    # `-File`), onde `pt_BR,en_US` SEM aspas e interpretado como ARRAY (operador
+    # virgula). Sem tratamento, o array chega espalhado ao hunspell
+    # (-d pt_BR en_US): so o pt_BR carrega e o en_US vira arquivo de entrada, o
+    # que faz o hunspell imprimir "Can't open en_US." e sair ANTES de checar o
+    # texto --- stdout vazio, status 0, FALSO VERDE. O harness padrao usa
+    # `-File`, que passa strings literais e NAO reproduz isso.
+    #
+    # Usamos um arquivo com erro proposital (zzdeadbeefzz): so distingue fix de
+    # bug se o hunspell realmente rodar. Corrigido -> exit 1 + a palavra
+    # reportada; buggado -> exit 0 sem saida (o hunspell nem chegou a checar).
+    script = WINDOWS_MAIN / "spell.ps1"
+    with_error = SPELL / "with-error.tex"
+    result = subprocess.run(
+        [
+            "pwsh",
+            "-NoProfile",
+            "-Command",
+            f"& '{script}' pt_BR,en_US '{os.devnull}' '{with_error}'",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 1
+    assert "zzdeadbeefzz" in result.stdout

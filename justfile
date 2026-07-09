@@ -56,9 +56,13 @@ lint:
 spell:
     ./scripts/main/posix/spell.sh {{ SPELL_LANG }} {{ SPELL_DICT }} $(./scripts/main/posix/find-sources.sh . spell {{ BUILD_DIR }} {{ OUT_DIR }})
 
+# As aspas em SPELL_LANG sao obrigatorias: o windows-shell usa `pwsh -Command`,
+# onde um argumento sem aspas com virgula (pt_BR,en_US) vira ARRAY (operador
+# virgula), nao string. O array chega espalhado ao hunspell (-d pt_BR en_US),
+# carregando so o pt_BR e tratando en_US como arquivo -> "Can't open en_US.".
 [windows]
 spell:
-    ./scripts/main/windows/spell.ps1 {{ SPELL_LANG }} {{ SPELL_DICT }} (./scripts/main/windows/find-sources.ps1 . spell {{ BUILD_DIR }} {{ OUT_DIR }})
+    ./scripts/main/windows/spell.ps1 "{{ SPELL_LANG }}" "{{ SPELL_DICT }}" (./scripts/main/windows/find-sources.ps1 . spell {{ BUILD_DIR }} {{ OUT_DIR }})
 
 # Valida tudo (format-check, lint e spell) sem compilar.
 check: format-check lint spell
