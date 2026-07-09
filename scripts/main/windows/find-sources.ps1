@@ -34,7 +34,13 @@ if ($category -notin @('format', 'lint', 'spell')) {
 }
 
 # Remove uma eventual barra final para nao gerar '//' nos caminhos de saida.
-$rootTrim = $root.TrimEnd([char]47, [char]92)
+$rootTrim = $root.TrimEnd('/', '\')
+
+# Raiz absoluta usada para derivar caminhos relativos. Get-ChildItem emite
+# FullName absoluto mesmo quando a raiz e relativa (ex.: '.'), entao o caminho
+# relativo tem de ser calculado a partir da raiz resolvida, e nao da string
+# literal passada em <root>.
+$rootFull = (Resolve-Path -LiteralPath $rootTrim).ProviderPath
 
 # .tex para todas as categorias; format inclui tambem .sty/.cls/.bib.
 $extensions = if ($category -eq 'format') {
@@ -47,7 +53,7 @@ Get-ChildItem -Path $rootTrim -Recurse -File -ErrorAction SilentlyContinue |
   Where-Object { $extensions -contains $_.Extension } |
   ForEach-Object {
     $full = $_.FullName
-    $rel = $full.Substring($rootTrim.Length + 1).Replace([char]92, [char]47)
+    $rel = [System.IO.Path]::GetRelativePath($rootFull, $full).Replace('\', '/')
 
     # Exclusoes ancoradas na raiz: build_dir/, out_dir/ e scripts/.
     if ($rel -like "$buildDir/*") { return }
