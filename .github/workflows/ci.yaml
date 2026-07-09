@@ -23,8 +23,8 @@ jobs:
   deploy:
     name: deploy 🚀
     needs: [build]
-    # Publica o PDF na branch `pdf` apenas em push na master; nunca em PRs.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    # Publica o PDF na branch `pdf`. Este workflow so dispara em push na master
+    # (PRs usam pr.yaml), entao o deploy nunca roda em PRs.
     runs-on: ubuntu-latest
     concurrency:
       group: pdf-deploy
