@@ -29,7 +29,7 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.
-function Strip-Minted($path) {
+function Skip-MintedBlock($path) {
   $skip = $false
   foreach ($line in Get-Content -LiteralPath $path) {
     if ($line -match '\\begin\{minted\}') { $skip = $true }
@@ -41,7 +41,7 @@ function Strip-Minted($path) {
 $status = 0
 foreach ($f in $files) {
   $words = @(
-    Strip-Minted $f |
+    Skip-MintedBlock $f |
       hunspell -t -l -i utf-8 -d $lang -p $dict |
       Sort-Object -Unique -CaseSensitive
   )
