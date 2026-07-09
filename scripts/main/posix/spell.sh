@@ -35,7 +35,12 @@ strip_minted() {
 
 status=0
 for f in "$@"; do
-  words=$(strip_minted "$f" | hunspell -t -l -i utf-8 -d "$lang" -p "$dict" | sort -u)
+  hrc=0
+  hunspell_out=$(strip_minted "$f" | hunspell -t -l -i utf-8 -d "$lang" -p "$dict") || hrc=$?
+  if [ "$hrc" -ne 0 ]; then
+    exit "$hrc"
+  fi
+  words=$(printf '%s\n' "$hunspell_out" | sort -u)
   if [ -n "$words" ]; then
     status=1
     echo "== $f =="

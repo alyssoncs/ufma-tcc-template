@@ -6,6 +6,7 @@ fixtures de scripts/fixtures/spell.
 """
 
 import os
+import subprocess
 
 from helpers import FIXTURES, copy_fixture, require_hunspell
 
@@ -125,3 +126,39 @@ def test_remove_multiplos_blocos_minted(run_script):
     # ...e nenhum conteudo dos dois blocos minted aparece.
     assert "zzblocoumzz" not in result.stdout
     assert "zzblocodoiszz" not in result.stdout
+
+
+# Dicionario de idioma que nao existe: forca o hunspell a sair com codigo != 0
+# ("Can't open affix or dictionary files ...") ANTES de ler o texto, deixando o
+# stdout vazio.
+_MISSING_LANG = "zz_ZZ_nao_existe"
+
+
+def test_falha_do_hunspell_faz_bail_out(run_script):
+    """Se o hunspell sair com codigo != 0 (aqui: dicionario inexistente), o
+    script deve abortar (bail out) com o MESMO codigo de saida, em vez de tratar
+    o stdout vazio como sucesso.
+
+    Este teste FALHA de proposito enquanto o bug do falso verde existir:
+    spell.sh/spell.ps1 decidem o status pela CONTAGEM de palavras desconhecidas
+    (stdout) e ignoram o exit code do hunspell -- com 'set -eu' sem pipefail (sh)
+    e sem checar $LASTEXITCODE (ps1), a falha do hunspell no meio do pipe (que o
+    'sort'/'Sort-Object' final mascara) passa como exit 0. O teste so passa
+    quando os scripts propagarem a falha do hunspell."""
+    require_hunspell()
+
+    # Exit code do proprio hunspell ao falhar com o dicionario inexistente.
+    hunspell_rc = subprocess.run(
+        ["hunspell", "-d", _MISSING_LANG, "-l"],
+        input="teste\n",
+        capture_output=True,
+        text=True,
+    ).returncode
+    assert hunspell_rc != 0, "sanidade: o dicionario deveria mesmo faltar"
+
+    # Mesmo com um arquivo que contem erro de ortografia, o resultado NAO deve
+    # ser um falso verde: se o hunspell falhou, o script tem de falhar tambem.
+    result = run_script(
+        "spell", _MISSING_LANG, os.devnull, str(SPELL / "with-error.tex")
+    )
+    assert result.returncode == hunspell_rc

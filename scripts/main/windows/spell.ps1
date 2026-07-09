@@ -40,11 +40,12 @@ function Skip-MintedBlock($path) {
 
 $status = 0
 foreach ($f in $files) {
-  $words = @(
-    Skip-MintedBlock $f |
-      hunspell -t -l -i utf-8 -d $lang -p $dict |
-      Sort-Object -Unique -CaseSensitive
-  )
+  $out = Skip-MintedBlock $f | hunspell -t -l -i utf-8 -d $lang -p $dict
+  $hrc = $LASTEXITCODE
+  if ($hrc -ne 0) {
+    exit $hrc
+  }
+  $words = @($out | Sort-Object -Unique -CaseSensitive)
   if ($words.Count -gt 0) {
     $status = 1
     Write-Output "== $f =="
