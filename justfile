@@ -41,11 +41,11 @@ format-check:
 # Roda o linter LaTeX (chktex) nos arquivos de conteudo.
 [unix]
 lint:
-    ./scripts/main/posix/lint.sh . {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/posix/lint.sh . .chktexrc {{ BUILD_DIR }} {{ OUT_DIR }}
 
 [windows]
 lint:
-    ./scripts/main/windows/lint.ps1 . {{ BUILD_DIR }} {{ OUT_DIR }}
+    ./scripts/main/windows/lint.ps1 . .chktexrc {{ BUILD_DIR }} {{ OUT_DIR }}
 
 # Roda o corretor ortografico (hunspell) nos arquivos de conteudo.
 [unix]

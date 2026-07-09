@@ -4,6 +4,9 @@
 diretorio temporario (nao depende da arvore real do repo).
 """
 
+import os
+from pathlib import Path
+
 import pytest
 
 from helpers import make_files, sorted_lines
@@ -117,3 +120,33 @@ def test_exclusao_dirigida_por_parametro(run_script, tmp_path):
     assert str(tmp_path / "build" / "x.tex") in found
     assert str(tmp_path / "output" / "x.tex") in found
     assert str(tmp_path / "a.tex") in found
+
+
+def _rel_to_root(line, root):
+    """Reduz uma linha da saida do find-sources ao caminho relativo ancorado em
+    `root`, para comparar a descoberta independentemente da forma do caminho
+    emitido (relativo, ex. './a.tex', ou absoluto)."""
+    norm = line.strip().replace("\\", "/")
+    if norm.startswith("./"):
+        norm = norm[2:]
+    if Path(norm).is_absolute():
+        norm = Path(os.path.relpath(norm, str(root))).as_posix()
+    return norm
+
+
+@pytest.mark.parametrize("category", ["format", "lint", "spell"])
+def test_root_relativo_exclui_ancorados(run_script, discovery_tree, category):
+    # Como o projeto usa de fato: varredura com root '.', invocada de DENTRO da
+    # arvore (cwd=root). O comportamento esperado e o mesmo do root absoluto: os
+    # diretorios ancorados na raiz (build/, output/, scripts/) ficam de fora e
+    # somente as fontes da categoria sao descobertas.
+    result = run_script(
+        "find-sources", ".", category, "build", "output", cwd=str(discovery_tree)
+    )
+    assert result.returncode == 0
+    found = sorted(
+        _rel_to_root(line, discovery_tree)
+        for line in result.stdout.splitlines()
+        if line.strip()
+    )
+    assert found == sorted(EXPECTED[category])

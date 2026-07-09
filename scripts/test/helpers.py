@@ -96,12 +96,29 @@ def require_chktex():
         pytest.fail("chktex nao instalado")
 
 
+# Palavras muito comuns em cada idioma, usadas como sonda de carregamento do
+# dicionario: se o dict carregou com conteudo, o hunspell nao pode reporta-las
+# como desconhecidas.
+_HUNSPELL_PROBES = {"pt_BR": "casa", "en_US": "house"}
+
+
 def require_hunspell():
     if shutil.which("hunspell") is None:
         pytest.fail("hunspell nao instalado")
-    result = subprocess.run(["hunspell", "-D"], capture_output=True, text=True)
-    listing = result.stdout + result.stderr
-    if "/pt_BR" not in listing:
-        pytest.fail("dicionario pt_BR ausente")
-    if "/en_US" not in listing:
-        pytest.fail("dicionario en_US ausente")
+    # Exercita o carregamento REAL de cada dicionario, um idioma por vez (o
+    # caminho `-d` que o spell.sh usa), em vez de raspar o relatorio de
+    # `hunspell -D` (nao-portavel: no Windows nao lista os dicts do DICPATH).
+    # Verificar por idioma e obrigatorio: `-d pt_BR,en_US` sai com sucesso mesmo
+    # se um dos dois faltar, mascarando a ausencia parcial.
+    for lang, word in _HUNSPELL_PROBES.items():
+        result = subprocess.run(
+            ["hunspell", "-d", lang, "-l"],
+            input=word + "\n",
+            capture_output=True,
+            text=True,
+        )
+        # Dict ausente: exit != 0 (hunspell imprime "Can't open affix or
+        # dictionary files"). Dict carregado mas vazio/corrompido: a palavra
+        # conhecida apareceria na lista de desconhecidas (stdout).
+        if result.returncode != 0 or word in result.stdout.split():
+            pytest.fail(f"dicionario {lang} ausente")
