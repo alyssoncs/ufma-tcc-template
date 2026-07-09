@@ -1,0 +1,10 @@
+# Fixture de config do chktex: SUPRIME o aviso W26 (espaco antes de pontuacao)
+# via bloco CmdLine (equivale a passar "-n26" na linha de comando).
+#
+# Usada para provar que o lint repassa o arquivo de config ao chktex: como esta
+# fixture vive FORA da arvore de trabalho do teste (e do CWD), o chktex so
+# consegue aplicar esta supressao se o script a passar explicitamente.
+CmdLine
+{
+    -n26
+}
