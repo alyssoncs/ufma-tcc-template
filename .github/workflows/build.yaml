@@ -46,7 +46,7 @@ jobs:
   # Live; no macOS e Windows, direto no runner (a instalacao do TeX Live e feita
   # pela setup-texlive-action).
   build:
-    name: ${{ matrix.os }} 🛠️
+    name: build ${{ matrix.os }} 🛠️
     needs: setup
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
