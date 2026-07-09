@@ -75,10 +75,11 @@ test:
     shellcheck --shell=sh scripts/main/posix/*.sh
     {{ PYTHON }} -m pytest scripts/test
 
-# No Windows so a suite pytest (o PSScriptAnalyzer --- analogo do shellcheck ---
-# entra em slice propria).
+# No Windows: PSScriptAnalyzer (analise estatica dos .ps1, analogo do shellcheck)
+# + suite pytest. O -EnableExit faz o pwsh sair com codigo != 0 se houver achado.
 [windows]
 test:
+    pwsh -NoProfile -Command "Invoke-ScriptAnalyzer -Path scripts/main/windows -Recurse -Settings ./PSScriptAnalyzerSettings.psd1 -EnableExit"
     {{ PYTHON }} -m pytest scripts/test
 
 # Remove os artefatos de build (build/).
