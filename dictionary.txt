@@ -8,7 +8,6 @@ Ctrl
 IBGEtab
 IFMA
 MQTT
-Makefile
 Monier
 Okular
 Piet
@@ -42,6 +41,7 @@ hunspell
 inputminted
 iphone
 iPhones
+justfile
 justica
 LaTeX
 latexindent

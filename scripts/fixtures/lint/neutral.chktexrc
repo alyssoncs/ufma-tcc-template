@@ -1,0 +1,5 @@
+# Fixture de config do chktex NEUTRA: e um arquivo de config valido, mas nao
+# suprime o aviso W26. Serve de controle: passada ao lint, o chktex continua
+# reclamando do W26 (prova que a supressao do outro teste veio do conteudo do
+# config, e nao de o script engolir a saida/exit do chktex).
+TabSize = 2

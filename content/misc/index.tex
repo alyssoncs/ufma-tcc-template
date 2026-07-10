@@ -187,7 +187,7 @@ Usando essa \api, você pode fazer um \broadcast{} de dados para vários disposi
 
 % O "\broadcast de" abaixo (dentro do \enquote) e proposital: demonstra o termo
 % sem chaves engolindo o espaco. O W1 nessa linha e, portanto, um falso positivo.
-Repare nas chaves vazias (\texttt{\textbackslash{}broadcast\{\}}) usadas quando o termo é seguido de um espaço. Como qualquer comando \LaTeX\ sem argumentos, um termo \enquote{engole} o espaço que vem logo depois dele: escrever \texttt{\textbackslash{}broadcast de} produziria \enquote{\broadcast de}, sem o espaço. As chaves vazias delimitam o fim do comando e preservam o espaço seguinte. Quando o termo é seguido de pontuação --- como em \texttt{\textbackslash{}api,} --- as chaves não são necessárias. O projeto também roda um linter (via \texttt{make lint}), que alerta sobre termos seguidos de espaço sem as chaves. % chktex 1
+Repare nas chaves vazias (\texttt{\textbackslash{}broadcast\{\}}) usadas quando o termo é seguido de um espaço. Como qualquer comando \LaTeX\ sem argumentos, um termo \enquote{engole} o espaço que vem logo depois dele: escrever \texttt{\textbackslash{}broadcast de} produziria \enquote{\broadcast de}, sem o espaço. As chaves vazias delimitam o fim do comando e preservam o espaço seguinte. Quando o termo é seguido de pontuação --- como em \texttt{\textbackslash{}api,} --- as chaves não são necessárias. O projeto também roda um linter (via \texttt{just lint}), que alerta sobre termos seguidos de espaço sem as chaves. % chktex 1
 
 Como alternativa às chaves vazias, a sequência \texttt{\textbackslash{}broadcast\textbackslash{} de dados} (barra invertida seguida de espaço) também preserva o espaço após o termo, gerando: \broadcast\ de dados.
 

@@ -11,6 +11,6 @@ modifyLineBreaks:
 # A partir do latexindent 4.x (usado no container texlive/texlive:latest da CI),
 # os blocos @entry{...} passaram a receber um nivel extra de indentacao; este
 # ajuste preserva o mesmo resultado produzido pela 3.x, evitando divergencia
-# entre formatacao local e o `make format-check` da CI.
+# entre formatacao local e o `just format-check` da CI.
 noAdditionalIndentGlobal:
   namedGroupingBracesBrackets: 1

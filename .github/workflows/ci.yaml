@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: build 🛠️
+    name: checks ✅
     uses: ./.github/workflows/build.yaml
     concurrency:
       group: build-${{ github.ref }}
@@ -23,6 +23,7 @@ jobs:
   deploy:
     name: deploy 🚀
     needs: [build]
+    # ci.yaml so dispara em push na master, entao o deploy sempre publica o PDF.
     runs-on: ubuntu-latest
     concurrency:
       group: pdf-deploy
@@ -35,7 +36,7 @@ jobs:
       - name: 📥 Download PDF artifact
         uses: actions/download-artifact@v8
         with:
-          name: monografia
+          name: monografia-ubuntu-latest
       - name: 📂 Move PDF to output directory
         run: |
           mkdir -p ${{ env.OUT_DIR }}
