@@ -58,7 +58,7 @@ spell:
 
 [windows]
 spell:
-    ./scripts/main/windows/spell.ps1 {{ SPELL_LANG }} {{ SPELL_DICT }} (./scripts/main/windows/find-sources.ps1 . spell {{ BUILD_DIR }} {{ OUT_DIR }})
+    ./scripts/main/windows/spell.ps1 "{{ SPELL_LANG }}" {{ SPELL_DICT }} (./scripts/main/windows/find-sources.ps1 . spell {{ BUILD_DIR }} {{ OUT_DIR }})
 
 # Valida tudo (format-check, lint e spell) sem compilar.
 check: format-check lint spell
