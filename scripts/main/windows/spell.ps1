@@ -50,7 +50,7 @@ function Skip-MintedBlock($path) {
 # \ref, \label, ...), incluindo a variante estrela (\textcite*) e os argumentos
 # opcionais ([...]), para que os fragmentos das chaves nao virem "erros de
 # ortografia" no hunspell 1.7.0. Ver o cabecalho para o porque.
-function Remove-CitationArgs($lines) {
+function Skip-CitationArg($lines) {
   $pattern = '\\(textcite|autocite|parencite|footcite|nocite|cite|autoref|pageref|eqref|ref|label)\*?[ \t]*(\[[^\]]*\])*\{[^}]*\}'
   foreach ($line in $lines) {
     $prev = $null
@@ -65,7 +65,7 @@ function Remove-CitationArgs($lines) {
 
 $status = 0
 foreach ($f in $files) {
-  $out = Remove-CitationArgs (Skip-MintedBlock $f) | hunspell -t -l -i utf-8 -d $lang -p $dict
+  $out = Skip-CitationArg (Skip-MintedBlock $f) | hunspell -t -l -i utf-8 -d $lang -p $dict
   $hrc = $LASTEXITCODE
   if ($hrc -ne 0) {
     exit $hrc
