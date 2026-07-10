@@ -9,6 +9,14 @@
 # \begin{minted}...\end{minted} viraria "erro de ortografia". Por isso esses
 # blocos sao removidos (via awk) antes de passar o texto ao hunspell.
 #
+# Alem disso, as CHAVES de comandos de citacao/remissao (\cite, \textcite,
+# \ref, \label, ...) sao identificadores do biblatex/LaTeX (ex.: "knuth:goto"),
+# nao palavras. Versoes novas do hunspell (>=1.7.1) pulam esses comandos e seus
+# argumentos no modo -t, mas a 1.7.0 (usada no job Windows do CI) NAO pula, e
+# reporta os fragmentos da chave como erros. Para o resultado ser deterministico
+# entre versoes, removemos os argumentos desses comandos aqui (via awk) antes de
+# passar o texto ao hunspell -- do mesmo modo que fazemos com os blocos minted.
+#
 # Uso: spell.sh <lang> <dict> <arquivo.tex>...
 #   lang   dicionarios do hunspell (ex.: pt_BR,en_US)
 #   dict   dicionario do projeto, palavras validas (ex.: dictionary.txt)
@@ -33,10 +41,29 @@ strip_minted() {
   ' "$1"
 }
 
+# Remove os argumentos dos comandos de citacao/remissao (\cite, \textcite,
+# \ref, \label, ...). As chaves desses comandos sao identificadores do
+# biblatex/LaTeX (ex.: "knuth:goto"), nao palavras -- versoes novas do hunspell
+# (>=1.7.1) as pulam no modo -t, mas a 1.7.0 (job Windows do CI) NAO, e reporta
+# os fragmentos da chave como erros. Removemos aqui o argumento obrigatorio
+# ({...}), a variante estrela (\textcite*) e os argumentos opcionais ([...])
+# para que o resultado seja deterministico entre versoes do hunspell.
+strip_citations() {
+  awk '
+    {
+      line = $0
+      while (match(line, /\\(textcite|autocite|parencite|footcite|nocite|cite|autoref|pageref|eqref|ref|label)\*?[ \t]*(\[[^]]*\])*\{[^}]*\}/)) {
+        line = substr(line, 1, RSTART - 1) substr(line, RSTART + RLENGTH)
+      }
+      print line
+    }
+  '
+}
+
 status=0
 for f in "$@"; do
   hrc=0
-  hunspell_out=$(strip_minted "$f" | hunspell -t -l -i utf-8 -d "$lang" -p "$dict") || hrc=$?
+  hunspell_out=$(strip_minted "$f" | strip_citations | hunspell -t -l -i utf-8 -d "$lang" -p "$dict") || hrc=$?
   if [ "$hrc" -ne 0 ]; then
     exit "$hrc"
   fi

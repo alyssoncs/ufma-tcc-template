@@ -8,6 +8,14 @@
 # \begin{minted}...\end{minted} viraria "erro de ortografia". Por isso esses
 # blocos sao removidos antes de passar o texto ao hunspell.
 #
+# Alem disso, as CHAVES de comandos de citacao/remissao (\cite, \textcite,
+# \ref, \label, ...) sao identificadores do biblatex/LaTeX (ex.: "knuth:goto"),
+# nao palavras. Versoes novas do hunspell (>=1.7.1) pulam esses comandos e seus
+# argumentos no modo -t, mas a 1.7.0 (usada no job Windows do CI) NAO pula, e
+# reporta os fragmentos da chave como erros. Para o resultado ser deterministico
+# entre versoes, removemos os argumentos desses comandos aqui antes de passar o
+# texto ao hunspell -- do mesmo modo que fazemos com os blocos minted.
+#
 # Uso: spell.ps1 <lang> <dict> <arquivo.tex>...
 #   lang   dicionarios do hunspell (ex.: pt_BR,en_US)
 #   dict   dicionario do projeto, palavras validas (ex.: dictionary.txt)
@@ -38,9 +46,26 @@ function Skip-MintedBlock($path) {
   }
 }
 
+# Remove os argumentos dos comandos de citacao/remissao (\cite, \textcite,
+# \ref, \label, ...), incluindo a variante estrela (\textcite*) e os argumentos
+# opcionais ([...]), para que os fragmentos das chaves nao virem "erros de
+# ortografia" no hunspell 1.7.0. Ver o cabecalho para o porque.
+function Remove-CitationArgs($lines) {
+  $pattern = '\\(textcite|autocite|parencite|footcite|nocite|cite|autoref|pageref|eqref|ref|label)\*?[ \t]*(\[[^\]]*\])*\{[^}]*\}'
+  foreach ($line in $lines) {
+    $prev = $null
+    $cur = $line
+    while ($cur -ne $prev) {
+      $prev = $cur
+      $cur = [regex]::Replace($cur, $pattern, '')
+    }
+    $cur
+  }
+}
+
 $status = 0
 foreach ($f in $files) {
-  $out = Skip-MintedBlock $f | hunspell -t -l -i utf-8 -d $lang -p $dict
+  $out = Remove-CitationArgs (Skip-MintedBlock $f) | hunspell -t -l -i utf-8 -d $lang -p $dict
   $hrc = $LASTEXITCODE
   if ($hrc -ne 0) {
     exit $hrc
