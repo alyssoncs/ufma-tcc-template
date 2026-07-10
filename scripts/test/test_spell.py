@@ -243,3 +243,39 @@ def test_falha_do_hunspell_faz_bail_out(run_script):
         "spell", _MISSING_LANG, os.devnull, str(SPELL / "with-error.tex")
     )
     assert result.returncode != 0
+
+
+# Caminho de dicionario de PROJETO (-p) garantidamente inexistente. O hunspell
+# ignora silenciosamente um -p ausente e SAI 0 -- diferente do -d, que ele
+# valida. O preflight de idiomas cobre so o -d, entao esse caminho fica sem
+# checagem.
+_MISSING_PROJECT_DICT = os.path.join(os.sep, "nao", "existe", "dictionary.txt")
+
+
+def test_dicionario_de_projeto_ausente_faz_bail_out(run_script):
+    """Se o dicionario de PROJETO (-p) apontar para um arquivo inexistente, o
+    hunspell o ignora e SAI 0 -- sem sinalizar a ausencia. Rodado sobre um
+    arquivo LIMPO, isso passa como falso verde: o run "sucede" sem nunca ter
+    carregado os termos validos do projeto. O contrato correto e abortar
+    (returncode != 0), coerente com o preflight que ja fazemos para o -d.
+
+    Fora do escopo de #88/#90 (aqueles tratam do -d parcialmente ausente); este
+    e o mesmo tipo de falso verde, mas no -p. O teste FICA VERMELHO contra o
+    codigo atual, provando o gap: o preflight valida so os idiomas do -d, nao o
+    arquivo do -p."""
+    require_hunspell()
+
+    # Sanidade: com o -p inexistente, o hunspell mesmo sai 0 (ignora e segue).
+    hunspell_rc = subprocess.run(
+        ["hunspell", "-d", "pt_BR,en_US", "-l", "-p", _MISSING_PROJECT_DICT],
+        input="teste\n",
+        capture_output=True,
+        text=True,
+    ).returncode
+    assert hunspell_rc == 0, "sanidade: hunspell deveria sair 0 com -p inexistente"
+
+    # Arquivo LIMPO com -p inexistente: sem a deteccao, passa como falso verde.
+    result = run_script(
+        "spell", "pt_BR,en_US", _MISSING_PROJECT_DICT, str(SPELL / "clean.tex")
+    )
+    assert result.returncode != 0

@@ -50,6 +50,19 @@ foreach ($one in ($lang -split ',')) {
   }
 }
 
+# O dicionario de PROJETO (-p) tem o mesmo problema do -d, so que pior: o
+# hunspell ignora SILENCIOSAMENTE um -p inexistente e SAI 0, entao o preflight
+# de idiomas acima nao o pega. Um caminho errado passaria como falso verde, sem
+# nunca carregar os termos validos do projeto. Validamos aqui que o arquivo
+# existe antes de seguir. O dispositivo nulo (usado quando nao ha dicionario de
+# projeto) e aceito: no Windows o `os.devnull` do harness vira "nul", que o
+# Test-Path nao reconhece como arquivo, entao o liberamos explicitamente.
+$nullDevices = @('nul', 'NUL', '/dev/null')
+if ($dict -notin $nullDevices -and -not (Test-Path -LiteralPath $dict -PathType Leaf)) {
+  [Console]::Error.WriteLine("spell: dicionario de projeto ausente ou ilegivel: $dict")
+  exit 3
+}
+
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.
 function Skip-MintedBlock($path) {

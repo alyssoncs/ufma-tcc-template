@@ -45,6 +45,17 @@ for one in $(printf '%s\n' "$lang" | tr ',' ' '); do
   fi
 done
 
+# O dicionario de PROJETO (-p) tem o mesmo problema do -d, so que pior: o
+# hunspell ignora SILENCIOSAMENTE um -p inexistente e SAI 0, entao o preflight
+# de idiomas acima nao o pega. Um caminho errado passaria como falso verde, sem
+# nunca carregar os termos validos do projeto. Validamos aqui que o arquivo
+# existe e e legivel antes de seguir. `/dev/null` (usado quando nao ha
+# dicionario de projeto) satisfaz `-r`, entao continua aceito.
+if [ ! -r "$dict" ]; then
+  echo "spell: dicionario de projeto ausente ou ilegivel: $dict" >&2
+  exit 3
+fi
+
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.
 strip_minted() {
