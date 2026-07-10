@@ -35,6 +35,21 @@ $files = $args[2..($args.Count - 1)]
 # Garante UTF-8 na comunicacao com o hunspell (-i utf-8).
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
+# O hunspell aceita varios idiomas de uma vez (`-d pt_BR,en_US`), mas se UM
+# deles faltar ele carrega SO os que achou e SAI 0 -- sem sinalizar a ausencia
+# parcial. Isso mascara um falso verde (ex.: no Windows o en_US some, o pt_BR
+# fica, e o ingles nunca chega a ser checado). Por isso validamos cada idioma
+# individualmente ANTES de rodar o spellcheck: `hunspell -d <lang>` sai != 0
+# quando aquele dicionario nao existe. Sondamos com uma palavra qualquer na
+# entrada, so para exercitar o carregamento do dicionario; a saida e descartada.
+foreach ($one in ($lang -split ',')) {
+  "x" | hunspell -l -i utf-8 -d $one *> $null
+  if ($LASTEXITCODE -ne 0) {
+    [Console]::Error.WriteLine("spell: dicionario do hunspell ausente ou ilegivel: $one")
+    exit 3
+  }
+}
+
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.
 function Skip-MintedBlock($path) {

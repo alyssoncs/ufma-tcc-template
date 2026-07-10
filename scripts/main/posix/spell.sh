@@ -31,6 +31,20 @@ lang="$1"
 dict="$2"
 shift 2
 
+# O hunspell aceita varios idiomas de uma vez (`-d pt_BR,en_US`), mas se UM
+# deles faltar ele carrega SO os que achou e SAI 0 -- sem sinalizar a ausencia
+# parcial. Isso mascara um falso verde (ex.: no Windows o en_US some, o pt_BR
+# fica, e o ingles nunca chega a ser checado). Por isso validamos cada idioma
+# individualmente ANTES de rodar o spellcheck: `hunspell -d <lang>` sai != 0
+# quando aquele dicionario nao existe. Sondamos com uma palavra qualquer na
+# entrada, so para exercitar o carregamento do dicionario; a saida e descartada.
+for one in $(printf '%s\n' "$lang" | tr ',' ' '); do
+  if ! printf 'x\n' | hunspell -l -i utf-8 -d "$one" >/dev/null 2>&1; then
+    echo "spell: dicionario do hunspell ausente ou ilegivel: $one" >&2
+    exit 3
+  fi
+done
+
 # Remove os blocos de codigo do minted (inclusive as linhas \begin/\end) para
 # que o hunspell nao tente corrigir o conteudo das listagens.
 strip_minted() {
