@@ -1,0 +1,31 @@
+# Ambiente de desenvolvimento do template: trabalha-se de dentro do container.
+# O compose esconde as flags de volume e de usuario:
+#
+#   docker compose run --rm tcc bash   # entra no ambiente
+#   just build                         # roda normalmente la dentro
+#
+# ou direto, sem shell interativo:
+#
+#   docker compose run --rm tcc just build
+#
+# UID/GID do host: no unix, exporte-os antes (para os arquivos gerados em
+# build/ e output/ sairem com o dono correto no host, nao root):
+#
+#   UID=$(id -u) GID=$(id -g) docker compose run --rm tcc just build
+#
+# A sintaxe `id -u`/`id -g` e unix; no Windows/PowerShell o comando de entrada
+# difere. Sem essas variaveis, cai no 1000:1000 do fallback abaixo.
+services:
+  tcc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # UID:GID do host para os artefatos gerados nao ficarem como root no Linux.
+    user: "${UID:-1000}:${GID:-1000}"
+    # Monta a raiz do projeto no workdir do container (WORKDIR /work na imagem).
+    volumes:
+      - .:/work
+    working_dir: /work
+    # Mantem stdin/tty para `docker compose run ... bash` ser interativo.
+    stdin_open: true
+    tty: true
