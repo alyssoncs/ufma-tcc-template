@@ -213,15 +213,19 @@ def test_en_US_e_de_fato_carregado(run_script):
 
 def test_falha_do_hunspell_faz_bail_out(run_script):
     """Se o hunspell sair com codigo != 0 (aqui: dicionario inexistente), o
-    script deve abortar (bail out) com o MESMO codigo de saida, em vez de tratar
-    o stdout vazio como sucesso.
+    script deve abortar (bail out) em vez de tratar o stdout vazio como sucesso.
 
     Este teste FALHA de proposito enquanto o bug do falso verde existir:
     spell.sh/spell.ps1 decidem o status pela CONTAGEM de palavras desconhecidas
     (stdout) e ignoram o exit code do hunspell -- com 'set -eu' sem pipefail (sh)
     e sem checar $LASTEXITCODE (ps1), a falha do hunspell no meio do pipe (que o
     'sort'/'Sort-Object' final mascara) passa como exit 0. O teste so passa
-    quando os scripts propagarem a falha do hunspell."""
+    quando os scripts propagarem a falha do hunspell.
+
+    Asserimos apenas returncode != 0 (nao o valor exato do hunspell): o contrato
+    e "dicionario ausente => aborta", coerente com
+    test_dicionario_parcialmente_ausente_faz_bail_out. Amarrar ao codigo exato
+    prenderia o fix a distinguir 'todos faltam' de 'alguns faltam'."""
     require_hunspell()
 
     # Exit code do proprio hunspell ao falhar com o dicionario inexistente.
@@ -238,4 +242,4 @@ def test_falha_do_hunspell_faz_bail_out(run_script):
     result = run_script(
         "spell", _MISSING_LANG, os.devnull, str(SPELL / "with-error.tex")
     )
-    assert result.returncode == hunspell_rc
+    assert result.returncode != 0
