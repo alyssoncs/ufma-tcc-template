@@ -155,6 +155,61 @@ def test_textcite_nao_e_tratado_como_erro(run_script):
 # stdout vazio.
 _MISSING_LANG = "zz_ZZ_nao_existe"
 
+# Um idioma que existe (pt_BR) mais um que nao existe. O hunspell, com um dos
+# dois faltando, abre SO o que achou e SAI 0 -- nao sinaliza a ausencia parcial.
+_PARTIALLY_MISSING_LANG = "pt_BR," + _MISSING_LANG
+
+
+def test_dicionario_parcialmente_ausente_faz_bail_out(run_script):
+    """Se UM idioma da lista existe e outro nao, o hunspell carrega so o que
+    achou e SAI 0 -- sem sinalizar a ausencia parcial. Rodado sobre um arquivo
+    LIMPO, o unico motivo para falhar seria a falta do dicionario; o script
+    deve abortar (returncode != 0) em vez de tratar isso como sucesso.
+
+    Este teste FALHA de proposito contra o codigo atual: e o que prova o gap do
+    issue #88 (ex.: no Windows o en_US some, o pt_BR fica, e o spellcheck passa
+    VERDE sem nunca ter checado o ingles). A propagacao do exit code do hunspell
+    NAO pega este caso, porque aqui o hunspell sai 0."""
+    require_hunspell()
+
+    # Sanidade: com um idioma existente e outro ausente, o hunspell mesmo sai 0.
+    hunspell_rc = subprocess.run(
+        ["hunspell", "-d", _PARTIALLY_MISSING_LANG, "-l"],
+        input="teste\n",
+        capture_output=True,
+        text=True,
+    ).returncode
+    assert hunspell_rc == 0, "sanidade: hunspell deveria sair 0 com ausencia parcial"
+
+    # Arquivo LIMPO: sem a deteccao do dict ausente, o script passaria como
+    # falso verde. O comportamento correto e abortar.
+    result = run_script(
+        "spell", _PARTIALLY_MISSING_LANG, os.devnull, str(SPELL / "clean.tex")
+    )
+    assert result.returncode != 0
+
+
+def test_en_US_e_de_fato_carregado(run_script):
+    """Ancora que perder/remover o en_US e OBSERVAVEL (guarda de regressao do
+    #88): uma fixta so com palavras inglesas que o pt_BR reprova e o en_US
+    aceita deve passar com `pt_BR,en_US` e falhar com `pt_BR` sozinho."""
+    require_hunspell()
+
+    # Com os dois idiomas, o ingles e aceito: sucesso e stdout vazio.
+    com_ingles = run_script(
+        "spell", "pt_BR,en_US", os.devnull, str(SPELL / "english-only.tex")
+    )
+    assert com_ingles.returncode == 0
+    assert com_ingles.stdout == ""
+
+    # Sem o en_US, as palavras inglesas viram erros: falha e elas aparecem.
+    sem_ingles = run_script(
+        "spell", "pt_BR", os.devnull, str(SPELL / "english-only.tex")
+    )
+    assert sem_ingles.returncode == 1
+    for palavra in ("spelling", "checker", "workflow", "throughput"):
+        assert palavra in sem_ingles.stdout
+
 
 def test_falha_do_hunspell_faz_bail_out(run_script):
     """Se o hunspell sair com codigo != 0 (aqui: dicionario inexistente), o
