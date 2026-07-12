@@ -131,27 +131,14 @@ jobs:
         if: runner.os == 'Windows'
         run: python -m pip install -r scripts/test/requirements.txt
 
-      # --- Checagens ---
-      - name: 🧪 Test scripts
-        run: just test
-
-      - name: 🧹 Check LaTeX formatting
-        run: just format-check
-
-      - name: 🔎 Lint LaTeX
-        run: just lint
-
-      - name: 🔤 Spellcheck
-        run: just spell
-
-      - name: 📜 Build PDF
-        run: just pdf
-
-      - name: 📤 Upload PDF artifact
-        uses: actions/upload-artifact@v7
+      # --- Checagens + upload (cauda comum, via composite action) ---
+      - name: ✅ Run checks
+        uses: ./.github/actions/run-checks
         with:
-          name: monografia-${{ matrix.os }}
-          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
+          runner: native
+          artifact-name: monografia-${{ matrix.os }}
+          out-dir: ${{ env.OUT_DIR }}
+          pdf-name: ${{ env.PDF_NAME }}
 
   # Caminho Docker: roda o MESMO conjunto de checagens que o job `build` (native),
   # so que dentro da imagem custom do Dockerfile. Job separado (nao entra na
@@ -188,24 +175,11 @@ jobs:
             echo "GID=$(id -g)"
           } >> "$GITHUB_ENV"
 
-      # --- Checagens (mesmos alvos do job native, via docker compose run) ---
-      - name: 🧪 Test scripts
-        run: docker compose run --rm tcc just test
-
-      - name: 🧹 Check LaTeX formatting
-        run: docker compose run --rm tcc just format-check
-
-      - name: 🔎 Lint LaTeX
-        run: docker compose run --rm tcc just lint
-
-      - name: 🔤 Spellcheck
-        run: docker compose run --rm tcc just spell
-
-      - name: 📜 Build PDF
-        run: docker compose run --rm tcc just pdf
-
-      - name: 📤 Upload PDF artifact
-        uses: actions/upload-artifact@v7
+      # --- Checagens + upload (cauda comum, via composite action) ---
+      - name: ✅ Run checks
+        uses: ./.github/actions/run-checks
         with:
-          name: monografia-docker
-          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
+          runner: docker
+          artifact-name: monografia-docker
+          out-dir: ${{ env.OUT_DIR }}
+          pdf-name: ${{ env.PDF_NAME }}

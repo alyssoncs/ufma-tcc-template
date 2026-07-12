@@ -1,0 +1,62 @@
+name: Run checks
+description: Resolve o prefixo de execução e roda a suíte de checks + upload do PDF.
+
+# Cauda comum aos jobs `build` (native) e `docker` de build.yaml. O prefixo de
+# comando NAO e recebido cru: o input `runner` e uma enum e o prefixo e resolvido
+# internamente num unico `case`. Assim o conjunto de estrategias validas fica
+# fechado e auditavel aqui — nenhum chamador (nem um PR num fork) consegue injetar
+# comando arbitrario. Adicionar estrategia = editar o `case` abaixo.
+inputs:
+  runner:
+    description: Estratégia de execução (native | docker).
+    required: true
+  artifact-name:
+    description: Nome do artifact do PDF.
+    required: true
+  out-dir:
+    description: Diretório de saída do PDF.
+    required: true
+  pdf-name:
+    description: Nome do arquivo PDF.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: 🧩 Resolve command prefix
+      id: prefix
+      shell: bash
+      run: |
+        set -eu
+        case "${{ inputs.runner }}" in
+          native) prefix="" ;;
+          docker) prefix="docker compose run --rm tcc" ;;
+          *) echo "::error::runner inválido: ${{ inputs.runner }}"; exit 1 ;;
+        esac
+        echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+
+    - name: 🧪 Test scripts
+      shell: bash
+      run: ${{ steps.prefix.outputs.prefix }} just test
+
+    - name: 🧹 Check LaTeX formatting
+      shell: bash
+      run: ${{ steps.prefix.outputs.prefix }} just format-check
+
+    - name: 🔎 Lint LaTeX
+      shell: bash
+      run: ${{ steps.prefix.outputs.prefix }} just lint
+
+    - name: 🔤 Spellcheck
+      shell: bash
+      run: ${{ steps.prefix.outputs.prefix }} just spell
+
+    - name: 📜 Build PDF
+      shell: bash
+      run: ${{ steps.prefix.outputs.prefix }} just pdf
+
+    - name: 📤 Upload PDF artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.out-dir }}/${{ inputs.pdf-name }}
