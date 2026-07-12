@@ -258,6 +258,17 @@ jobs:
       - name: 📜 Build PDF
         run: nix develop -c just pdf
 
+      # Build hermetico: `nix build` roda `just build` (format-check + lint +
+      # spell + pdf) numa sandbox sem rede. Step final do mesmo job (nao um job
+      # separado) para reusar o /nix/store ja restaurado — um job novo pagaria
+      # de novo instalar o Nix + restaurar o cache multi-GB do texliveFull. Os
+      # steps `nix develop` acima ja dao log granular; este e a checagem
+      # hermetica atomica (minted roda na sandbox — ver flake.nix).
+      - name: ❄️ Hermetic build (nix build)
+        run: |
+          nix build .
+          test -f result/monografia.pdf
+
       - name: 📤 Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
