@@ -11,12 +11,13 @@ env:
   PDF_NAME: monografia.pdf
 
 jobs:
-  # Monta a matrix de SOs conforme a variavel de repo `IS_TEMPLATE_REPO`: no
-  # upstream (`true`) validamos nos tres SOs; em forks (variavel ausente) a
-  # matrix cai para so o build Linux, evitando custo de macOS/Windows. Uma lista
-  # `matrix.include` nao aceita `if:`, entao emitimos a matrix como JSON aqui e
-  # o job `build` a consome via `fromJson`. Este job roda direto no runner (sem
-  # o container do TeX Live): so faz echo de JSON, nao precisa do toolchain.
+  # Monta a matrix de SOs nativos conforme a variavel de repo `IS_TEMPLATE_REPO`:
+  # no upstream (`true`) validamos nos tres SOs nativos; no fork (variavel
+  # ausente) a matrix fica VAZIA — o caminho unico do fork e o job `docker`
+  # (reproduzivel), nao o Linux nativo. Uma lista `matrix.include` nao aceita
+  # `if:`, entao emitimos a matrix como JSON aqui e o job `build` a consome via
+  # `fromJson` (include vazio => zero execucoes). Este job roda direto no runner
+  # (sem o container do TeX Live): so faz echo de JSON, nao precisa do toolchain.
   setup:
     name: setup matrix ⚙️
     runs-on: ubuntu-latest
@@ -27,13 +28,13 @@ jobs:
         id: matrix
         run: |
           set -eu
-          linux='{"os":"ubuntu-latest","container":"texlive/texlive:latest"}'
           if [ "${{ vars.IS_TEMPLATE_REPO }}" = "true" ]; then
+            linux='{"os":"ubuntu-latest","container":"texlive/texlive:latest"}'
             macos='{"os":"macos-latest","container":""}'
             windows='{"os":"windows-latest","container":""}'
             matrix="{\"include\":[$linux,$macos,$windows]}"
           else
-            matrix="{\"include\":[$linux]}"
+            matrix="{\"include\":[]}"
           fi
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
@@ -157,10 +158,12 @@ jobs:
   # so que dentro da imagem custom do Dockerfile. Job separado (nao entra na
   # matrix): o setup e totalmente diferente (buildar a imagem vs. instalar
   # toolchain no runner) e os checks sao prefixados por `docker compose run`. So
-  # no Linux e so no upstream (`IS_TEMPLATE_REPO`), para nao pesar o CI dos forks.
+  # no Linux. Roda em TODOS os repos: no upstream e um dos varios caminhos; no
+  # fork e o caminho UNICO (reproduzivel), no lugar do Linux nativo. Por isso, ao
+  # contrario dos jobs `nix`/nativo-multiplataforma, nao tem gating por
+  # `IS_TEMPLATE_REPO`. E tambem a fonte do PDF de deploy (ver ci.yaml).
   docker:
     name: build docker 🐳
-    if: vars.IS_TEMPLATE_REPO == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: 🛎️ Checkout code

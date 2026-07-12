@@ -36,7 +36,11 @@ jobs:
       - name: 📥 Download PDF artifact
         uses: actions/download-artifact@v8
         with:
-          name: monografia-ubuntu-latest
+          # Fonte unica de deploy: o caminho Docker (reproduzivel) roda em todos
+          # os repos — no upstream junto aos demais caminhos, no fork como caminho
+          # unico. O Linux nativo (`monografia-ubuntu-latest`) so existe no
+          # upstream, entao nao serve de fonte comum.
+          name: monografia-docker
       - name: 📂 Move PDF to output directory
         run: |
           mkdir -p ${{ env.OUT_DIR }}
