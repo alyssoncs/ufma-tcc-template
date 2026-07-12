@@ -228,6 +228,8 @@ jobs:
 
       - name: ❄️ Install Nix
         uses: DeterminateSystems/nix-installer-action@v22
+        with:
+          determinate: false
 
       # Cache do /nix/store via cache do GitHub Actions (mesma infra do `type=gha`
       # do job docker, sem servico externo). Chave pelo hash do flake.lock: invalida
