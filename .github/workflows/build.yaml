@@ -209,3 +209,55 @@ jobs:
         with:
           name: monografia-docker
           path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
+
+  # Caminho Nix: roda o MESMO conjunto de checagens que o job `build` (native),
+  # so que dentro do devShell do flake (`nix develop -c ...`). Job separado (nao
+  # entra na matrix): o setup e totalmente diferente (instalar Nix + restaurar o
+  # /nix/store vs. instalar toolchain no runner) e os checks sao prefixados por
+  # `nix develop -c`. So no Linux (o Nix roda nativo so em Linux/macOS; o devShell
+  # e reproduzivel por lockfile) e so no upstream (`IS_TEMPLATE_REPO`), para nao
+  # pesar o CI dos forks. O DICPATH vem do shellHook do flake, entao nao precisa
+  # de setup de dicionarios como nos caminhos nativos.
+  nix:
+    name: build nix ❄️
+    if: vars.IS_TEMPLATE_REPO == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout code
+        uses: actions/checkout@v7
+
+      - name: ❄️ Install Nix
+        uses: DeterminateSystems/nix-installer-action@v13
+
+      # Cache do /nix/store via cache do GitHub Actions (mesma infra do `type=gha`
+      # do job docker, sem servico externo). Chave pelo hash do flake.lock: invalida
+      # sozinha quando o pin muda. O GC antes de salvar (`gc-max-store-size`) limita
+      # o tamanho do cache, analogo ao `mode=max` do bake.
+      - name: ❄️ Restore and save Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+          gc-max-store-size-linux: 5G
+
+      # --- Checagens (mesmos alvos do job native, dentro do devShell) ---
+      - name: 🧪 Test scripts
+        run: nix develop -c just test
+
+      - name: 🧹 Check LaTeX formatting
+        run: nix develop -c just format-check
+
+      - name: 🔎 Lint LaTeX
+        run: nix develop -c just lint
+
+      - name: 🔤 Spellcheck
+        run: nix develop -c just spell
+
+      - name: 📜 Build PDF
+        run: nix develop -c just pdf
+
+      - name: 📤 Upload PDF artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: monografia-nix
+          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
