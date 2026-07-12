@@ -41,26 +41,18 @@ jobs:
           fi
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
-  # Todas as checagens + compilacao do PDF, nos ambientes definidos pelo job
-  # `setup`. A suite (`just test`) exercita os wrappers (format/lint/spell) e faz
-  # shellcheck, entao exige o toolchain completo (latexindent, chktex, hunspell,
-  # shellcheck) — por isso tudo roda num job so. Os steps de setup vem primeiro;
-  # as checagens, depois. Cada ambiente publica seu proprio artifact; a branch
-  # `pdf` (deploy em ci.yaml) usa so o do Linux nativo.
+  # Todas as checagens + compilacao do PDF. A suite (`just test`) exige o toolchain
+  # completo (latexindent, chktex, hunspell, shellcheck), por isso tudo roda num
+  # job so. A branch `pdf` (deploy em ci.yaml) usa so o artifact do Linux nativo.
   #
-  # Ha dois `mode`s (campo da matrix):
-  #  - `native`: instala o toolchain no runner. No Linux rodamos no container do
-  #    TeX Live; no macOS e Windows, direto no runner (via setup-texlive-action).
-  #  - `docker`: nao instala nada no runner; builda a imagem custom do Dockerfile
-  #    (com cache) e roda as MESMAS checagens dentro dela, via prefixo
-  #    `docker compose run`. So no Linux (containers Linux so rodam em runner
-  #    Linux; testar o Docker engine de outros hosts esta fora de escopo).
+  # `mode` (campo da matrix):
+  #  - `native`: instala o toolchain no runner (Linux via container TeX Live;
+  #    macOS/Windows via setup-texlive-action).
+  #  - `docker`: roda as checagens dentro da imagem custom, via `docker compose run`.
   build:
     name: build ${{ matrix.os }} (${{ matrix.mode }}) 🛠️
     needs: setup
     runs-on: ${{ matrix.os }}
-    # No mode docker rodamos no runner (nao dentro de um container do Actions):
-    # o proprio runner invoca o Docker para buildar/rodar a imagem custom.
     container: ${{ matrix.mode == 'docker' && '' || matrix.container }}
     strategy:
       fail-fast: false
@@ -71,10 +63,8 @@ jobs:
         uses: actions/checkout@v7
 
       # --- Setup: caminho Docker ---
-      # Builda a imagem custom (Dockerfile) e a carrega no daemon local com o
-      # nome `ufma-tcc-template:ci` (definido no docker-compose.yml), para o
-      # `docker compose run` reusa-la sem rebuild. Cache `type=gha` acelera runs
-      # subsequentes. So no mode docker.
+      # Builda a imagem custom e a carrega no daemon local; `docker compose run` a
+      # reusa sem rebuild. Cache `type=gha` acelera runs subsequentes.
       - name: 🐳 Set up Docker Buildx
         if: matrix.mode == 'docker'
         uses: docker/setup-buildx-action@v3
@@ -163,11 +153,9 @@ jobs:
         run: python -m pip install -r scripts/test/requirements.txt
 
       # --- Prefixo das checagens ---
-      # No mode native as checagens rodam direto no runner (prefixo vazio); no
-      # mode docker rodam dentro da imagem custom via `docker compose run`. UID/GID
-      # do host vao para o GITHUB_ENV (o compose interpola ${UID}/${GID}) para os
-      # artefatos em build/output nao sairem como root no runner. Nao dá para
-      # passar `UID=.. GID=.. docker ...` inline: no bash `UID` e readonly.
+      # UID/GID do host vao para o GITHUB_ENV (o compose interpola ${UID}/${GID})
+      # para os artefatos nao sairem como root. Nao dá pra passar
+      # `UID=.. docker ...` inline: no bash `UID` e readonly.
       - name: 🧰 Compute check prefix
         id: prefix
         shell: bash
