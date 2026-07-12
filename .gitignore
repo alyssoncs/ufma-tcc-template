@@ -2,6 +2,11 @@
 build/
 output/
 
+## Nix: symlink do `nix build` e cache do direnv.
+result
+result-*
+.direnv/
+
 ## minted cache (normalmente fica em build/, mas ignoramos por robustez caso
 ## o aux_dir mude).
 _minted/
