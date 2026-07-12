@@ -12,8 +12,11 @@ env:
 
 jobs:
   # Monta a matrix de SOs conforme a variavel de repo `IS_TEMPLATE_REPO`: no
-  # upstream (`true`) validamos nos tres SOs; em forks (variavel ausente) a
-  # matrix cai para so o build Linux, evitando custo de macOS/Windows. Uma lista
+  # upstream (`true`) validamos nos tres SOs nativos + o caminho Docker; em forks
+  # (variavel ausente) a matrix cai para so o build Linux nativo, evitando custo
+  # de macOS/Windows/Docker. Cada entrada carrega um `mode` (`native`|`docker`)
+  # que o job `build` usa para escolher entre instalar o toolchain no runner
+  # (native) ou rodar as checagens dentro da imagem custom (docker). Uma lista
   # `matrix.include` nao aceita `if:`, entao emitimos a matrix como JSON aqui e
   # o job `build` a consome via `fromJson`. Este job roda direto no runner (sem
   # o container do TeX Live): so faz echo de JSON, nao precisa do toolchain.
@@ -27,29 +30,38 @@ jobs:
         id: matrix
         run: |
           set -eu
-          linux='{"os":"ubuntu-latest","container":"texlive/texlive:latest"}'
+          linux='{"os":"ubuntu-latest","container":"texlive/texlive:latest","mode":"native"}'
           if [ "${{ vars.IS_TEMPLATE_REPO }}" = "true" ]; then
-            macos='{"os":"macos-latest","container":""}'
-            windows='{"os":"windows-latest","container":""}'
-            matrix="{\"include\":[$linux,$macos,$windows]}"
+            macos='{"os":"macos-latest","container":"","mode":"native"}'
+            windows='{"os":"windows-latest","container":"","mode":"native"}'
+            docker='{"os":"ubuntu-latest","container":"","mode":"docker"}'
+            matrix="{\"include\":[$linux,$macos,$windows,$docker]}"
           else
             matrix="{\"include\":[$linux]}"
           fi
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
-  # Todas as checagens + compilacao do PDF, nos SOs definidos pelo job `setup`.
-  # A suite (`just test`) exercita os wrappers (format/lint/spell) e faz
+  # Todas as checagens + compilacao do PDF, nos ambientes definidos pelo job
+  # `setup`. A suite (`just test`) exercita os wrappers (format/lint/spell) e faz
   # shellcheck, entao exige o toolchain completo (latexindent, chktex, hunspell,
   # shellcheck) — por isso tudo roda num job so. Os steps de setup vem primeiro;
-  # as checagens, depois. Cada OS publica seu proprio artifact; a branch `pdf`
-  # (deploy em ci.yaml) usa so o do Linux. No Linux rodamos no container do TeX
-  # Live; no macOS e Windows, direto no runner (a instalacao do TeX Live e feita
-  # pela setup-texlive-action).
+  # as checagens, depois. Cada ambiente publica seu proprio artifact; a branch
+  # `pdf` (deploy em ci.yaml) usa so o do Linux nativo.
+  #
+  # Ha dois `mode`s (campo da matrix):
+  #  - `native`: instala o toolchain no runner. No Linux rodamos no container do
+  #    TeX Live; no macOS e Windows, direto no runner (via setup-texlive-action).
+  #  - `docker`: nao instala nada no runner; builda a imagem custom do Dockerfile
+  #    (com cache) e roda as MESMAS checagens dentro dela, via prefixo
+  #    `docker compose run`. So no Linux (containers Linux so rodam em runner
+  #    Linux; testar o Docker engine de outros hosts esta fora de escopo).
   build:
-    name: build ${{ matrix.os }} 🛠️
+    name: build ${{ matrix.os }} (${{ matrix.mode }}) 🛠️
     needs: setup
     runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
+    # No mode docker rodamos no runner (nao dentro de um container do Actions):
+    # o proprio runner invoca o Docker para buildar/rodar a imagem custom.
+    container: ${{ matrix.mode == 'docker' && '' || matrix.container }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
@@ -58,11 +70,30 @@ jobs:
       - name: 🛎️ Checkout code
         uses: actions/checkout@v7
 
+      # --- Setup: caminho Docker ---
+      # Builda a imagem custom (Dockerfile) e a carrega no daemon local com o
+      # nome `ufma-tcc-template:ci` (definido no docker-compose.yml), para o
+      # `docker compose run` reusa-la sem rebuild. Cache `type=gha` acelera runs
+      # subsequentes. So no mode docker.
+      - name: 🐳 Set up Docker Buildx
+        if: matrix.mode == 'docker'
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🐳 Build image (bake + gha cache)
+        if: matrix.mode == 'docker'
+        run: |
+          docker buildx bake \
+            --set tcc.cache-from=type=gha \
+            --set tcc.cache-to=type=gha,mode=max \
+            --load
+
+      # --- Setup: caminho nativo ---
       - name: ⚙️ Install just
+        if: matrix.mode == 'native'
         uses: extractions/setup-just@v4
 
       - name: 📦 Setup TeX Live (macOS/Windows)
-        if: runner.os != 'Linux'
+        if: matrix.mode == 'native' && runner.os != 'Linux'
         uses: TeX-Live/setup-texlive-action@v4
         with:
           package-file: .github/texlive-packages.txt
@@ -74,30 +105,30 @@ jobs:
       # O en_US diverge entre as fontes (SCOWL no apt vs LibreOffice no macOS):
       # palavra so conhecida por um lado entra em dictionary.txt.
       - name: 🔧 Install tooling (Linux)
-        if: runner.os == 'Linux'
+        if: matrix.mode == 'native' && runner.os == 'Linux'
         run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us curl python3 python3-pip shellcheck
 
       - name: 🔧 Install tooling (macOS)
-        if: runner.os == 'macOS'
+        if: matrix.mode == 'native' && runner.os == 'macOS'
         run: brew install hunspell shellcheck
 
       # No Windows o hunspell vem do winget (FSFhu.Hunspell); o diretorio de
       # shims/binarios do WinGet entra no PATH para os steps seguintes.
       - name: 🔧 Install hunspell (Windows)
-        if: runner.os == 'Windows'
+        if: matrix.mode == 'native' && runner.os == 'Windows'
         run: |
           winget install --id FSFhu.Hunspell --exact --silent `
             --accept-source-agreements --accept-package-agreements
           "$env:LOCALAPPDATA\Microsoft\WinGet\Links" >> $env:GITHUB_PATH
 
       - name: 🔤 Install latexindent Perl deps (macOS)
-        if: runner.os == 'macOS'
+        if: matrix.mode == 'native' && runner.os == 'macOS'
         run: |
           brew install cpanminus
           cpanm --notest YAML::Tiny File::HomeDir
 
       - name: 🔤 Fetch hunspell dictionaries (macOS)
-        if: runner.os == 'macOS'
+        if: matrix.mode == 'native' && runner.os == 'macOS'
         run: |
           set -eu
           dir="$HOME/hunspell-dicts"
@@ -112,7 +143,7 @@ jobs:
       # Mesmo approach do macOS: o winget nao empacota os dicionarios, entao os
       # baixamos do LibreOffice/dictionaries e apontamos DICPATH (sintaxe pwsh).
       - name: 🔤 Fetch hunspell dictionaries (Windows)
-        if: runner.os == 'Windows'
+        if: matrix.mode == 'native' && runner.os == 'Windows'
         run: |
           $dir = "$env:USERPROFILE\hunspell-dicts"
           New-Item -ItemType Directory -Force -Path $dir | Out-Null
@@ -124,31 +155,47 @@ jobs:
           "DICPATH=$dir" >> $env:GITHUB_ENV
 
       - name: 🐍 Install pytest (Unix)
-        if: runner.os != 'Windows'
+        if: matrix.mode == 'native' && runner.os != 'Windows'
         run: python3 -m pip install --break-system-packages -r scripts/test/requirements.txt
 
       - name: 🐍 Install pytest (Windows)
-        if: runner.os == 'Windows'
+        if: matrix.mode == 'native' && runner.os == 'Windows'
         run: python -m pip install -r scripts/test/requirements.txt
+
+      # --- Prefixo das checagens ---
+      # No mode native as checagens rodam direto no runner (prefixo vazio); no
+      # mode docker rodam dentro da imagem custom via `docker compose run`. UID/GID
+      # do host sao passados (o compose usa `user:`) para os artefatos em
+      # build/output nao sairem como root no runner.
+      - name: 🧰 Compute check prefix
+        id: prefix
+        shell: bash
+        run: |
+          set -eu
+          if [ "${{ matrix.mode }}" = "docker" ]; then
+            echo "cmd=UID=$(id -u) GID=$(id -g) docker compose run --rm tcc" >> "$GITHUB_OUTPUT"
+          else
+            echo "cmd=" >> "$GITHUB_OUTPUT"
+          fi
 
       # --- Checagens ---
       - name: 🧪 Test scripts
-        run: just test
+        run: ${{ steps.prefix.outputs.cmd }} just test
 
       - name: 🧹 Check LaTeX formatting
-        run: just format-check
+        run: ${{ steps.prefix.outputs.cmd }} just format-check
 
       - name: 🔎 Lint LaTeX
-        run: just lint
+        run: ${{ steps.prefix.outputs.cmd }} just lint
 
       - name: 🔤 Spellcheck
-        run: just spell
+        run: ${{ steps.prefix.outputs.cmd }} just spell
 
       - name: 📜 Build PDF
-        run: just pdf
+        run: ${{ steps.prefix.outputs.cmd }} just pdf
 
       - name: 📤 Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
-          name: monografia-${{ matrix.os }}
+          name: ${{ matrix.mode == 'docker' && 'monografia-docker' || format('monografia-{0}', matrix.os) }}
           path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
