@@ -165,15 +165,20 @@ jobs:
       # --- Prefixo das checagens ---
       # No mode native as checagens rodam direto no runner (prefixo vazio); no
       # mode docker rodam dentro da imagem custom via `docker compose run`. UID/GID
-      # do host sao passados (o compose usa `user:`) para os artefatos em
-      # build/output nao sairem como root no runner.
+      # do host vao para o GITHUB_ENV (o compose interpola ${UID}/${GID}) para os
+      # artefatos em build/output nao sairem como root no runner. Nao dá para
+      # passar `UID=.. GID=.. docker ...` inline: no bash `UID` e readonly.
       - name: 🧰 Compute check prefix
         id: prefix
         shell: bash
         run: |
           set -eu
           if [ "${{ matrix.mode }}" = "docker" ]; then
-            echo "cmd=UID=$(id -u) GID=$(id -g) docker compose run --rm tcc" >> "$GITHUB_OUTPUT"
+            {
+              echo "UID=$(id -u)"
+              echo "GID=$(id -g)"
+            } >> "$GITHUB_ENV"
+            echo "cmd=docker compose run --rm tcc" >> "$GITHUB_OUTPUT"
           else
             echo "cmd=" >> "$GITHUB_OUTPUT"
           fi
