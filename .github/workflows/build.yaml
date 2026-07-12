@@ -152,3 +152,60 @@ jobs:
         with:
           name: monografia-${{ matrix.os }}
           path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
+
+  # Caminho Docker: roda o MESMO conjunto de checagens que o job `build` (native),
+  # so que dentro da imagem custom do Dockerfile. Job separado (nao entra na
+  # matrix): o setup e totalmente diferente (buildar a imagem vs. instalar
+  # toolchain no runner) e os checks sao prefixados por `docker compose run`. So
+  # no Linux e so no upstream (`IS_TEMPLATE_REPO`), para nao pesar o CI dos forks.
+  docker:
+    name: build docker 🐳
+    if: vars.IS_TEMPLATE_REPO == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout code
+        uses: actions/checkout@v7
+
+      # Builda a imagem custom e a carrega no daemon local; `docker compose run` a
+      # reusa sem rebuild. Cache `type=gha` acelera runs subsequentes.
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🐳 Build image (bake + gha cache)
+        run: |
+          docker buildx bake \
+            --set tcc.cache-from=type=gha \
+            --set tcc.cache-to=type=gha,mode=max \
+            --load
+
+      # UID/GID do host para os artefatos nao sairem como root (o compose
+      # interpola ${UID}/${GID}). Nao dá pra passar `UID=.. docker ...` inline:
+      # no bash `UID` e readonly.
+      - name: 🧰 Export host UID/GID
+        run: |
+          {
+            echo "UID=$(id -u)"
+            echo "GID=$(id -g)"
+          } >> "$GITHUB_ENV"
+
+      # --- Checagens (mesmos alvos do job native, via docker compose run) ---
+      - name: 🧪 Test scripts
+        run: docker compose run --rm tcc just test
+
+      - name: 🧹 Check LaTeX formatting
+        run: docker compose run --rm tcc just format-check
+
+      - name: 🔎 Lint LaTeX
+        run: docker compose run --rm tcc just lint
+
+      - name: 🔤 Spellcheck
+        run: docker compose run --rm tcc just spell
+
+      - name: 📜 Build PDF
+        run: docker compose run --rm tcc just pdf
+
+      - name: 📤 Upload PDF artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: monografia-docker
+          path: ${{ env.OUT_DIR }}/${{ env.PDF_NAME }}
