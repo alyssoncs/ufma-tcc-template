@@ -20,6 +20,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    # Nome fixo da imagem (mesma no dia a dia e na CI). Reusada sem rebuild pelo
+    # `docker compose run`; na CI e construida com cache via `docker buildx bake`.
+    image: ufma-tcc-template
     # UID:GID do host para os artefatos gerados nao ficarem como root no Linux.
     user: "${UID:-1000}:${GID:-1000}"
     # Monta a raiz do projeto no workdir do container (WORKDIR /work na imagem).
