@@ -227,7 +227,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: ❄️ Install Nix
-        uses: DeterminateSystems/nix-installer-action@v13
+        uses: DeterminateSystems/nix-installer-action@v22
 
       # Cache do /nix/store via cache do GitHub Actions (mesma infra do `type=gha`
       # do job docker, sem servico externo). Chave pelo hash do flake.lock: invalida
