@@ -258,6 +258,11 @@ jobs:
       - name: 📜 Build PDF
         run: nix develop -c just pdf
 
+      - name: ❄️ Hermetic build (nix build)
+        run: |
+          nix build .
+          test -f result/monografia.pdf
+
       - name: 📤 Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
