@@ -34,7 +34,7 @@ O conteúdo dentro do ambiente \texttt{minted} será colocado dentro do seu docu
   \label{lst:factorial-inline-output}
 \end{listing}
 
-Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu código em um arquivo separado e incluir em seu documento com o comando \texttt{\textbackslash{}inputminted}. Esse \template{} sugere que coloque esse códigos em \contentdir{}\texttt{\{nome-da-seção\}/}\codedir. Assumindo que o código existe em um arquivo \texttt{Factorial.java} dentro desse diretório, o exemplo anterior poderia ser escrito conforme o \autoref{lst:factorial-include}.
+Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu código em um arquivo separado e incluir em seu documento com o comando \texttt{\textbackslash{}inputminted}. Esse \template{} sugere que coloque esse códigos em \contentdir{}\texttt{\{grupo\}/\{nome-da-seção\}/}\codedir. Assumindo que o código existe em um arquivo \texttt{Factorial.java} dentro desse diretório, o exemplo anterior poderia ser escrito conforme o \autoref{lst:factorial-include}.
 
 \begin{listing}[htb]
   \inputminted{latex}{\CurrentFilePath/res/code/factorial-include.tex}

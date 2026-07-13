@@ -42,7 +42,7 @@ case "$category" in
       ! -path "$root/$build_dir/*" ! -path "$root/$out_dir/*" ! -path "$root/scripts/*"
     ;;
   spell)
-    # .tex de prosa para o corretor ortografico; as listagens (content/*/res/code/)
+    # .tex de prosa para o corretor ortografico; as listagens (*/res/code/)
     # ficam de fora porque sao codigo, nao texto.
     find "$root" -name '*.tex' \
       ! -path "$root/$build_dir/*" ! -path "$root/$out_dir/*" ! -path "$root/scripts/*" \

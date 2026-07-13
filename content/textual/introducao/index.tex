@@ -17,18 +17,18 @@ Se você já tem familiaridade com \LaTeX{} e quer um resumo de como usar esse \
 
   \item altere o arquivo de ficha catalográfica localizada em:
 
-  \contentdir{}\texttt{ficha-catalografica/index.pdf}, com o documento correspondente ao seu trabalho;
+  \contentdir{}\texttt{pre-textual/ficha-catalografica/index.pdf}, com o documento correspondente ao seu trabalho;
 
   \item o arquivo \mainfile{} é o arquivo principal, ele inclui os arquivos no diretório \contentdir;
 
-  \item o \template{} foi construído de forma que cada seção fica em um subdiretório com o seguinte padrão: \contentdir{}\texttt{\{nome-da-seção\}/index.tex}:
+  \item o \template{} foi construído de forma que cada seção fica em um subdiretório, agrupado pela sua função no documento segundo a \abnt: as partes pré-textuais (resumo, agradecimentos, epígrafe, etc.) ficam em \contentdir{}\texttt{pre-textual/} e os capítulos de desenvolvimento em \contentdir{}\texttt{textual/}, ambos seguindo o padrão \contentdir{}\texttt{\{grupo\}/\{nome-da-seção\}/index.tex}:
 
   \begin{alineas}
     \item lembre-se de atualizar o arquivo \mainfile{} ao renomear o diretório ou o arquivo;
 
     \item sinta-se à vontade para mudar a organização, como por exemplo:
 
-    \contentdir{}\texttt{section-01/index.tex}.
+    \contentdir{}\texttt{textual/section-01/index.tex}.
   \end{alineas}
 
   \item termos que aparecem frequentemente no texto podem ser movidos para macros no arquivo \macrofile{} para garantir grafia e formatação consistentes;
