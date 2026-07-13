@@ -31,6 +31,8 @@
 %   - \termo[s] ou \termo*[s] sem plural/capplural definidos => no-plural-defined
 %   - usar * em termo criado com \newterm* => capitalization-blocked
 %   - definir \newterm* com cap ou capplural (na definição) => cap-keys-on-blocked
+%   - modificador de plural diferente do literal 's' (ex.: [S], [es], []) =>
+%     invalid-plural-modifier
 %
 % Atenção: como qualquer comando LaTeX, um termo seguido de espaço e mais
 % texto engole esse espaço (ex.: "\iot é" vira "IoTé"). Nesses casos, use a
@@ -45,6 +47,8 @@
 { Term~'\c_backslash_str #1'~was~defined~with~\c_backslash_str newterm*~and~does~not~allow~capitalization~(*). }
 \msg_new:nnn { newterm } { cap-keys-on-blocked }
 { Term~'\c_backslash_str #1'~was~defined~with~\c_backslash_str newterm*~(capitalization~blocked),~so~it~cannot~take~the~'cap'~or~'capplural'~keys. }
+\msg_new:nnn { newterm } { invalid-plural-modifier }
+{ Term~'\c_backslash_str #1'~got~an~invalid~plural~modifier~'#2';~only~the~literal~'[s]'~is~accepted. }
 
 % --- Per-term storage (filled by the keys below, read at definition time) ---
 % Flags recording which optional keys were supplied for the current term, plus
@@ -66,6 +70,15 @@
   capplural .code:n = { \tl_set:Nn \l__newterm_capplural_tl {#1} \bool_set_true:N \l__newterm_has_capplural_bool } ,
 }
 
+% Guard: the plural modifier must be exactly the literal 's'. Any other content
+% ([], [S], [es], spaces, ...) aborts the build. Only called when the optional
+% argument is present. #1 term name  #2 modifier content typed in the text.
+\cs_new_protected:Npn \__newterm_check_plural_modifier:nn #1#2
+{
+  \str_if_eq:nnF {#2} { s }
+  { \msg_critical:nnnn { newterm } { invalid-plural-modifier } {#1} {#2} }
+}
+
 % Use-time renderer. Defined with xparse (not a pure expl3 function), so it
 % takes no ':signature' in its name. The arg spec below is what matters: six
 % mandatory args carry the term data frozen at definition time, then the
@@ -75,6 +88,8 @@
 % #7 star (capitalize)  #8 optional arg present => plural
 \NewDocumentCommand{\__newterm_use}{ m m m m m m s o }
 {
+  % Any optional argument must be exactly '[s]', regardless of variant.
+  \IfValueT {#8} { \__newterm_check_plural_modifier:nn {#1} {#8} }
   \IfBooleanTF {#7}
   % --- Capitalized variant requested (\macro* / \macro*[s]) ---
   {
