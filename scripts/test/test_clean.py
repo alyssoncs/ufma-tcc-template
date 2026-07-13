@@ -138,3 +138,17 @@ def test_clean_sem_cache_nao_falha(run_script, tmp_path, latexmk_stub):
     result = run_script("clean", "build", cwd=tmp_path, env=latexmk_stub)
     assert result.returncode == 0
     assert not build.exists()
+
+
+def test_clean_idempotente_scripts_sem_cache(run_script, tmp_path, latexmk_stub):
+    # scripts/ existe mas nao ha caches (ex.: rodar clean duas vezes): o find nao
+    # encontra nada e clean sai 0, sem apagar os fontes.
+    build = tmp_path / "build"
+    build.mkdir()
+    keep = tmp_path / "scripts" / "test" / "test_clean.py"
+    keep.parent.mkdir(parents=True)
+    keep.write_text("# fonte, nao e cache\n")
+
+    result = run_script("clean", "build", cwd=tmp_path, env=latexmk_stub)
+    assert result.returncode == 0
+    assert keep.exists()
