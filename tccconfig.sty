@@ -12,13 +12,7 @@
 \usepackage{mathtools} % Fornece melhorias e extensões para a tipografia matemática
 \usepackage{bm} % Permite o uso de negrito em símbolos matemáticos.
 \usepackage{pdfpages} % Permite a inclusão de páginas de arquivos PDF em documentos LaTeX.
-\usepackage{fontspec} % Gerenciamento de fontes para XeLaTeX
-\setmonofont{CascadiaCode}[
-  Extension=.otf,
-  UprightFont=*-Regular,
-  BoldFont=*-Bold,
-  Scale=MatchLowercase,
-]
+\RequirePackage{preamble/fonts} % fontspec + fonte monoespaçada (Cascadia)
 \usepackage{siunitx} % Fornece uma forma consistente de apresentar unidades e números.
 \usepackage[
   strict=true,
