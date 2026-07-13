@@ -11,49 +11,30 @@ env:
   PDF_NAME: monografia.pdf
 
 jobs:
-  # Monta a matrix de SOs nativos conforme a variavel de repo `IS_TEMPLATE_REPO`:
-  # no upstream (`true`) validamos nos tres SOs nativos; no fork (variavel
-  # ausente) a matrix fica VAZIA — o caminho unico do fork e o job `docker`
-  # (reproduzivel), nao o Linux nativo. Uma lista `matrix.include` nao aceita
-  # `if:`, entao emitimos a matrix como JSON aqui e o job `build` a consome via
-  # `fromJson` (include vazio => zero execucoes). Este job roda direto no runner
-  # (sem o container do TeX Live): so faz echo de JSON, nao precisa do toolchain.
-  setup:
-    name: setup matrix ⚙️
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.matrix }}
-    steps:
-      - name: 🧮 Compute OS matrix
-        id: matrix
-        run: |
-          set -eu
-          if [ "${{ vars.IS_TEMPLATE_REPO }}" = "true" ]; then
-            linux='{"os":"ubuntu-latest","container":"texlive/texlive:latest"}'
-            macos='{"os":"macos-latest","container":""}'
-            windows='{"os":"windows-latest","container":""}'
-            matrix="{\"include\":[$linux,$macos,$windows]}"
-          else
-            matrix="{\"include\":[]}"
-          fi
-          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
-
-  # Todas as checagens + compilacao do PDF, nos SOs definidos pelo job `setup`.
-  # A suite (`just test`) exercita os wrappers (format/lint/spell) e faz
-  # shellcheck, entao exige o toolchain completo (latexindent, chktex, hunspell,
-  # shellcheck) — por isso tudo roda num job so. Os steps de setup vem primeiro;
-  # as checagens, depois. Cada OS publica seu proprio artifact; a branch `pdf`
+  # Todas as checagens + compilacao do PDF, nos tres SOs nativos. A suite
+  # (`just test`) exercita os wrappers (format/lint/spell) e faz shellcheck,
+  # entao exige o toolchain completo (latexindent, chktex, hunspell, shellcheck)
+  # — por isso tudo roda num job so. Os steps de setup vem primeiro; as
+  # checagens, depois. Cada OS publica seu proprio artifact; a branch `pdf`
   # (deploy em ci.yaml) usa so o do Linux. No Linux rodamos no container do TeX
   # Live; no macOS e Windows, direto no runner (a instalacao do TeX Live e feita
-  # pela setup-texlive-action).
+  # pela setup-texlive-action). So no upstream (`IS_TEMPLATE_REPO`): no fork o
+  # caminho unico e o job `docker` (reproduzivel), nao o Linux nativo.
   build:
     name: build ${{ matrix.os }} 🛠️
-    needs: setup
+    if: vars.IS_TEMPLATE_REPO == 'true'
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+      matrix:
+        include:
+          - os: ubuntu-latest
+            container: texlive/texlive:latest
+          - os: macos-latest
+            container: ""
+          - os: windows-latest
+            container: ""
     steps:
       # --- Setup ---
       - name: 🛎️ Checkout code
