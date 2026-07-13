@@ -8,18 +8,18 @@
 \usepackage{microtype} % Melhora a tipografia do documento com ajustes finos.
 \usepackage{xcolor} % Permite o uso de cores no documento.
 \usepackage{graphicx} % Permite a inclusão e manipulação de gráficos e imagens no documento.
-\usepackage[newfloat]{minted} % Inclusão e realce de código-fonte via Pygments (cria o float "listing").
+\input{preamble/minted.sty} % minted/Pygments + config dos blocos de código
 \usepackage{mathtools} % Fornece melhorias e extensões para a tipografia matemática
 \usepackage{bm} % Permite o uso de negrito em símbolos matemáticos.
 \usepackage{pdfpages} % Permite a inclusão de páginas de arquivos PDF em documentos LaTeX.
-\RequirePackage{preamble/fonts} % fontspec + fonte monoespaçada (Cascadia)
+\input{preamble/fonts.sty} % fontspec + fonte monoespaçada (Cascadia)
 \usepackage{siunitx} % Fornece uma forma consistente de apresentar unidades e números.
 \usepackage[
   strict=true,
   style=brazilian,
 ]{csquotes}
 \usepackage{hyperref} % Adiciona links clicáveis para referências, notas de rodapé, e URLs no documento.
-\RequirePackage{preamble/bib} % biblatex (ABNT) + \addbibresource
+\input{preamble/bib.sty} % biblatex (ABNT) + \addbibresource
 
 \definecolor{base-green}{rgb}{0.09,0.45,0.27}
 \colorlet{color-link}{base-green}
@@ -47,44 +47,11 @@
 }
 \makeatother
 
-% Configuração para numeração sequencial (o float do minted é "listing", não "lstlisting")
-\AtBeginDocument{
-  \counterwithout{listing}{chapter}
-}
-
-% Cor das réguas da moldura e da numeração de linhas.
-\definecolor{numberlinecolor}{rgb}{0.68,0.70,0.76}
-
-% Estilo (tema de cores) do Pygments. O realce de keywords/strings/comentários
-% vem daqui, não de cores LaTeX. Liste os estilos com `pygmentize -L styles`.
-\usemintedstyle{tango}
-
-% Opções padrão para todos os blocos de código. Diferente do listings, as cores
-% do realce vêm do estilo Pygments acima; aqui controlamos só moldura, fonte,
-% numeração e quebra de linha. Use breakanywhere (não só breaklines) para evitar
-% que linhas longas sem espaço estourem a moldura silenciosamente. O autogobble
-% remove a indentação comum a todas as linhas, então o código pode ser indentado
-% junto do \begin{listing} no fonte sem aparecer recuado no PDF.
-\setminted{
-  linenos,
-  numbersep=10pt,
-  frame=single,
-  rulecolor=numberlinecolor,
-  fontsize=\small,
-  breaklines,
-  breakanywhere,
-  autogobble,
-  tabsize=4,
-}
-
-% Nomeia o float do minted como "Código" (afeta legenda e \autoref).
-\SetupFloatingEnvironment{listing}{name=Código}
-
 \setlength{\parindent}{1.3cm} % paragraph indentation
 \setlength{\parskip}{0.2cm} % space between paragraphs
 
 % Macros utilitárias (\foreign) e comandos da banca (l3seq).
-\RequirePackage{preamble/macros}
+\input{preamble/macros.sty}
 
 % Comando \newterm para criação de termos consistentes (arquivo autossuficiente).
-\RequirePackage{preamble/newterm}
+\input{preamble/newterm.sty}

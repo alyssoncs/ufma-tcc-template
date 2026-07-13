@@ -1,0 +1,40 @@
+% Inclusão e realce de código-fonte via minted/Pygments: carrega o pacote (com o
+% float "listing"), define o tema de cores do Pygments e as opções padrão dos
+% blocos de código. As cores do realce vêm do estilo Pygments, não de cores LaTeX.
+
+\RequirePackage[newfloat]{minted} % Inclusão e realce de código-fonte via Pygments (cria o float "listing").
+
+% Configuração para numeração sequencial (o float do minted é "listing", não "lstlisting")
+\AtBeginDocument{
+  \counterwithout{listing}{chapter}
+}
+
+% Cor das réguas da moldura e da numeração de linhas.
+\definecolor{numberlinecolor}{rgb}{0.68,0.70,0.76}
+
+% Estilo (tema de cores) do Pygments. O realce de keywords/strings/comentários
+% vem daqui, não de cores LaTeX. Liste os estilos com `pygmentize -L styles`.
+\usemintedstyle{tango}
+
+% Opções padrão para todos os blocos de código. Diferente do listings, as cores
+% do realce vêm do estilo Pygments acima; aqui controlamos só moldura, fonte,
+% numeração e quebra de linha. Use breakanywhere (não só breaklines) para evitar
+% que linhas longas sem espaço estourem a moldura silenciosamente. O autogobble
+% remove a indentação comum a todas as linhas, então o código pode ser indentado
+% junto do \begin{listing} no fonte sem aparecer recuado no PDF.
+\setminted{
+  linenos,
+  numbersep=10pt,
+  frame=single,
+  rulecolor=numberlinecolor,
+  fontsize=\small,
+  breaklines,
+  breakanywhere,
+  autogobble,
+  tabsize=4,
+}
+
+% Nomeia o float do minted como "Código" (afeta legenda e \autoref).
+\SetupFloatingEnvironment{listing}{name=Código}
+
+\endinput
