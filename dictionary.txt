@@ -38,6 +38,7 @@ gibibytes
 github
 htb
 hunspell
+hyperref
 inputminted
 iphone
 iPhones

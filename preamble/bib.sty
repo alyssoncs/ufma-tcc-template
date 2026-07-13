@@ -1,0 +1,15 @@
+% Bibliografia: biblatex com estilo ABNT (biblatex-abnt) e backend biber.
+% Cite com \cite/\textcite e renderize com \printbibliography.
+
+\RequirePackage[
+  style=abnt,
+  backend=biber,
+  pretty,
+  giveninits,
+  noslsn,
+  backref=true,
+  citecount
+]{biblatex} % Citações padrão ABNT com biblatex-abnt (https://ctan.org/pkg/biblatex-abnt)
+\addbibresource{bib/biblio.bib}
+
+\endinput
