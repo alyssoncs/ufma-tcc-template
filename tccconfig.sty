@@ -98,37 +98,8 @@
 \setlength{\parindent}{1.3cm} % paragraph indentation
 \setlength{\parskip}{0.2cm} % space between paragraphs
 
-% --- Membros da banca (número variável) ---
-% Lista de membros via l3seq (expl3): cada membro é um item com nome+titulação.
-\ExplSyntaxOn
-\seq_new:N \g_tcc_membrosbanca_seq
-\NewDocumentCommand{\membrobanca}{mm}{%
-  \seq_gput_right:Nn \g_tcc_membrosbanca_seq {{#1}{#2}}%
-}
-\ExplSyntaxOff
-\NewDocumentCommand{\orientadorbanca}{mm}{%
-  \orientador{#1}%
-  \NewDocumentCommand{\imprimirorientadortitulacao}{}{#2}%
-}
-\NewDocumentCommand{\datadefesa}{m}{\NewDocumentCommand{\imprimirdatadefesa}{}{#1}}
-\ExplSyntaxOn
-\NewDocumentCommand{\imprimirmembrosbanca}{}{%
-  \imprimirassinaturabanca{\imprimirorientador}{\imprimirorientadortitulacao}%
-  \seq_map_inline:Nn \g_tcc_membrosbanca_seq {\imprimirassinaturabanca ##1}%
-}
-\ExplSyntaxOff
-\NewDocumentCommand{\imprimirassinaturabanca}{mm}{%
-  \assinatura{\textbf{#1} \\ #2}%
-}
-
-% Aplica formatação a palavras estrangeiras com o comando \foreign
-% \foreign{<palavra>}
-% Este comando aplica formatação em itálico à palavra fornecida, que é ideal para termos ou expressões estrangeiras.
-%
-% Exemplo de uso:
-% \foreign{dataset}
-% Dentro do documento, "dataset" será exibido em itálico.
-\NewDocumentCommand{\foreign}{m}{\textit{#1}}
+% Macros utilitárias (\foreign) e comandos da banca (l3seq).
+\RequirePackage{preamble/macros}
 
 % Comando \newterm para criação de termos consistentes (arquivo autossuficiente).
 \RequirePackage{preamble/newterm}
