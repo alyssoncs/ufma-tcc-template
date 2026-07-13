@@ -19,16 +19,7 @@
   style=brazilian,
 ]{csquotes}
 \usepackage{hyperref} % Adiciona links clicáveis para referências, notas de rodapé, e URLs no documento.
-\usepackage[
-  style=abnt,
-  backend=biber,
-  pretty,
-  giveninits,
-  noslsn,
-  backref=true,
-  citecount
-]{biblatex} % Citações padrão ABNT com biblatex-abnt (https://ctan.org/pkg/biblatex-abnt)
-\addbibresource{bib/biblio.bib}
+\RequirePackage{preamble/bib} % biblatex (ABNT) + \addbibresource
 
 \definecolor{base-green}{rgb}{0.09,0.45,0.27}
 \colorlet{color-link}{base-green}
