@@ -16,25 +16,21 @@ jobs:
   # entao exige o toolchain completo (latexindent, chktex, hunspell, shellcheck)
   # — por isso tudo roda num job so. Os steps de setup vem primeiro; as
   # checagens, depois. Cada OS publica seu proprio artifact; a branch `pdf`
-  # (deploy em ci.yaml) usa so o do Linux. No Linux rodamos no container do TeX
-  # Live; no macOS e Windows, direto no runner (a instalacao do TeX Live e feita
-  # pela setup-texlive-action). So no upstream (`IS_TEMPLATE_REPO`): no fork o
-  # caminho unico e o job `docker` (reproduzivel), nao o Linux nativo.
+  # (deploy em ci.yaml) usa so o do Docker. Nos tres SOs rodamos direto no runner
+  # (a instalacao do TeX Live e feita pela setup-texlive-action). So no upstream
+  # (`IS_TEMPLATE_REPO`): no fork o caminho unico e o job `docker` (reproduzivel),
+  # nao o Linux nativo.
   build:
     name: build ${{ matrix.os }} 🛠️
     if: vars.IS_TEMPLATE_REPO == 'true'
     runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            container: texlive/texlive:latest
-          - os: macos-latest
-            container: ""
-          - os: windows-latest
-            container: ""
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
       # --- Setup ---
       - name: 🛎️ Checkout code
@@ -43,8 +39,7 @@ jobs:
       - name: ⚙️ Install just
         uses: extractions/setup-just@v4
 
-      - name: 📦 Setup TeX Live (macOS/Windows)
-        if: runner.os != 'Linux'
+      - name: 📦 Setup TeX Live
         uses: TeX-Live/setup-texlive-action@v4
         with:
           package-file: .github/texlive-packages.txt
@@ -57,7 +52,10 @@ jobs:
       # palavra so conhecida por um lado entra em dictionary.txt.
       - name: 🔧 Install tooling (Linux)
         if: runner.os == 'Linux'
-        run: apt-get update && apt-get install -y --no-install-recommends hunspell hunspell-pt-br hunspell-en-us curl python3 python3-pip shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            hunspell hunspell-pt-br hunspell-en-us shellcheck
 
       - name: 🔧 Install tooling (macOS)
         if: runner.os == 'macOS'
