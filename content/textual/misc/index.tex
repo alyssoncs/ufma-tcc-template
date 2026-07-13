@@ -44,7 +44,7 @@ Caso queira deixar seu código \LaTeX{} mais compacto, você pode colocar o seu 
 
 \subsection{Linguagens e estilos}
 
-A linguagem do código é informada como argumento do ambiente \texttt{minted} (o \emph{lexer} do Pygments, como \texttt{java}, \texttt{latex} ou \texttt{python}), o que dá o realce correto de palavras reservadas, strings e comentários sem precisar cadastrá-las à mão. O tema de cores é global e definido no arquivo \pkgfile, com o comando \texttt{\textbackslash{}usemintedstyle}; opções padrão (moldura, numeração, fonte) ficam no \texttt{\textbackslash{}setminted}. Consulte a documentação oficial para coisas mais complexas.
+A linguagem do código é informada como argumento do ambiente \texttt{minted} (o \emph{lexer} do Pygments, como \texttt{java}, \texttt{latex} ou \texttt{python}), o que dá o realce correto de palavras reservadas, strings e comentários sem precisar cadastrá-las à mão. O tema de cores é global e definido no módulo do \texttt{minted} (\texttt{preamble/minted.sty}, carregado pelo \pkgfile{}), com o comando \texttt{\textbackslash{}usemintedstyle}; opções padrão (moldura, numeração, fonte) ficam no \texttt{\textbackslash{}setminted}. Consulte a documentação oficial para coisas mais complexas.
 
 \section{Remissões internas} \label{sec:cross-ref}
 
