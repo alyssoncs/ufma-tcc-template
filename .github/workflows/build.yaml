@@ -50,12 +50,15 @@ jobs:
       # empacota, entao baixamos do LibreOffice/dictionaries e apontamos DICPATH.
       # O en_US diverge entre as fontes (SCOWL no apt vs LibreOffice no macOS):
       # palavra so conhecida por um lado entra em dictionary.txt.
+      # latexindent (agora vem do TeX Live, nao do container) precisa dos modulos
+      # Perl YAML::Tiny e File::HomeDir — no macOS eles vem via cpanm.
       - name: 🔧 Install tooling (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            hunspell hunspell-pt-br hunspell-en-us shellcheck
+            hunspell hunspell-pt-br hunspell-en-us shellcheck \
+            libyaml-tiny-perl libfile-homedir-perl
 
       - name: 🔧 Install tooling (macOS)
         if: runner.os == 'macOS'
