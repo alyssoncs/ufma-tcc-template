@@ -9,9 +9,9 @@
 # dependencias, evitando as colecoes gigantes (ex.: collection-latexextra, que
 # sozinha traz milhares de pacotes). Assim a instalacao fica enxuta e rapida.
 #
-# No Linux o container texlive/texlive:latest ja traz tudo; esta lista vale so
-# para o macOS e o Windows. Se o PDF/suite falhar por pacote faltante, adicione-o
-# aqui.
+# No Linux o container texlive/texlive:latest (usado no caminho Docker) ja traz
+# tudo; esta lista vale para os tres SOs nativos (Linux/macOS/Windows). Se o
+# PDF/suite falhar por pacote faltante, adicione-o aqui.
 # NAO liste latexminted: ele nao esta na API do CTAN (a action falha ao valida-lo)
 # e ja vem como dependencia do minted.
 
