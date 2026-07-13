@@ -18,34 +18,8 @@
   strict=true,
   style=brazilian,
 ]{csquotes}
-\usepackage{hyperref} % Adiciona links clicáveis para referências, notas de rodapé, e URLs no documento.
+\input{preamble/hyperref.sty} % hyperref + cores dos links + metadados do PDF
 \input{preamble/bib.sty} % biblatex (ABNT) + \addbibresource
-
-\definecolor{base-green}{rgb}{0.09,0.45,0.27}
-\colorlet{color-link}{base-green}
-\colorlet{color-cite}{base-green}
-\colorlet{color-url}{base-green}
-
-\hypersetup{
-  colorlinks=true, % links com cor
-  linkcolor=color-link, % cor dos links internos
-  citecolor=color-cite, % cor das citações
-  urlcolor=color-url, % cor das url externas
-  bookmarksnumbered=true,
-  bookmarksdepth=subsubsection,
-}
-
-% Os metadados do PDF (título e autor) só são definidos depois que metadata.tex
-% é lido, então o tccconfig precisa ser carregado primeiro. Por isso embutimos os
-% metadados no \AtBeginDocument, lendo os campos brutos do abntex2 (\@title/\@author).
-\makeatletter
-\AtBeginDocument{
-  \hypersetup{
-    pdftitle={\@title}, % metadado do pdf, título
-    pdfauthor={\@author}, % metadado do pdf, autor
-  }
-}
-\makeatother
 
 \setlength{\parindent}{1.3cm} % paragraph indentation
 \setlength{\parskip}{0.2cm} % space between paragraphs
