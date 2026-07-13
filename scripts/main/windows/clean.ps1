@@ -1,4 +1,5 @@
-# Remove os artefatos de build (build/).
+# Remove os artefatos de build (build/) e os caches de teste (__pycache__,
+# .pytest_cache) gerados pela suite pytest sob scripts/.
 #
 # Uso: clean.ps1 <build_dir>
 
@@ -19,3 +20,12 @@ if ([string]::IsNullOrEmpty($buildDir)) {
 
 latexmk -c
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue -LiteralPath $buildDir
+
+# Remove os caches do Python/pytest (__pycache__, .pytest_cache) que a suite de
+# testes gera sob scripts/. Sao regenerados a cada `just test`; limpa-los aqui
+# evita lixo acumulado. Ausencia de scripts/ (ou de caches) nao e erro.
+if (Test-Path -LiteralPath 'scripts') {
+  Get-ChildItem -LiteralPath 'scripts' -Recurse -Directory -Force |
+    Where-Object { $_.Name -eq '__pycache__' -or $_.Name -eq '.pytest_cache' } |
+    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+}

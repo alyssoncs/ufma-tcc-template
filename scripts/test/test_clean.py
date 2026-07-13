@@ -83,3 +83,58 @@ def test_cleanall_build_dir_vazio_aborta(run_script, tmp_path, latexmk_stub):
     assert "build_dir" in result.stderr
     # cleanall aborta em set -eu antes do rm do out_dir: o output fica intacto.
     assert (output / "monografia.pdf").exists()
+
+
+def _make_test_caches(root):
+    """Monta os caches Python que a suite pytest gera sob scripts/test/ e devolve
+    (pycache, pytest_cache, arquivo_de_teste_a_preservar)."""
+    test_dir = root / "scripts" / "test"
+    pycache = test_dir / "__pycache__"
+    pytest_cache = test_dir / ".pytest_cache"
+    pycache.mkdir(parents=True)
+    pytest_cache.mkdir(parents=True)
+    (pycache / "helpers.cpython-313.pyc").write_text("x")
+    (pytest_cache / "CACHEDIR.TAG").write_text("x")
+    keep = test_dir / "test_clean.py"
+    keep.write_text("# fonte, nao e cache\n")
+    return pycache, pytest_cache, keep
+
+
+def test_clean_remove_pycache(run_script, tmp_path, latexmk_stub):
+    build = tmp_path / "build"
+    build.mkdir()
+    pycache, pytest_cache, keep = _make_test_caches(tmp_path)
+
+    result = run_script("clean", "build", cwd=tmp_path, env=latexmk_stub)
+    assert result.returncode == 0
+    # Os caches Python/pytest sao removidos...
+    assert not pycache.exists()
+    assert not pytest_cache.exists()
+    # ...mas os fontes da suite (nao-cache) permanecem intactos.
+    assert keep.exists()
+
+
+def test_cleanall_remove_pycache(run_script, tmp_path, latexmk_stub):
+    build = tmp_path / "build"
+    output = tmp_path / "output"
+    build.mkdir()
+    output.mkdir()
+    pycache, pytest_cache, _ = _make_test_caches(tmp_path)
+
+    result = run_script(
+        "cleanall", "build", "output", cwd=tmp_path, env=latexmk_stub
+    )
+    assert result.returncode == 0
+    # cleanall delega ao clean, entao os caches tambem somem.
+    assert not pycache.exists()
+    assert not pytest_cache.exists()
+
+
+def test_clean_sem_cache_nao_falha(run_script, tmp_path, latexmk_stub):
+    # Sem diretorio scripts/ (nenhum cache): clean nao pode abortar por isso.
+    build = tmp_path / "build"
+    build.mkdir()
+
+    result = run_script("clean", "build", cwd=tmp_path, env=latexmk_stub)
+    assert result.returncode == 0
+    assert not build.exists()

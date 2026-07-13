@@ -82,7 +82,8 @@ test:
     pwsh -NoProfile -Command "Invoke-ScriptAnalyzer -Path scripts/main/windows -Recurse -Settings ./PSScriptAnalyzerSettings.psd1 -EnableExit"
     {{ PYTHON }} -m pytest scripts/test
 
-# Remove os artefatos de build (build/).
+# Remove os artefatos de build (build/) e os caches de teste (__pycache__,
+# .pytest_cache) gerados pela suite pytest sob scripts/.
 [unix]
 clean:
     ./scripts/main/posix/clean.sh {{ BUILD_DIR }}
@@ -91,7 +92,8 @@ clean:
 clean:
     ./scripts/main/windows/clean.ps1 {{ BUILD_DIR }}
 
-# Remove os artefatos de build e o PDF final (output/).
+# Remove os artefatos de build e o PDF final (output/). Herda de clean a limpeza
+# dos caches de teste (__pycache__, .pytest_cache).
 [unix]
 cleanall:
     ./scripts/main/posix/cleanall.sh {{ BUILD_DIR }} {{ OUT_DIR }}
