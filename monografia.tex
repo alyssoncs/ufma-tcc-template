@@ -9,8 +9,10 @@
 ]{abntex2}
 
 \usepackage{tccconfig}
-\input{metadata.tex}
+% macros.tex antes de metadata.tex: assim os termos/siglas definidos via
+% \newterm podem ser usados nos proprios metadados (titulo, resumo, etc.).
 \input{macros.tex}
+\input{metadata.tex}
 
 \begin{document}
 
